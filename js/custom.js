@@ -686,22 +686,21 @@
                 // ==========================================
                 var p1 = Math.min(1, Math.max(0, currentProgress));
 
-                // 1. Choose Section: slides off to left (-100%) as Profile enters,
-                // and smoothly appears from left side (from -100% back to 0%) slowly when scrolling up!
+                // 1. Choose Section: stays stacked right there in place
+                // Over that, the Profile section appears from the right side slowly!
                 if (chooseSection) {
-                    var chooseX = -p1 * 100;
-                    chooseSection.style.transform = 'translate3d(' + chooseX.toFixed(3) + '%, 0, 0)';
+                    chooseSection.style.transform = 'translate3d(0, 0, 0)';
                     chooseSection.style.opacity = '1';
-                    chooseSection.style.visibility = (p1 < 0.998) ? 'visible' : 'hidden';
+                    chooseSection.style.visibility = 'visible';
                 }
 
-                // 2. Profile Section: slides from 100% (off right) to 0% (fully covering view)
+                // 2. Profile Section: slides over the stacked Choose section from the right (100% -> 0%)
                 var translateX = (1 - p1) * 100;
                 profileSection.style.transform = 'translate3d(' + translateX.toFixed(3) + '%, 0, 0)';
                 profileSection.style.opacity = '1';
                 profileSection.style.filter = '';
 
-                if (p1 > 0.008) {
+                if (p1 > 0.005) {
                     profileSection.style.visibility = 'visible';
                 } else {
                     profileSection.style.visibility = 'hidden';
@@ -762,11 +761,11 @@
                 // ==========================================
                 var p2 = Math.min(1, Math.max(0, currentProgress - 1.0));
 
-                // Choose section stays parked off-screen to the left (-100%)
+                // Choose section stays stacked in place underneath
                 if (chooseSection) {
-                    chooseSection.style.transform = 'translate3d(-100%, 0, 0)';
+                    chooseSection.style.transform = 'translate3d(0, 0, 0)';
                     chooseSection.style.opacity = '1';
-                    chooseSection.style.visibility = 'hidden';
+                    chooseSection.style.visibility = 'visible';
                 }
 
                 // 1. Profile section: recedes into depth as window opens in middle
@@ -867,7 +866,8 @@
 
             var rect = wrapper.getBoundingClientRect();
             // Is the pinned container active in viewport?
-            var isInsidePin = (rect.top <= 40 && rect.bottom > 120);
+            // If targetProgress > 0, keep handling scroll events so reverse navigation is always butter-smooth
+            var isInsidePin = (rect.top <= 60 || targetProgress > 0) && (rect.bottom > 120);
             if (!isInsidePin) return;
 
             if (e.deltaY > 0) {
@@ -917,8 +917,8 @@
             }
 
             var rect = wrapper.getBoundingClientRect();
-            // If user scrolled back up above the Choose section, reset everything
-            if (rect.top > 80) {
+            // Only reset if user has scrolled well past the Choose section back into the banner
+            if (rect.top > window.innerHeight * 0.7) {
                 if (targetProgress > 0 || profileRevealed) {
                     resetAll();
                 }

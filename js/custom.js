@@ -686,13 +686,10 @@
                 // ==========================================
                 var p1 = Math.min(1, Math.max(0, currentProgress));
 
-                // 1. Choose Section: slight parallax shift left (-5%) and scale (0.96)
+                // 1. Choose Section: stays fixed and steady in place (clean reveal without leftward shift)
                 if (chooseSection) {
-                    var chooseX = -p1 * 5;
-                    var chooseScale = 1 - (p1 * 0.04);
-                    var chooseOpacity = 1 - (p1 * 0.15);
-                    chooseSection.style.transform = 'translate3d(' + chooseX.toFixed(2) + '%, 0, 0) scale(' + chooseScale.toFixed(3) + ')';
-                    chooseSection.style.opacity = chooseOpacity.toFixed(3);
+                    chooseSection.style.transform = '';
+                    chooseSection.style.opacity = '1';
                 }
 
                 // 2. Profile Section: slides from 100% (off right) to 0% (fully covering view)
@@ -762,10 +759,10 @@
                 // ==========================================
                 var p2 = Math.min(1, Math.max(0, currentProgress - 1.0));
 
-                // Choose section stays parked in background
+                // Choose section stays steady in background
                 if (chooseSection) {
-                    chooseSection.style.transform = 'translate3d(-5%, 0, 0) scale(0.96)';
-                    chooseSection.style.opacity = '0.85';
+                    chooseSection.style.transform = '';
+                    chooseSection.style.opacity = '1';
                 }
 
                 // 1. Profile section: recedes into depth as window opens in middle

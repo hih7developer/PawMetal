@@ -900,23 +900,7 @@
         var cards = section.querySelectorAll('.duo_card');
         if (!cards.length) return;
 
-        // Smooth 360deg 3D Flip on Hover (Isolated to hovered card without triggering other parts)
-        cards.forEach(function (card) {
-            card.addEventListener('mouseenter', function () {
-                if (card.classList.contains('is-flipping')) return;
-
-                card.classList.add('is-flipping');
-
-                function handleAnimEnd(evt) {
-                    if (evt.target === card) {
-                        card.classList.remove('is-flipping');
-                        card.removeEventListener('animationend', handleAnimEnd);
-                    }
-                }
-                card.addEventListener('animationend', handleAnimEnd);
-            });
-        });
-
+        // 3D slight rotation, morphing specifications, and smooth CTA fade are accelerated and rendered via CSS
         // Mobile Scroll Reveal Observer
         if (window.innerWidth <= 991 && 'IntersectionObserver' in window) {
             var duoObserver = new IntersectionObserver(function (entries) {

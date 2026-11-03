@@ -541,34 +541,35 @@
     }
 
     // ========================================================
-    // 5. Choose, Profile & Product Window Sticky-Stack Reveal (Bidirectional)
-    //    Stage 1: Scroll for 3s over Choose section -> Profile section slowly appears from right
-    //             Hand emerges and arrow draws itself
-    //    Stage 2: Scroll for 3s on Profile section -> Product section appears from middle like a window opens
-    //             Profile section dims/blurs slightly in background
-    //    Reverse: Scrolling UP closes the Product window back to center (3s),
-    //             then scrolling UP again slides Profile section out to right (3s),
-    //             one by one smoothly revealing each section!
+    // 5. Choose, Profile, Product & Why Choose Sticky-Stack Reveal (Bidirectional 3-Stage Navigation)
+    //    Stage 1: Scroll for 3-4s over Choose section -> Profile section slowly appears from right
+    //    Stage 2: Scroll for 3-4s on Profile section -> Product section opens from middle like a window
+    //    Stage 3: Product section remains same, scroll for 3-4s -> Why Choose section appears from bottom smoothly
+    //    Reverse: Scrolling UP smoothly reverses each section one by one without skipping or sudden jumps!
     // ========================================================
     function initProfileSection() {
-        var wrapper = document.getElementById('chooseProfilePinWrapper');
+        var wrapper = document.getElementById('chooseProfilePinWrapper') || document.getElementById('choosePinWrapper');
         var chooseSection = document.getElementById('chooseSection');
         var profileSection = document.getElementById('profileSection');
         var productSection = document.getElementById('productDuoSection');
+        var whyChooseSection = document.getElementById('whyChooseSection');
         if (!wrapper || !profileSection) return;
 
         var duoCards = productSection ? productSection.querySelectorAll('.duo_card') : [];
+        var whySpotlight = document.getElementById('whySpotlight');
 
-        var targetProgress = 0; // Range: 0.0 to 2.0 (0-1: Profile in from right, 1-2: Product window opens from middle)
+        var targetProgress = 0; // Range: 0.0 to 4.0 (0-1: Profile in, 1-2: Product opens, 2-3: Product dwell 4s, 3-4: Why Choose from bottom)
         var currentProgress = 0;
         var profileRevealed = false;
         var rafId = null;
         var handTimer = null;
         var arrowTimer = null;
 
-        // ~3 seconds of continuous wheel scrolling per stage (~3400px scroll delta)
+        // ~3-4 seconds of continuous wheel scrolling per stage (~3400px scroll delta each)
         var stage1Delta = 3400;
         var stage2Delta = 3400;
+        var productDwellDelta = 3000; // Scroll for 3 SECONDS on the Product section!
+        var stage4Delta = 3600;       // THEN ONLY Why Choose section appears from bottom smoothly (3-4s)
 
         function lerp(start, end, factor) {
             return start + (end - start) * factor;
@@ -582,20 +583,19 @@
             }
 
             if (currentProgress <= 1.0) {
-                // ==========================================
+                // ========================================== 
                 // STAGE 1: CHOOSE -> PROFILE SECTION (0.0 to 1.0)
-                // ==========================================
+                // ========================================== 
                 var p1 = Math.min(1, Math.max(0, currentProgress));
 
                 // 1. Choose Section: stays stacked right there in place
-                // Over that, the Profile section appears from the right side slowly!
                 if (chooseSection) {
                     chooseSection.style.transform = 'translate3d(0, 0, 0)';
                     chooseSection.style.opacity = '1';
                     chooseSection.style.visibility = 'visible';
                 }
 
-                // 2. Profile Section: slides over the stacked Choose section from the right (100% -> 0%)
+                // 2. Profile Section: slides over stacked Choose section from the right (100% -> 0%)
                 var translateX = (1 - p1) * 100;
                 profileSection.style.transform = 'translate3d(' + translateX.toFixed(3) + '%, 0, 0)';
                 profileSection.style.opacity = '1';
@@ -613,18 +613,16 @@
                     profileSection.classList.remove('in-view');
                 }
 
-                // 3. Hand image & arrow animation triggers upon full profile arrival
+                // Hand & arrow animation on arrival
                 if (p1 >= 0.98) {
                     if (!profileRevealed) {
                         profileRevealed = true;
                         profileSection.classList.add('slide-in');
 
-                        // Hand image smoothly appears from bottom corner
                         if (handTimer) clearTimeout(handTimer);
                         handTimer = setTimeout(function () {
                             profileSection.classList.add('hand-revealed');
 
-                            // Dotted arrow draws itself progressively from start to tip
                             if (arrowTimer) clearTimeout(arrowTimer);
                             arrowTimer = setTimeout(function () {
                                 profileSection.classList.add('arrow-drawn');
@@ -632,7 +630,6 @@
                         }, 250);
                     }
                 } else if (p1 < 0.90) {
-                    // When scrolling back up, retract the hand and arrow so they smoothly disappear
                     if (profileRevealed) {
                         profileRevealed = false;
                         if (handTimer) clearTimeout(handTimer);
@@ -641,7 +638,7 @@
                     }
                 }
 
-                // 4. Product Section: closed in center as a hidden zero-size window
+                // Product Section closed in center
                 if (productSection) {
                     productSection.style.clipPath = 'inset(50% 50% 50% 50% round 32px)';
                     productSection.style.webkitClipPath = 'inset(50% 50% 50% 50% round 32px)';
@@ -655,40 +652,46 @@
                     c.style.opacity = '';
                 });
 
-            } else {
-                // ==========================================
+                // Why Choose Section hidden at bottom
+                if (whyChooseSection) {
+                    whyChooseSection.style.transform = 'translate3d(0, 100%, 0)';
+                    whyChooseSection.style.visibility = 'hidden';
+                    whyChooseSection.classList.remove('in-view', 'spotlight-active');
+                }
+
+            } else if (currentProgress <= 2.0) {
+                // ========================================== 
                 // STAGE 2: PROFILE -> PRODUCT WINDOW SECTION (1.0 to 2.0)
                 // Appears from middle like a window opens!
-                // ==========================================
+                // ========================================== 
                 var p2 = Math.min(1, Math.max(0, currentProgress - 1.0));
 
-                // Choose section stays stacked in place underneath
                 if (chooseSection) {
                     chooseSection.style.transform = 'translate3d(0, 0, 0)';
                     chooseSection.style.opacity = '1';
                     chooseSection.style.visibility = 'visible';
                 }
 
-                // 1. Profile section: recedes into depth as window opens in middle
-                var profScale = 1 - (p2 * 0.08); // 1.0 down to 0.92
-                var profBrightness = 1 - (p2 * 0.18); // 1.0 down to 0.82
-                var profBlur = p2 * 2.5; // 0px to 2.5px
-                var profOpacity = 1 - (p2 * 0.25); // 1.0 down to 0.75
+                // Profile recedes into depth
+                var profScale = 1 - (p2 * 0.08);
+                var profBrightness = 1 - (p2 * 0.18);
+                var profBlur = p2 * 2.5;
+                var profOpacity = 1 - (p2 * 0.25);
                 profileSection.style.transform = 'scale(' + profScale.toFixed(3) + ')';
                 profileSection.style.filter = 'brightness(' + profBrightness.toFixed(3) + ') blur(' + profBlur.toFixed(1) + 'px)';
                 profileSection.style.opacity = profOpacity.toFixed(3);
                 profileSection.style.visibility = 'visible';
 
-                // 2. Product section: opens from center like a window aperture
+                // Product section aperture opens from center
                 if (productSection) {
-                    var insetY = (1 - p2) * 50; // 50% -> 0%
-                    var insetX = (1 - p2) * 50; // 50% -> 0%
-                    var insetRound = (1 - p2) * 32; // 32px -> 0px
+                    var insetY = (1 - p2) * 50;
+                    var insetX = (1 - p2) * 50;
+                    var insetRound = (1 - p2) * 32;
 
                     productSection.style.clipPath = 'inset(' + insetY.toFixed(2) + '% ' + insetX.toFixed(2) + '% ' + insetY.toFixed(2) + '% ' + insetX.toFixed(2) + '% round ' + insetRound.toFixed(1) + 'px)';
                     productSection.style.webkitClipPath = 'inset(' + insetY.toFixed(2) + '% ' + insetX.toFixed(2) + '% ' + insetY.toFixed(2) + '% ' + insetX.toFixed(2) + '% round ' + insetRound.toFixed(1) + 'px)';
 
-                    var prodScale = 0.85 + (p2 * 0.15); // zooms smoothly from 0.85 to 1.0
+                    var prodScale = 0.85 + (p2 * 0.15);
                     var prodOpacity = Math.min(1, p2 * 1.8);
 
                     productSection.style.transform = 'scale(' + prodScale.toFixed(3) + ')';
@@ -696,9 +699,8 @@
                     productSection.style.visibility = (p2 > 0.005) ? 'visible' : 'hidden';
                 }
 
-                // 3. Product cards inside the opening window part smoothly into position
                 if (duoCards.length >= 2) {
-                    var cardSpread = (1 - p2) * 45; // 45px -> 0px
+                    var cardSpread = (1 - p2) * 45;
                     if (p2 >= 0.99) {
                         duoCards[0].style.transform = '';
                         duoCards[1].style.transform = '';
@@ -713,6 +715,107 @@
                     } else {
                         duoCards[0].classList.remove('in-view');
                         duoCards[1].classList.remove('in-view');
+                    }
+                }
+
+                // Why Choose Section remains hidden at bottom
+                if (whyChooseSection) {
+                    whyChooseSection.style.transform = 'translate3d(0, 100%, 0)';
+                    whyChooseSection.style.visibility = 'hidden';
+                    whyChooseSection.classList.remove('in-view', 'spotlight-active');
+                }
+
+            } else if (currentProgress <= 3.0) {
+                // ========================================== 
+                // STAGE 3: SCROLL FOR 3 SECONDS ON PRODUCT SECTION (2.0 to 3.0)
+                // Product section remains completely still, open and interactive!
+                // Why Choose section remains hidden below until 3 seconds of scroll finish.
+                // ========================================== 
+                if (chooseSection) {
+                    chooseSection.style.transform = 'translate3d(0, 0, 0)';
+                    chooseSection.style.opacity = '1';
+                    chooseSection.style.visibility = 'visible';
+                }
+
+                profileSection.style.transform = 'scale(0.92)';
+                profileSection.style.filter = 'brightness(0.82) blur(2.5px)';
+                profileSection.style.opacity = '0.75';
+                profileSection.style.visibility = 'visible';
+
+                // Product section remains 100% active, pinned and stable in place!
+                if (productSection) {
+                    productSection.style.clipPath = 'inset(0% 0% 0% 0% round 0px)';
+                    productSection.style.webkitClipPath = 'inset(0% 0% 0% 0% round 0px)';
+                    productSection.style.transform = 'scale(1)';
+                    productSection.style.opacity = '1';
+                    productSection.style.visibility = 'visible';
+                }
+                duoCards.forEach(function (c) {
+                    c.classList.add('in-view');
+                    c.style.transform = '';
+                });
+
+                // Why Choose section remains hidden at bottom during the 3-second scroll on product section
+                if (whyChooseSection) {
+                    whyChooseSection.style.transform = 'translate3d(0, 100%, 0)';
+                    whyChooseSection.style.visibility = 'hidden';
+                    whyChooseSection.classList.remove('in-view', 'spotlight-active');
+                }
+
+            } else {
+                // ========================================== 
+                // STAGE 4: AFTER 3 SECONDS SCROLL ON PRODUCT SECTION,
+                // THEN ONLY WHY CHOOSE SECTION APPEARS FROM BOTTOM SMOOTHLY (3.0 to 4.0)
+                // ========================================== 
+                var p4 = Math.min(1, Math.max(0, currentProgress - 3.0));
+
+                if (chooseSection) {
+                    chooseSection.style.transform = 'translate3d(0, 0, 0)';
+                    chooseSection.style.opacity = '1';
+                    chooseSection.style.visibility = 'visible';
+                }
+
+                profileSection.style.transform = 'scale(0.92)';
+                profileSection.style.filter = 'brightness(0.82) blur(2.5px)';
+                profileSection.style.opacity = '0.75';
+                profileSection.style.visibility = 'visible';
+
+                // Product section remains pinned in place under Why Choose
+                if (productSection) {
+                    productSection.style.clipPath = 'inset(0% 0% 0% 0% round 0px)';
+                    productSection.style.webkitClipPath = 'inset(0% 0% 0% 0% round 0px)';
+                    productSection.style.transform = 'scale(1)';
+                    productSection.style.opacity = '1';
+                    productSection.style.visibility = 'visible';
+                }
+                duoCards.forEach(function (c) {
+                    c.classList.add('in-view');
+                    c.style.transform = '';
+                });
+
+                // Why Choose section appears smoothly from bottom (100% -> 0%)
+                if (whyChooseSection) {
+                    var translateY = (1 - p4) * 100;
+                    whyChooseSection.style.transform = 'translate3d(0, ' + translateY.toFixed(3) + '%, 0)';
+                    whyChooseSection.style.opacity = '1';
+                    whyChooseSection.style.visibility = (p4 > 0.005) ? 'visible' : 'hidden';
+
+                    // Suggested animation timeline:
+                    // 0-15%: Heading fades and moves upward
+                    // 15-35%: Golden wave sweeps across
+                    // 35-55%: Four columns reveal sequentially
+                    // 55-80%: Feature rows and checkmarks animate (scanner)
+                    // 80-100%: Golden spotlight interaction becomes active
+                    if (p4 > 0.15) {
+                        whyChooseSection.classList.add('in-view');
+                    } else {
+                        whyChooseSection.classList.remove('in-view', 'spotlight-active');
+                    }
+
+                    if (p4 >= 0.80) {
+                        whyChooseSection.classList.add('spotlight-active');
+                    } else {
+                        whyChooseSection.classList.remove('spotlight-active');
                     }
                 }
             }
@@ -764,39 +867,68 @@
                 c.style.transform = '';
                 c.style.opacity = '';
             });
+            if (whyChooseSection) {
+                whyChooseSection.style.transform = 'translate3d(0, 100%, 0)';
+                whyChooseSection.style.opacity = '1';
+                whyChooseSection.style.visibility = 'hidden';
+                whyChooseSection.classList.remove('in-view', 'spotlight-active');
+            }
         }
 
-        // Active mouse wheel scroll handler (bidirectional 2-stage one-by-one navigation)
+        // Active mouse wheel scroll handler (bidirectional 4-stage navigation)
         window.addEventListener('wheel', function (e) {
             if (window.innerWidth <= 991) return;
 
             var rect = wrapper.getBoundingClientRect();
-            // Is the pinned container active in viewport?
-            // If targetProgress > 0, keep handling scroll events so reverse navigation is always butter-smooth
+            // Is pinned container active in viewport?
             var isInsidePin = (rect.top <= 60 || targetProgress > 0) && (rect.bottom > 120);
             if (!isInsidePin) return;
 
             if (e.deltaY > 0) {
                 // User scrolling DOWN:
                 if (targetProgress < 1.0) {
-                    // Stage 1: Choose -> Profile (3s scroll)
+                    // Stage 1: Choose -> Profile (3-4s scroll)
                     targetProgress = Math.min(1.0, targetProgress + (e.deltaY / stage1Delta));
                     wakeRender();
                 } else if (targetProgress >= 1.0 && targetProgress < 2.0) {
-                    // Stage 2: Only begin opening the Product window after Profile section has fully appeared!
+                    // Stage 2: Profile -> Product window opens (3-4s scroll)
                     if (currentProgress >= 0.96) {
                         targetProgress = Math.min(2.0, targetProgress + (e.deltaY / stage2Delta));
+                        wakeRender();
+                    }
+                } else if (targetProgress >= 2.0 && targetProgress < 3.0) {
+                    // Stage 3: Scroll for 3 SECONDS on the Product section!
+                    if (currentProgress >= 1.96) {
+                        targetProgress = Math.min(3.0, targetProgress + (e.deltaY / productDwellDelta));
+                        wakeRender();
+                    }
+                } else if (targetProgress >= 3.0 && targetProgress < 4.0) {
+                    // Stage 4: THEN ONLY Why Choose appears from bottom smoothly (3-4s scroll)!
+                    if (currentProgress >= 2.96) {
+                        targetProgress = Math.min(4.0, targetProgress + (e.deltaY / stage4Delta));
                         wakeRender();
                     }
                 }
             } else if (e.deltaY < 0) {
                 // User scrolling UP:
-                if (targetProgress > 1.0) {
-                    // Stage 2 Reverse: Product window closes back to middle (3s scroll)
-                    targetProgress = Math.max(1.0, targetProgress - (Math.abs(e.deltaY) / stage2Delta));
+                if (targetProgress > 3.0) {
+                    // Stage 4 Reverse: Why choose section slides back down to bottom smoothly
+                    targetProgress = Math.max(3.0, targetProgress - (Math.abs(e.deltaY) / stage4Delta));
                     wakeRender();
+                } else if (targetProgress <= 3.0 && targetProgress > 2.0) {
+                    // Stage 3 Reverse: Scroll back up on Product section (3s dwell)
+                    if (currentProgress <= 3.04) {
+                        targetProgress = Math.max(2.0, targetProgress - (Math.abs(e.deltaY) / productDwellDelta));
+                        wakeRender();
+                    }
+                } else if (targetProgress <= 2.0 && targetProgress > 1.0) {
+                    // Stage 2 Reverse: Product window closes back only after user finishes Product section
+                    if (currentProgress <= 2.04) {
+                        targetProgress = Math.max(1.0, targetProgress - (Math.abs(e.deltaY) / stage2Delta));
+                        wakeRender();
+                    }
                 } else if (targetProgress <= 1.0 && targetProgress > 0.0) {
-                    // Stage 1 Reverse: Only begin sliding Profile section out after Product window has fully closed!
+                    // Stage 1 Reverse: Profile slides back out to right only after Product window has closed!
                     if (currentProgress <= 1.04) {
                         targetProgress = Math.max(0.0, targetProgress - (Math.abs(e.deltaY) / stage1Delta));
                         wakeRender();
@@ -805,10 +937,28 @@
             }
         }, { passive: true });
 
+        // Phase 5 (80-100%): Mouse-following spotlight interactive experience
+        if (whyChooseSection && whySpotlight) {
+            whyChooseSection.addEventListener('mousemove', function (e) {
+                var rect = whyChooseSection.getBoundingClientRect();
+                var x = e.clientX - rect.left;
+                var y = e.clientY - rect.top;
+                whySpotlight.style.left = x + 'px';
+                whySpotlight.style.top = y + 'px';
+            });
+            whyChooseSection.addEventListener('mouseleave', function () {
+                whySpotlight.style.opacity = '0';
+            });
+            whyChooseSection.addEventListener('mouseenter', function () {
+                if (whyChooseSection.classList.contains('spotlight-active')) {
+                    whySpotlight.style.opacity = '1';
+                }
+            });
+        }
+
         // Scroll check for reset when user scrolls back up past the Choose section
         window.addEventListener('scroll', function () {
             if (window.innerWidth <= 991) {
-                // Mobile & Tablet fallback: reveal when scrolled into view
                 var profRect = profileSection.getBoundingClientRect();
                 if (profRect.top < window.innerHeight * 0.8) {
                     profileSection.classList.add('hand-revealed', 'arrow-drawn', 'in-view');
@@ -819,11 +969,16 @@
                         duoCards.forEach(function (c) { c.classList.add('in-view'); });
                     }
                 }
+                if (whyChooseSection) {
+                    var whyRect = whyChooseSection.getBoundingClientRect();
+                    if (whyRect.top < window.innerHeight * 0.85) {
+                        whyChooseSection.classList.add('in-view');
+                    }
+                }
                 return;
             }
 
             var rect = wrapper.getBoundingClientRect();
-            // Only reset if user has scrolled well past the Choose section back into the banner
             if (rect.top > window.innerHeight * 0.7) {
                 if (targetProgress > 0 || profileRevealed) {
                     resetAll();
@@ -848,6 +1003,11 @@
                     productSection.style.transform = '';
                     productSection.style.opacity = '1';
                     productSection.style.visibility = 'visible';
+                }
+                if (whyChooseSection) {
+                    whyChooseSection.style.transform = '';
+                    whyChooseSection.style.opacity = '1';
+                    whyChooseSection.style.visibility = 'visible';
                 }
             }
         }, { passive: true });

@@ -686,10 +686,13 @@
                 // ==========================================
                 var p1 = Math.min(1, Math.max(0, currentProgress));
 
-                // 1. Choose Section: stays fixed and steady in place (clean reveal without leftward shift)
+                // 1. Choose Section: slides off to left (-100%) as Profile enters,
+                // and smoothly appears from left side (from -100% back to 0%) slowly when scrolling up!
                 if (chooseSection) {
-                    chooseSection.style.transform = '';
+                    var chooseX = -p1 * 100;
+                    chooseSection.style.transform = 'translate3d(' + chooseX.toFixed(3) + '%, 0, 0)';
                     chooseSection.style.opacity = '1';
+                    chooseSection.style.visibility = (p1 < 0.998) ? 'visible' : 'hidden';
                 }
 
                 // 2. Profile Section: slides from 100% (off right) to 0% (fully covering view)
@@ -759,10 +762,11 @@
                 // ==========================================
                 var p2 = Math.min(1, Math.max(0, currentProgress - 1.0));
 
-                // Choose section stays steady in background
+                // Choose section stays parked off-screen to the left (-100%)
                 if (chooseSection) {
-                    chooseSection.style.transform = '';
+                    chooseSection.style.transform = 'translate3d(-100%, 0, 0)';
                     chooseSection.style.opacity = '1';
+                    chooseSection.style.visibility = 'hidden';
                 }
 
                 // 1. Profile section: recedes into depth as window opens in middle
@@ -839,8 +843,9 @@
             profileSection.style.filter = '';
             profileSection.style.visibility = 'hidden';
             if (chooseSection) {
-                chooseSection.style.transform = '';
+                chooseSection.style.transform = 'translate3d(0, 0, 0)';
                 chooseSection.style.opacity = '1';
+                chooseSection.style.visibility = 'visible';
             }
             if (productSection) {
                 productSection.style.clipPath = 'inset(50% 50% 50% 50% round 32px)';
@@ -922,6 +927,11 @@
 
         window.addEventListener('resize', function () {
             if (window.innerWidth <= 991) {
+                if (chooseSection) {
+                    chooseSection.style.transform = '';
+                    chooseSection.style.opacity = '1';
+                    chooseSection.style.visibility = 'visible';
+                }
                 profileSection.style.transform = '';
                 profileSection.style.opacity = '1';
                 profileSection.style.filter = '';

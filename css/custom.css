@@ -1159,7 +1159,13 @@ header .navbar-nav {
 }
 
 /* =========================================================
-   Spylt-Style Features Section & Cursor Moving Reveal
+   Features Section: 5-Step Staggered Sequence Animation
+   1. Circle reveal (Scale 0 to 1)
+   2. Icon draw (Stroke draw / golden gleam)
+   3. Golden pulse ring (1 to 1.5 expansion)
+   4. Text reveal (Slide up with slight fade)
+   5. Divider reveal (Vertical dashed line top to bottom)
+   Stagger: 150ms per item | Duration: 700ms
    ========================================================= */
 
 .features {
@@ -1171,8 +1177,6 @@ header .navbar-nav {
     margin-top: -30px;
     box-shadow: 0 -15px 35px rgba(45, 30, 15, 0.08);
     overflow: hidden;
-    will-change: transform, box-shadow;
-    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
 }
 
 /* Top highlight sheen on section edge */
@@ -1197,51 +1201,29 @@ header .navbar-nav {
     padding: 15px 20px;
     position: relative;
     border-radius: 20px;
-    opacity: 0;
-    transform: translateY(35px);
-    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
-        transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
-        background 0.35s ease;
-    will-change: transform, opacity;
     cursor: default;
-}
-
-.features.in-view .feature_item:nth-child(1) {
-    transition-delay: 0.05s;
-}
-
-.features.in-view .feature_item:nth-child(2) {
-    transition-delay: 0.15s;
-}
-
-.features.in-view .feature_item:nth-child(3) {
-    transition-delay: 0.25s;
-}
-
-.features.in-view .feature_item:nth-child(4) {
-    transition-delay: 0.35s;
-}
-
-.features.in-view .feature_item {
-    opacity: 1;
-    transform: translateY(0);
+    transition: background 0.35s ease;
 }
 
 .feature_item:hover {
     background: rgba(255, 255, 255, 0.25);
 }
 
+/* 5. Divider Reveal: Vertical dashed lines animate from top to bottom */
 .feature_item:not(:last-child)::after {
     content: "";
     position: absolute;
     right: 0;
     top: 50%;
-    transform: translateY(-50%);
+    transform: translateY(-50%) scaleY(0);
+    transform-origin: top center;
     height: 75%;
     border-right: 1px dashed rgba(143, 121, 89, 0.5);
+    opacity: 0;
+    will-change: transform, opacity;
 }
 
-/* Feature Icon with Spylt-Style Magnetic Levitation */
+/* 1. Circle Reveal: The white circular background scales from 0 to 1 */
 .feature_icon {
     width: 76px;
     height: 76px;
@@ -1252,28 +1234,45 @@ header .navbar-nav {
     align-items: center;
     justify-content: center;
     box-shadow: 0 8px 20px rgba(143, 121, 89, 0.15);
-    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-        box-shadow 0.4s ease,
-        background 0.3s ease;
-    will-change: transform;
+    position: relative;
+    transform: scale(0);
+    opacity: 0;
+    will-change: transform, opacity;
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease, background 0.3s ease;
 }
 
-.feature_item:hover .feature_icon {
-    transform: translateY(-8px) scale(1.08);
-    box-shadow: 0 14px 28px rgba(200, 156, 80, 0.3);
-    background: #fffdf9;
+/* 3. Golden pulse: Soft golden ring expands around circle and fades away */
+.feature_icon::before {
+    content: "";
+    position: absolute;
+    inset: -3px;
+    border-radius: 50%;
+    border: 2.5px solid #C89C50;
+    pointer-events: none;
+    opacity: 0;
+    transform: scale(1);
+    box-sizing: border-box;
 }
 
+/* 2. Icon Draw: Gold icon appears with smooth stroke-drawing effect */
 .feature_icon span {
     width: 42px;
     display: block;
+    opacity: 0;
+    clip-path: inset(0 100% 0 0);
+    -webkit-clip-path: inset(0 100% 0 0);
+    transform: scale(0.85);
+    will-change: clip-path, -webkit-clip-path, transform, opacity, filter;
     transition: transform 0.35s ease;
 }
 
-.feature_item:hover .feature_icon span {
-    transform: scale(1.08);
+.feature_icon span img {
+    width: 100%;
+    height: auto;
+    display: block;
 }
 
+/* 4. Text Reveal: Feature text slides up with slight fade */
 .feature_item.cmn_hdr p {
     font-family: "Montserrat", sans-serif;
     color: #111111;
@@ -1281,10 +1280,204 @@ header .navbar-nav {
     font-weight: 500;
     line-height: 1.45;
     padding-bottom: 0;
+    opacity: 0;
+    transform: translateY(18px);
+    will-change: transform, opacity;
     transition: color 0.3s ease, transform 0.3s ease;
 }
 
-.feature_item:hover.cmn_hdr p {
+/* =========================================================
+   Keyframe Animations for Features Sequence
+   ========================================================= */
+
+/* Step 1: Circle scale from 0 to 1 */
+@keyframes circleScaleReveal {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+    65% {
+        transform: scale(1.08);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Step 2: Icon stroke-drawing / wipe reveal with golden gleam */
+@keyframes iconStrokeDraw {
+    0% {
+        clip-path: inset(0 100% 0 0);
+        -webkit-clip-path: inset(0 100% 0 0);
+        opacity: 0;
+        filter: brightness(1.6) drop-shadow(0 0 6px #C89C50);
+        transform: scale(0.85);
+    }
+    60% {
+        clip-path: inset(0 0% 0 0);
+        -webkit-clip-path: inset(0 0% 0 0);
+        opacity: 1;
+        filter: brightness(1.3) drop-shadow(0 0 8px #C89C50);
+        transform: scale(1.06);
+    }
+    100% {
+        clip-path: inset(0 0% 0 0);
+        -webkit-clip-path: inset(0 0% 0 0);
+        opacity: 1;
+        filter: brightness(1) drop-shadow(0 0 0px transparent);
+        transform: scale(1);
+    }
+}
+
+/* Step 3: Golden pulse ring: 1 -> 1.5 -> fade */
+@keyframes goldenRingPulse {
+    0% {
+        transform: scale(1);
+        opacity: 0.9;
+        border-color: #C89C50;
+        box-shadow: 0 0 10px rgba(200, 156, 80, 0.5);
+    }
+    70% {
+        transform: scale(1.48);
+        opacity: 0.35;
+        border-color: rgba(200, 156, 80, 0.4);
+        box-shadow: 0 0 16px rgba(200, 156, 80, 0.2);
+    }
+    100% {
+        transform: scale(1.65);
+        opacity: 0;
+        box-shadow: 0 0 0 transparent;
+    }
+}
+
+/* Step 4: Text slides up with slight fade */
+@keyframes featureTextSlideUp {
+    0% {
+        opacity: 0;
+        transform: translateY(18px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Step 5: Divider vertical dashed line animates from top to bottom */
+@keyframes verticalDividerDraw {
+    0% {
+        transform: translateY(-50%) scaleY(0);
+        opacity: 0;
+    }
+    30% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-50%) scaleY(1);
+        opacity: 1;
+    }
+}
+
+/* =========================================================
+   Trigger & Stagger Timing (Duration: 700ms, Stagger: 150ms)
+   ========================================================= */
+
+/* Item 1: Apple Find My (Starts at 0ms) */
+.features.in-view .feature_item:nth-child(1) .feature_icon {
+    animation: circleScaleReveal 700ms cubic-bezier(0.34, 1.35, 0.64, 1) 0.0s forwards;
+}
+.features.in-view .feature_item:nth-child(1) .feature_icon::before {
+    animation: goldenRingPulse 750ms cubic-bezier(0.2, 0.8, 0.4, 1) 0.38s forwards;
+}
+.features.in-view .feature_item:nth-child(1) .feature_icon span {
+    animation: iconStrokeDraw 650ms cubic-bezier(0.25, 1, 0.5, 1) 0.20s forwards;
+}
+.features.in-view .feature_item:nth-child(1) p {
+    animation: featureTextSlideUp 600ms cubic-bezier(0.16, 1, 0.3, 1) 0.35s forwards;
+}
+.features.in-view .feature_item:nth-child(1)::after {
+    animation: verticalDividerDraw 650ms cubic-bezier(0.16, 1, 0.3, 1) 0.30s forwards;
+}
+
+/* Item 2: NFC & QR (Starts at 150ms) */
+.features.in-view .feature_item:nth-child(2) .feature_icon {
+    animation: circleScaleReveal 700ms cubic-bezier(0.34, 1.35, 0.64, 1) 0.15s forwards;
+}
+.features.in-view .feature_item:nth-child(2) .feature_icon::before {
+    animation: goldenRingPulse 750ms cubic-bezier(0.2, 0.8, 0.4, 1) 0.53s forwards;
+}
+.features.in-view .feature_item:nth-child(2) .feature_icon span {
+    animation: iconStrokeDraw 650ms cubic-bezier(0.25, 1, 0.5, 1) 0.35s forwards;
+}
+.features.in-view .feature_item:nth-child(2) p {
+    animation: featureTextSlideUp 600ms cubic-bezier(0.16, 1, 0.3, 1) 0.50s forwards;
+}
+.features.in-view .feature_item:nth-child(2)::after {
+    animation: verticalDividerDraw 650ms cubic-bezier(0.16, 1, 0.3, 1) 0.45s forwards;
+}
+
+/* Item 3: Unique Pet Profile (Starts at 300ms) */
+.features.in-view .feature_item:nth-child(3) .feature_icon {
+    animation: circleScaleReveal 700ms cubic-bezier(0.34, 1.35, 0.64, 1) 0.30s forwards;
+}
+.features.in-view .feature_item:nth-child(3) .feature_icon::before {
+    animation: goldenRingPulse 750ms cubic-bezier(0.2, 0.8, 0.4, 1) 0.68s forwards;
+}
+.features.in-view .feature_item:nth-child(3) .feature_icon span {
+    animation: iconStrokeDraw 650ms cubic-bezier(0.25, 1, 0.5, 1) 0.50s forwards;
+}
+.features.in-view .feature_item:nth-child(3) p {
+    animation: featureTextSlideUp 600ms cubic-bezier(0.16, 1, 0.3, 1) 0.65s forwards;
+}
+.features.in-view .feature_item:nth-child(3)::after {
+    animation: verticalDividerDraw 650ms cubic-bezier(0.16, 1, 0.3, 1) 0.60s forwards;
+}
+
+/* Item 4: Waterproof (Starts at 450ms) */
+.features.in-view .feature_item:nth-child(4) .feature_icon {
+    animation: circleScaleReveal 700ms cubic-bezier(0.34, 1.35, 0.64, 1) 0.45s forwards;
+}
+.features.in-view .feature_item:nth-child(4) .feature_icon::before {
+    animation: goldenRingPulse 750ms cubic-bezier(0.2, 0.8, 0.4, 1) 0.83s forwards;
+}
+.features.in-view .feature_item:nth-child(4) .feature_icon span {
+    animation: iconStrokeDraw 650ms cubic-bezier(0.25, 1, 0.5, 1) 0.65s forwards;
+}
+.features.in-view .feature_item:nth-child(4) p {
+    animation: featureTextSlideUp 600ms cubic-bezier(0.16, 1, 0.3, 1) 0.80s forwards;
+}
+
+/* Post-Animation Interactive Hover State */
+.features.anim-done .feature_item .feature_icon {
+    transform: scale(1);
+    opacity: 1;
+}
+.features.anim-done .feature_item .feature_icon span {
+    opacity: 1;
+    clip-path: none;
+    -webkit-clip-path: none;
+    transform: scale(1);
+    filter: none;
+}
+.features.anim-done .feature_item p {
+    opacity: 1;
+    transform: translateY(0);
+}
+.features.anim-done .feature_item:not(:last-child)::after {
+    opacity: 1;
+    transform: translateY(-50%) scaleY(1);
+}
+
+.features.anim-done .feature_item:hover .feature_icon {
+    transform: translateY(-7px) scale(1.08);
+    box-shadow: 0 14px 28px rgba(200, 156, 80, 0.32);
+    background: #fffdf9;
+}
+.features.anim-done .feature_item:hover .feature_icon span {
+    transform: scale(1.08);
+}
+.features.anim-done .feature_item:hover p {
     color: #000000;
     transform: translateY(-2px);
 }

@@ -227,154 +227,55 @@
     }
 
     // ========================================================
-    // 3. Spylt-Style Next Section Cursor Moving & Sheet Transition
+    // 3. Features Section: 5-Step Staggered Sequence Entrance
+    //    1. Circle reveal (Scale 0 -> 1)
+    //    2. Icon draw (Stroke draw / golden gleam)
+    //    3. Golden pulse ring (1 -> 1.5 expansion)
+    //    4. Text reveal (Slide up with slight fade)
+    //    5. Divider reveal (Vertical dashed lines animate top to bottom)
+    //    Sequence: 01 Apple Find My -> 02 NFC & QR (+150ms) -> 03 Profile (+150ms) -> 04 Waterproof (+150ms)
     // ========================================================
     function initSpyltNextSection() {
         var features = document.querySelector('.features');
         var banner = document.querySelector('.banner');
         if (!features) return;
 
-        var items = features.querySelectorAll('.feature_item');
-        if (!items || items.length === 0) return;
-
-        // IntersectionObserver for entrance trigger
+        // IntersectionObserver: Triggers only when features section scrolls into view
+        // Completely self-contained without triggering or moving other sections
         if ('IntersectionObserver' in window) {
             var observer = new IntersectionObserver(function (entries) {
                 entries.forEach(function (entry) {
                     if (entry.isIntersecting) {
                         features.classList.add('in-view');
-                        // Remove transition on items after entrance so cursor tracking is instantaneous
+                        // After the full staggered sequence finishes (~1.5s), mark anim-done for smooth hover
                         setTimeout(function () {
-                            items.forEach(function (item) {
-                                item.style.transition = 'background 0.35s ease';
-                            });
-                        }, 1200);
+                            features.classList.add('anim-done');
+                        }, 1600);
                         observer.unobserve(features);
                     }
                 });
-            }, { threshold: 0.15 });
+            }, { threshold: 0.22, rootMargin: '0px 0px -40px 0px' });
 
             observer.observe(features);
         } else {
-            features.classList.add('in-view');
+            features.classList.add('in-view', 'anim-done');
         }
 
-        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        // Clean Banner Parallax (Self-contained, does not affect other sections)
+        if (banner) {
+            window.addEventListener('scroll', function () {
+                var scrollY = window.pageYOffset || document.documentElement.scrollTop;
+                var bannerH = banner.offsetHeight;
 
-        // Card tracking physics states for each feature item
-        var itemStates = [];
-        items.forEach(function () {
-            itemStates.push({
-                targetX: 0,
-                targetY: 0,
-                currX: 0,
-                currY: 0
-            });
-        });
-
-        var sectionPeek = { targetY: 0, currY: 0 };
-        var isCursorActive = false;
-        var rafSectionId = null;
-
-        function lerp(start, end, factor) {
-            return start + (end - start) * factor;
-        }
-
-        function renderSection() {
-            var ease = 0.08;
-
-            // Section peek animation
-            sectionPeek.currY = lerp(sectionPeek.currY, sectionPeek.targetY, ease);
-            features.style.transform = 'translate3d(0, ' + sectionPeek.currY.toFixed(2) + 'px, 0)';
-
-            // Wave motion across each feature item as cursor moves
-            items.forEach(function (item, idx) {
-                var s = itemStates[idx];
-                s.currX = lerp(s.currX, s.targetX, ease);
-                s.currY = lerp(s.currY, s.targetY, ease);
-
-                item.style.transform = 'translate3d(' + s.currX.toFixed(2) + 'px, ' + s.currY.toFixed(2) + 'px, 0)';
-            });
-
-            // Check if settled
-            var maxDelta = Math.abs(sectionPeek.currY - sectionPeek.targetY);
-            items.forEach(function (item, idx) {
-                maxDelta += Math.abs(itemStates[idx].currX - itemStates[idx].targetX);
-            });
-
-            if (!isCursorActive && maxDelta < 0.005) {
-                rafSectionId = null;
-                return;
-            }
-
-            rafSectionId = requestAnimationFrame(renderSection);
-        }
-
-        function wakeSection() {
-            if (!rafSectionId) {
-                rafSectionId = requestAnimationFrame(renderSection);
-            }
-        }
-
-        // Global Cursor Motion Reaction (Spylt Style)
-        window.addEventListener('mousemove', function (e) {
-            isCursorActive = true;
-            wakeSection();
-
-            var winW = window.innerWidth;
-            var winH = window.innerHeight;
-            var normX = (e.clientX / winW - 0.5) * 2; // -1 to 1
-            var normY = (e.clientY / winH - 0.5) * 2; // -1 to 1
-
-            // Multipliers creating an accordion wave motion across the 4 cards
-            var xFactors = [14, 7, -7, -14];
-            var yFactors = [10, 12, 12, 10];
-
-            items.forEach(function (item, idx) {
-                itemStates[idx].targetX = normX * xFactors[idx];
-                itemStates[idx].targetY = normY * yFactors[idx];
-            });
-
-            // Check if cursor is hovering near bottom of banner or inside features
-            if (banner) {
-                var bRect = banner.getBoundingClientRect();
-                if (e.clientY > bRect.top + bRect.height * 0.65 && e.clientY < bRect.bottom + 150) {
-                    // Peek next section up as cursor reaches toward it
-                    var proximity = Math.min(1, Math.max(0, (e.clientY - (bRect.top + bRect.height * 0.65)) / (bRect.height * 0.35)));
-                    sectionPeek.targetY = -14 * proximity;
-                } else {
-                    sectionPeek.targetY = 0;
+                if (scrollY <= bannerH) {
+                    var progress = scrollY / bannerH;
+                    var bannerScale = Math.max(0.95, 1 - progress * 0.05);
+                    var bannerShift = progress * 25;
+                    banner.style.transform = 'scale(' + bannerScale.toFixed(3) + ') translateY(' + bannerShift.toFixed(1) + 'px)';
+                    banner.style.borderRadius = (progress * 24).toFixed(1) + 'px';
                 }
-            }
-        }, { passive: true });
-
-        window.addEventListener('mouseleave', function () {
-            isCursorActive = false;
-            wakeSection();
-
-            sectionPeek.targetY = 0;
-            items.forEach(function (item, idx) {
-                itemStates[idx].targetX = 0;
-                itemStates[idx].targetY = 0;
-            });
-        });
-
-        // Spylt-Style Scroll Parallax Sheet Reveal
-        window.addEventListener('scroll', function () {
-            if (!banner) return;
-            var scrollY = window.pageYOffset || document.documentElement.scrollTop;
-            var bannerH = banner.offsetHeight;
-
-            if (scrollY <= bannerH) {
-                var progress = scrollY / bannerH;
-                var bannerScale = Math.max(0.95, 1 - progress * 0.05);
-                var bannerShift = progress * 25;
-                banner.style.transform = 'scale(' + bannerScale.toFixed(3) + ') translateY(' + bannerShift.toFixed(1) + 'px)';
-                banner.style.borderRadius = (progress * 24).toFixed(1) + 'px';
-            } else {
-                banner.style.transform = 'scale(0.95) translateY(25px)';
-            }
-        }, { passive: true });
+            }, { passive: true });
+        }
     }
 
     // ========================================================

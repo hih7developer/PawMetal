@@ -2209,6 +2209,7 @@ header .navbar-nav {
     gap: 30px;
     align-items: stretch;
     width: 100%;
+    perspective: 1400px;
 }
 
 /* Duo Card Container */
@@ -2220,11 +2221,12 @@ header .navbar-nav {
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), 
-                box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1), 
+    transform-style: preserve-3d;
+    backface-visibility: visible;
+    transition: box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1), 
                 border-color 0.4s ease,
                 opacity 0.5s ease;
-    will-change: transform, opacity;
+    will-change: transform, opacity, box-shadow;
 }
 
 .duo_card.in-view {
@@ -2232,9 +2234,27 @@ header .navbar-nav {
 }
 
 .duo_card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 20px 48px rgba(200, 156, 80, 0.14), 0 8px 20px rgba(0, 0, 0, 0.04);
-    border-color: rgba(200, 156, 80, 0.5);
+    box-shadow: 0 24px 50px rgba(200, 156, 80, 0.2), 0 8px 24px rgba(0, 0, 0, 0.06);
+    border-color: rgba(200, 156, 80, 0.6);
+}
+
+/* Smooth 360deg 3D Flip on Hover */
+.duo_card.is-flipping {
+    animation: duoCardFlip360 0.95s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+@keyframes duoCardFlip360 {
+    0% {
+        transform: perspective(1200px) rotateY(0deg);
+    }
+    50% {
+        transform: perspective(1200px) rotateY(180deg) scale(1.03);
+        box-shadow: 0 32px 65px rgba(200, 156, 80, 0.28), 0 12px 30px rgba(45, 30, 15, 0.1);
+        border-color: rgba(200, 156, 80, 0.75);
+    }
+    100% {
+        transform: perspective(1200px) rotateY(360deg) scale(1);
+    }
 }
 
 /* Card Media / Image Area */

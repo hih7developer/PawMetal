@@ -699,8 +699,13 @@
                 // 3. Product cards inside the opening window part smoothly into position
                 if (duoCards.length >= 2) {
                     var cardSpread = (1 - p2) * 45; // 45px -> 0px
-                    duoCards[0].style.transform = 'translate3d(' + (-cardSpread).toFixed(1) + 'px, 0, 0)';
-                    duoCards[1].style.transform = 'translate3d(' + cardSpread.toFixed(1) + 'px, 0, 0)';
+                    if (p2 >= 0.99) {
+                        duoCards[0].style.transform = '';
+                        duoCards[1].style.transform = '';
+                    } else {
+                        duoCards[0].style.transform = 'translate3d(' + (-cardSpread).toFixed(1) + 'px, 0, 0)';
+                        duoCards[1].style.transform = 'translate3d(' + cardSpread.toFixed(1) + 'px, 0, 0)';
+                    }
 
                     if (p2 > 0.25) {
                         duoCards[0].classList.add('in-view');
@@ -894,6 +899,23 @@
 
         var cards = section.querySelectorAll('.duo_card');
         if (!cards.length) return;
+
+        // Smooth 360deg 3D Flip on Hover (Isolated to hovered card without triggering other parts)
+        cards.forEach(function (card) {
+            card.addEventListener('mouseenter', function () {
+                if (card.classList.contains('is-flipping')) return;
+
+                card.classList.add('is-flipping');
+
+                function handleAnimEnd(evt) {
+                    if (evt.target === card) {
+                        card.classList.remove('is-flipping');
+                        card.removeEventListener('animationend', handleAnimEnd);
+                    }
+                }
+                card.addEventListener('animationend', handleAnimEnd);
+            });
+        });
 
         // Mobile Scroll Reveal Observer
         if (window.innerWidth <= 991 && 'IntersectionObserver' in window) {

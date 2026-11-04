@@ -1028,7 +1028,7 @@ header .navbar-nav {
 
 .bnr_buttons .cmn_btn .btn_icn,
 .bnr_buttons .cmn_btn .btn_hvr_icn {
-    display: inline-block;
+    /* display: inline-block; */
     transition: transform 0.3s ease;
 }
 
@@ -1037,15 +1037,15 @@ header .navbar-nav {
     transform: translateX(3px);
 }
 
-.bnr_buttons .cmn_btn .btn_hvr_icn {
+.cmn_btn .btn_hvr_icn {
     display: none;
 }
 
-.bnr_buttons .cmn_btn:hover .btn_icn {
+.cmn_btn:hover .btn_icn {
     display: none;
 }
 
-.bnr_buttons .cmn_btn:hover .btn_hvr_icn {
+.cmn_btn:hover .btn_hvr_icn {
     display: inline-block;
 }
 
@@ -1488,7 +1488,7 @@ header .navbar-nav {
 
 .choose_profile_pin_wrapper {
     position: relative;
-    height: 860vh; /* Smooth track for 4 stages: Choose -> Profile (3s), Profile -> Product (3s), Product dwell (3s), Why Choose from bottom (3s) */
+    height: 1250vh; /* Smooth track for 6 stages: Choose -> Profile (3.4s), Profile -> Product (3.4s), Product dwell (3s), Why Choose from bottom (3.6s), Why Choose dwell (2.5s), Window opens to Dog Section (3.4s) */
     background: #FFF9EF;
     border-radius: 40px 40px 0 0;
     margin-top: -30px;
@@ -3181,6 +3181,147 @@ header .navbar-nav {
     }
 }
 
+/* =========================================================
+   Soft Golden Light Traveling Across Comparison Columns
+   Moves left-to-right over Traditional Tag, PawMedal Tag, PawMedal Finder
+   ========================================================= */
+.why_travel_light_track {
+    position: absolute;
+    top: -12px;
+    bottom: -12px;
+    left: 29%;
+    right: -10px;
+    border-radius: 20px;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 15;
+}
+
+.why_travel_light {
+    position: absolute;
+    top: -20%;
+    left: 0;
+    width: 280px;
+    height: 140%;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(200, 156, 80, 0.0) 10%,
+        rgba(255, 235, 175, 0.40) 38%,
+        rgba(255, 255, 245, 0.88) 50%,
+        rgba(255, 225, 140, 0.50) 62%,
+        rgba(200, 156, 80, 0.0) 90%,
+        transparent 100%
+    );
+    box-shadow: 0 0 45px rgba(255, 225, 130, 0.85),
+                0 0 85px rgba(200, 156, 80, 0.50);
+    filter: blur(14px);
+    opacity: 0;
+    transform: translateX(-140%) skewX(-14deg);
+}
+
+.why_choose_section.in-view .why_travel_light {
+    animation: travelAcrossColumns 2.4s cubic-bezier(0.25, 1, 0.4, 1) 0.5s forwards;
+}
+
+@keyframes travelAcrossColumns {
+    0% {
+        transform: translateX(-130%) skewX(-14deg);
+        opacity: 0;
+    }
+    15% {
+        /* Enters over Traditional Tag column */
+        opacity: 0.95;
+    }
+    48% {
+        /* Sweeps over PawMedal Tag column */
+        opacity: 1;
+        transform: translateX(115%) skewX(-14deg);
+    }
+    78% {
+        /* Sweeps over PawMedal Finder column */
+        opacity: 0.92;
+        transform: translateX(235%) skewX(-14deg);
+    }
+    100% {
+        /* Exits smoothly to the right and disappears */
+        transform: translateX(350%) skewX(-14deg);
+        opacity: 0;
+    }
+}
+
+/* =========================================================
+   Subtle Golden Glow around PawMedal Tag & PawMedal Finder
+   Appears as light travels over, then smoothly disappears
+   ========================================================= */
+.compare_table_grid > .compare_col:nth-child(3),
+.compare_table_grid > .compare_col:nth-child(4) {
+    position: relative;
+}
+
+.compare_table_grid > .compare_col:nth-child(3)::before,
+.compare_table_grid > .compare_col:nth-child(4)::before {
+    content: "";
+    position: absolute;
+    inset: -5px;
+    border-radius: 18px;
+    border: 2px solid rgba(200, 156, 80, 0.85);
+    box-shadow: 0 0 25px rgba(200, 156, 80, 0.55),
+                0 0 50px rgba(255, 215, 120, 0.35),
+                inset 0 0 14px rgba(200, 156, 80, 0.20);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 6;
+}
+
+.why_choose_section.in-view .compare_table_grid > .compare_col:nth-child(3)::before {
+    animation: goldenColumnAuraTag 2.6s cubic-bezier(0.25, 1, 0.5, 1) 1.05s forwards;
+}
+
+.why_choose_section.in-view .compare_table_grid > .compare_col:nth-child(4)::before {
+    animation: goldenColumnAuraFinder 2.6s cubic-bezier(0.25, 1, 0.5, 1) 1.55s forwards;
+}
+
+@keyframes goldenColumnAuraTag {
+    0% {
+        opacity: 0;
+        transform: scale(0.985);
+    }
+    28% {
+        /* Soft golden glow illuminates as light passes */
+        opacity: 0.95;
+        transform: scale(1);
+    }
+    60% {
+        opacity: 0.80;
+    }
+    100% {
+        /* Disappears smoothly after completing the animation */
+        opacity: 0;
+        transform: scale(1.008);
+    }
+}
+
+@keyframes goldenColumnAuraFinder {
+    0% {
+        opacity: 0;
+        transform: scale(0.985);
+    }
+    28% {
+        /* Soft golden glow illuminates as light passes */
+        opacity: 0.95;
+        transform: scale(1);
+    }
+    60% {
+        opacity: 0.80;
+    }
+    100% {
+        /* Disappears smoothly after completing the animation */
+        opacity: 0;
+        transform: scale(1.008);
+    }
+}
+
 /* 4-Column Grid Layout */
 .compare_table_grid {
     display: grid;
@@ -3506,6 +3647,11 @@ header .navbar-nav {
         transition-delay: 0s !important;
         animation: none !important;
     }
+
+    .why_travel_light_track,
+    .compare_table_grid > .compare_col::before {
+        display: none !important;
+    }
 }
 
 @media (max-width: 767px) {
@@ -3517,5 +3663,1073 @@ header .navbar-nav {
         font-size: 12.5px;
         padding: 0 15px;
         max-width: 95%;
+    }
+}
+
+
+/* =========================================================
+   Dog Design Showcase Section ("Choose from designs created by our artists...")
+   Appears from the middle of the two comparison columns like a window opening!
+   ========================================================= */
+.dog_design_section {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background: #FAF4E8;
+    background-image: 
+        radial-gradient(ellipse 65% 55% at 75% 45%, rgba(240, 222, 190, 0.45) 0%, transparent 70%),
+        radial-gradient(circle at 18% 70%, rgba(200, 156, 80, 0.08) 0%, transparent 50%);
+    z-index: 40;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-sizing: border-box;
+    overflow: hidden;
+    clip-path: inset(0% 50% 0% 50% round 24px);
+    -webkit-clip-path: inset(0% 50% 0% 50% round 24px);
+    transform: scale(0.88);
+    opacity: 0;
+    visibility: hidden;
+    will-change: clip-path, transform, opacity;
+}
+
+.dog_design_container {
+    width: 90%;
+    flex: 1;
+    min-height: 0;
+    margin: 0 auto;
+    padding: 32px 36px 10px 36px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    box-sizing: border-box;
+    position: relative;
+    z-index: 2;
+}
+
+/* Hero Split: Left Content + Right Visual Stage */
+.dog_hero_grid {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 40px;
+    flex: 1;
+    min-height: 0;
+}
+
+/* Left Column: Typography & Prompt Bar */
+.dog_content_col {
+    flex: 1;
+    max-width: 49%;
+    z-index: 5;
+}
+
+.dog_section_title {
+    font-family: "Montserrat", sans-serif;
+    font-size: 42px;
+    font-weight: 700;
+    line-height: 1.22;
+    color: #231F1C;
+    margin: 0 0 18px 0;
+    letter-spacing: -0.5px;
+}
+
+.dog_section_title .dog_accent_gold {
+    color: #C89C50;
+    position: relative;
+    display: inline-block;
+}
+
+.dog_section_desc {
+    font-family: "Inter", sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    color: #726A60;
+    margin: 0 0 32px 0;
+    max-width: 500px;
+}
+
+/* AI Prompt Generator Bar */
+.dog_prompt_bar {
+    background: #FFFFFF;
+    border-radius: 50px;
+    padding: 7px 8px 7px 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 8px 28px rgba(180, 140, 70, 0.12), 0 1px 4px rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(200, 156, 80, 0.28);
+    position: relative;
+    transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.dog_prompt_bar:hover,
+.dog_prompt_bar:focus-within {
+    box-shadow: 0 12px 36px rgba(200, 156, 80, 0.22);
+    border-color: #C89C50;
+}
+
+.dog_prompt_input_wrap {
+    flex: 1;
+    overflow: hidden;
+    padding-right: 12px;
+}
+
+.dog_prompt_placeholder {
+    font-family: "Inter", sans-serif;
+    font-size: 16px;
+    color: #8C847A;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    user-select: none;
+}
+
+.dog_prompt_btn {
+    background: linear-gradient(135deg, #C89C50 0%, #D4A85A 100%);
+    color: #FFFFFF;
+    border: none;
+    border-radius: 40px;
+    padding: 11px 22px;
+    font-family: "Montserrat", sans-serif;
+    font-weight: 600;
+    font-size: 13.5px;
+    letter-spacing: 0.2px;
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(200, 156, 80, 0.36);
+    transition: transform 0.25s cubic-bezier(0.2, 0.9, 0.3, 1.2), box-shadow 0.25s ease, filter 0.2s ease;
+    flex-shrink: 0;
+}
+
+.dog_prompt_btn:hover {
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: 0 6px 20px rgba(200, 156, 80, 0.5);
+    filter: brightness(1.04);
+}
+
+.dog_prompt_btn:active {
+    transform: translateY(1px) scale(0.98);
+}
+
+.dog_prompt_btn i {
+    font-size: 13px;
+    transition: transform 0.3s ease;
+}
+
+.dog_prompt_btn:hover i {
+    transform: rotate(15deg) scale(1.15);
+}
+
+/* Right Column: Visual Stage with Layered Graphics */
+.dog_visual_col {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    max-width: 620px;
+    height: 100%;
+    overflow: visible;
+}
+
+.dog_visual_stage {
+    position: relative;
+    width: 520px;
+    height: 520px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: visible;
+}
+
+/* =========================================================
+   Dog Visual Stage & Sequential Staged Entrance
+   1. Background circle: covers the whole section like Figma design,
+      smoothly expands from dot scale(0) -> scale(1) (1.15s), loops rotation 360deg forever
+   2. Right-side half-circle: starts hidden below, smoothly reveals bottom-to-top (1.05s)
+   3. Dog medal image: starts only after 1 & 2 complete, smooth fade & scale with subtle rise
+   4. Dog medal hover: smooth scale, upward move, subtle rotation & golden aura
+   ========================================================= */
+
+/* 1. Main Background Circle Reveal (covers the whole section like Figma) */
+.dog_circle_wrap {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 780px;
+    height: 780px;
+    max-width: none;
+    max-height: none;
+    transform: translate(-50%, -50%) scale(0);
+    transform-origin: center center;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    will-change: transform, opacity;
+}
+
+.dog_design_section.dog-animated .dog_circle_wrap {
+    visibility: visible;
+    animation: dogMainCircleReveal 1.20s cubic-bezier(0.22, 1, 0.36, 1) 0.15s both;
+}
+
+@keyframes dogMainCircleReveal {
+    0% {
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 0;
+    }
+    20% {
+        opacity: 1;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+}
+
+/* Stationary background circle base: DOES NOT WHIRL, stays still and smooth with requested background-color #e6d9c6 */
+.dog_circle_base {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-color: #e6d9c6;
+    pointer-events: none;
+}
+
+/* Whirling dot border: ONLY the dot border whirls around the circle */
+.dog_circle_dots_svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    transform-origin: center center;
+    animation: dogDotBorderWhirl 50s linear infinite;
+    will-change: transform;
+}
+
+@keyframes dogDotBorderWhirl {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* 2. Right-side Half-Circle Reveal (reveals bottom-to-top after main circle appears) */
+.dog_arc_wrap {
+    position: absolute;
+    right: -45px;
+    top: 50%;
+    transform: translateY(calc(-50% + 50px));
+    width: 380px;
+    height: 680px;
+    pointer-events: none;
+    z-index: 2;
+    opacity: 0;
+    visibility: hidden;
+    clip-path: inset(100% 0% 0% 0%);
+    -webkit-clip-path: inset(100% 0% 0% 0%);
+    will-change: transform, clip-path, opacity;
+}
+
+.dog_design_section.dog-animated .dog_arc_wrap {
+    visibility: visible;
+    animation: dogArcRevealUp 1.10s cubic-bezier(0.22, 1, 0.36, 1) 1.40s both;
+}
+
+@keyframes dogArcRevealUp {
+    0% {
+        opacity: 0;
+        clip-path: inset(100% 0% 0% 0%);
+        -webkit-clip-path: inset(100% 0% 0% 0%);
+        transform: translateY(calc(-50% + 50px));
+    }
+    20% {
+        opacity: 0.65;
+    }
+    100% {
+        opacity: 0.60;
+        clip-path: inset(0% 0% 0% 0%);
+        -webkit-clip-path: inset(0% 0% 0% 0%);
+        transform: translateY(-50%);
+    }
+}
+
+.dog_arc_img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    mix-blend-mode: multiply;
+    display: block;
+}
+
+/* 3. Dog Medal Image Entrance (starts only after both background shapes complete) */
+.dog_tag_wrap {
+    position: relative;
+    z-index: 5;
+    width: 360px;
+    height: 450px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateY(24px) scale(0.90);
+    will-change: transform, opacity;
+}
+
+.dog_design_section.dog-animated .dog_tag_wrap {
+    visibility: visible;
+    pointer-events: auto;
+    animation: dogMedalEntrance 0.95s cubic-bezier(0.22, 1, 0.36, 1) 2.55s both;
+        width: 656px;
+    height: 450px;
+}
+
+@keyframes dogMedalEntrance {
+    0% {
+        opacity: 0;
+        transform: translateY(24px) scale(0.90);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.dog_tag_inner {
+    /* width: 100%;
+    height: 100%; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 4. Dog Medal Hover Interaction */
+.dog_tag_img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 18px 32px rgba(0, 0, 0, 0.20));
+    cursor: pointer;
+    transform: scale(1) translateY(0px) rotate(0deg);
+    transform-origin: center center;
+    transition: transform 0.45s cubic-bezier(0.25, 1, 0.4, 1), 
+                filter 0.45s cubic-bezier(0.25, 1, 0.4, 1);
+    will-change: transform, filter;
+}
+
+/* On hover: medal slightly scales up, moves upward, rotates very subtly */
+.dog_tag_wrap:hover .dog_tag_img,
+.dog_tag_img:hover {
+    transform: scale(1.06) translateY(-10px) rotate(1.8deg);
+    filter: drop-shadow(0 26px 42px rgba(0, 0, 0, 0.28)) 
+            drop-shadow(0 0 28px rgba(200, 156, 80, 0.60));
+}
+
+/* Bottom 4 Feature Columns Bar with Vertical Dividers */
+.dog_features_bar {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    background: rgba(255, 255, 255, 0.65);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(200, 156, 80, 0.22);
+    border-radius: 18px;
+    padding: 40px 16px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.03);
+    width: 100%;
+    box-sizing: border-box;
+    position: relative;
+    z-index: 4;
+}
+
+.dog_feat_col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 0 18px;
+    position: relative;
+}
+
+.dog_feat_col:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 10%;
+    height: 80%;
+    width: 1px;
+    border-right: 1px dashed rgba(200, 156, 80, 0.4);
+}
+
+.dog_feat_icon_wrap {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #EFE6D8;
+    border: 1px solid rgba(200, 156, 80, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #C89C50;
+    margin-bottom: 10px;
+    transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.dog_feat_col:hover .dog_feat_icon_wrap {
+    transform: scale(1.12);
+    background: #C89C50;
+    color: #FFFFFF;
+    box-shadow: 0 4px 14px rgba(200, 156, 80, 0.35);
+}
+
+.dog_feat_title {
+    font-family: "Montserrat", sans-serif;
+    font-size: 20px;
+    font-weight: 500;
+    color: #26211C;
+    margin: 0;
+    line-height: 1.35;
+}
+
+.dog_feat_subtitle {
+    font-family: "Inter", sans-serif;
+    font-size: 20px;
+    color: #726A60;
+    margin: 2px 0 0 0;
+    line-height: 1.3;
+}
+
+/* Tablet & Mobile Responsiveness for Dog Section */
+@media (max-width: 991px) {
+    .dog_design_section {
+        position: relative !important;
+        inset: auto !important;
+        width: 100% !important;
+        height: auto !important;
+        min-height: auto !important;
+        transform: none !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        clip-path: none !important;
+        -webkit-clip-path: none !important;
+        padding: 50px 0 60px 0 !important;
+    }
+
+    .dog_design_container {
+        padding: 0 20px !important;
+        height: auto !important;
+    }
+
+    .dog_hero_grid {
+        flex-direction: column !important;
+        text-align: center !important;
+        gap: 36px !important;
+    }
+
+    .dog_content_col {
+        max-width: 100% !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+    }
+
+    .dog_section_title {
+        font-size: 32px !important;
+    }
+
+    .dog_prompt_bar {
+        width: 100% !important;
+        max-width: 480px !important;
+    }
+
+    .dog_visual_stage {
+        width: 320px !important;
+        height: 320px !important;
+    }
+
+    .dog_circle_wrap {
+        width: 420px !important;
+        height: 420px !important;
+    }
+
+
+    .dog_arc_wrap {
+        width: 210px !important;
+        height: 380px !important;
+        right: -15px !important;
+    }
+
+    .dog_tag_wrap {
+        width: 250px !important;
+        height: 320px !important;
+    }
+
+    .dog_tag_wrap {
+        width: 220px !important;
+        height: 280px !important;
+    }
+
+    .dog_features_bar {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 20px 0 !important;
+        padding: 24px 14px !important;
+    }
+
+    .dog_feat_col:nth-child(2)::after {
+        display: none !important;
+    }
+
+    .dog_feat_col:nth-child(1)::after,
+    .dog_feat_col:nth-child(3)::after {
+        display: block !important;
+    }
+}
+
+@media (max-width: 575px) {
+    .dog_section_title {
+        font-size: 26px !important;
+    }
+
+    .dog_prompt_bar {
+        flex-direction: column !important;
+        border-radius: 24px !important;
+        padding: 14px !important;
+        gap: 12px !important;
+    }
+
+    .dog_prompt_btn {
+        width: 100% !important;
+        justify-content: center !important;
+    }
+
+    .dog_features_bar {
+        grid-template-columns: 1fr !important;
+        gap: 18px !important;
+    }
+
+    .dog_feat_col::after {
+        display: none !important;
+    }
+}
+
+/* =========================================================
+   MORE THAN JUST PETS SECTION (Parallax from bottom)
+   - Appears after scroll on dog section for 2 seconds
+   - Golden retriever smoothly slides up from the bottom
+   - Cat appears with a slight scale animation
+   - Beagle enters from the left with a subtle movement
+   - All three settle into their original positions
+   ========================================================= */
+.more_pets_section {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background: #6E6359;
+    background: linear-gradient(135deg, #7A6F64 0%, #61564C 100%);
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    overflow: hidden;
+    transform: translate3d(0, 100%, 0);
+    opacity: 0;
+    visibility: hidden;
+    will-change: transform, opacity;
+}
+
+/* Subtle background floor vignette & ambient lighting */
+.more_pets_section::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 70% 60% at 28% 70%, rgba(200, 180, 160, 0.18) 0%, transparent 70%),
+                linear-gradient(to top, rgba(30, 25, 20, 0.45) 0%, transparent 40%);
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Animated Drawing Paw Icon on the Right Side */
+.more_pets_paw_draw_wrap {
+    position: absolute;
+    right: -25px;
+    top: 50%;
+    transform: translateY(-48%);
+    width: 320px;
+    height: 460px;
+    pointer-events: none;
+    z-index: 1;
+    overflow: visible;
+}
+
+.more_pets_paw_svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    display: block;
+}
+
+/* Layer 1: Uploaded Figma Paw image unmasked by the drawing path */
+.more_pets_paw_masked_img {
+    opacity: 0;
+    filter: brightness(2.2) sepia(0.25) saturate(1.4);
+    transition: opacity 0.6s ease;
+    will-change: opacity;
+}
+
+.more_pets_section.pets-animated .more_pets_paw_masked_img {
+    opacity: 0.16;
+}
+
+/* Layer 2: Glowing Golden Drawing Pen Stroke that visibly sweeps and draws! */
+.paw_draw_golden_stroke {
+    stroke-dasharray: 1200;
+    stroke-dashoffset: 1200;
+    opacity: 0;
+    will-change: stroke-dashoffset, opacity;
+}
+
+.more_pets_section.pets-animated .paw_draw_golden_stroke {
+    animation: pawDrawStroke 1.40s cubic-bezier(0.25, 1, 0.4, 1) 0.85s forwards;
+}
+
+@keyframes pawDrawStroke {
+    0% {
+        stroke-dashoffset: 1200;
+        opacity: 0;
+    }
+    12% {
+        opacity: 1;
+    }
+    85% {
+        stroke-dashoffset: 0;
+        opacity: 1;
+    }
+    100% {
+        stroke-dashoffset: 0;
+        opacity: 0;
+    }
+}
+
+/* Mask Path: sweeps along with the golden drawing tip to unmask the paw image */
+.paw_draw_mask_path {
+    stroke-dasharray: 1200;
+    stroke-dashoffset: 1200;
+    will-change: stroke-dashoffset;
+}
+
+.more_pets_section.pets-animated .paw_draw_mask_path {
+    animation: pawMaskDraw 1.40s cubic-bezier(0.25, 1, 0.4, 1) 0.85s forwards;
+}
+
+@keyframes pawMaskDraw {
+    0% {
+        stroke-dashoffset: 1200;
+    }
+    100% {
+        stroke-dashoffset: 0;
+    }
+}
+
+/* Toe Strokes: draw in rapid sequential order */
+.paw_draw_toe_stroke {
+    stroke-dasharray: 220;
+    stroke-dashoffset: 220;
+    opacity: 0;
+    will-change: stroke-dashoffset, opacity;
+}
+
+.more_pets_section.pets-animated .toe_st1 {
+    animation: pawToeStroke 0.50s cubic-bezier(0.25, 1, 0.4, 1) 1.35s forwards;
+}
+.more_pets_section.pets-animated .toe_st2 {
+    animation: pawToeStroke 0.50s cubic-bezier(0.25, 1, 0.4, 1) 1.50s forwards;
+}
+.more_pets_section.pets-animated .toe_st3 {
+    animation: pawToeStroke 0.50s cubic-bezier(0.25, 1, 0.4, 1) 1.65s forwards;
+}
+.more_pets_section.pets-animated .toe_st4 {
+    animation: pawToeStroke 0.50s cubic-bezier(0.25, 1, 0.4, 1) 1.80s forwards;
+}
+
+@keyframes pawToeStroke {
+    0% {
+        stroke-dashoffset: 220;
+        opacity: 0;
+    }
+    20% {
+        opacity: 1;
+    }
+    80% {
+        stroke-dashoffset: 0;
+        opacity: 1;
+    }
+    100% {
+        stroke-dashoffset: 0;
+        opacity: 0;
+    }
+}
+
+/* Toe Mask Elements: unmask toe image areas */
+.paw_draw_mask_toe {
+    opacity: 0;
+    transform: scale(0);
+    transform-origin: center center;
+    will-change: transform, opacity;
+}
+
+.more_pets_section.pets-animated .paw_draw_mask_toe.toe1 {
+    animation: pawToeMaskPop 0.45s cubic-bezier(0.25, 1, 0.4, 1) 1.35s forwards;
+}
+.more_pets_section.pets-animated .paw_draw_mask_toe.toe2 {
+    animation: pawToeMaskPop 0.45s cubic-bezier(0.25, 1, 0.4, 1) 1.50s forwards;
+}
+.more_pets_section.pets-animated .paw_draw_mask_toe.toe3 {
+    animation: pawToeMaskPop 0.45s cubic-bezier(0.25, 1, 0.4, 1) 1.65s forwards;
+}
+.more_pets_section.pets-animated .paw_draw_mask_toe.toe4 {
+    animation: pawToeMaskPop 0.45s cubic-bezier(0.25, 1, 0.4, 1) 1.80s forwards;
+}
+
+@keyframes pawToeMaskPop {
+    0% {
+        opacity: 0;
+        transform: scale(0);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Main Content Container */
+.more_pets_container {
+    width: 90%;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 60px;
+    position: relative;
+    z-index: 2;
+    box-sizing: border-box;
+}
+
+/* Left Column: Pet Stage */
+.more_pets_visual_col {
+    flex: 1.1;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    position: relative;
+}
+
+.more_pets_stage {
+    position: relative;
+    width: 540px;
+    height: 420px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+/* 3 Pet Items Initial States (before animation) */
+.more_pet_item {
+    position: absolute;
+    bottom: 0;
+    display: flex;
+    align-items: flex-end;
+    will-change: transform, opacity;
+    cursor: pointer;
+    transition: filter 0.35s ease;
+}
+
+/* 1. Golden Retriever: Initial below */
+.more_pet_golden {
+    left: 20px;
+    bottom: 0;
+    width: 250px;
+    z-index: 2;
+    opacity: 0;
+    transform: translateY(70px);
+}
+
+/* 2. Cat: Initial scaled down */
+.more_pet_cat {
+    left: 195px;
+    bottom: 0;
+    width: 140px;
+    z-index: 3;
+    opacity: 0;
+    transform: scale(0.60);
+    transform-origin: bottom center;
+}
+
+/* 3. Beagle: Initial to the left */
+.more_pet_beagle {
+    left: 275px;
+    bottom: 0;
+    width: 235px;
+    z-index: 1;
+    opacity: 0;
+    transform: translateX(-45px);
+}
+
+.more_pet_img {
+    width: 100%;
+    height: auto;
+    display: block;
+    filter: drop-shadow(0 14px 22px rgba(0, 0, 0, 0.32));
+    transition: transform 0.4s cubic-bezier(0.25, 1, 0.35, 1);
+}
+
+/* Pet Hover Micro-Interactions */
+.more_pet_item:hover .more_pet_img {
+    transform: translateY(-8px) scale(1.03);
+    filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.42));
+}
+
+/* =========================================================
+   Pet Entrance Animations:
+   - Golden retriever smoothly slides up from the bottom
+   - Cat appears with a slight scale animation
+   - Beagle enters from the left with a subtle movement
+   - All three settle into their original positions
+   ========================================================= */
+.more_pets_section.pets-animated .more_pet_golden {
+    animation: goldenSlideUp 0.95s cubic-bezier(0.22, 1, 0.36, 1) 0.15s both;
+}
+
+@keyframes goldenSlideUp {
+    0% {
+        transform: translateY(70px);
+        opacity: 0;
+    }
+    25% {
+        opacity: 1;
+    }
+    85% {
+        transform: translateY(-4px);
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.more_pets_section.pets-animated .more_pet_cat {
+    animation: catScaleAppear 0.90s cubic-bezier(0.22, 1, 0.36, 1) 0.35s both;
+}
+
+@keyframes catScaleAppear {
+    0% {
+        transform: scale(0.60);
+        opacity: 0;
+    }
+    30% {
+        opacity: 1;
+    }
+    80% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.more_pets_section.pets-animated .more_pet_beagle {
+    animation: beagleEnterLeft 0.95s cubic-bezier(0.22, 1, 0.36, 1) 0.50s both;
+}
+
+@keyframes beagleEnterLeft {
+    0% {
+        transform: translateX(-45px);
+        opacity: 0;
+    }
+    25% {
+        opacity: 1;
+    }
+    85% {
+        transform: translateX(3px);
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Right Column: Typography, Pure White Text & Word-by-Word Animation */
+.more_pets_content_col {
+    flex: 0.9;
+    color: #FFFFFF;
+    position: relative;
+    z-index: 3;
+}
+
+.more_pets_title {
+    font-family: "Montserrat", sans-serif;
+    font-size: 44px;
+    font-weight: 700;
+    line-height: 1.22;
+    color: #FFFFFF;
+    margin: 0 0 18px 0;
+    letter-spacing: -0.5px;
+}
+
+.more_title_line {
+    display: block;
+}
+
+/* Word-by-Word Text Animation */
+.more_word_wrap {
+    display: inline-block;
+    overflow: hidden;
+    vertical-align: bottom;
+    margin-right: 0.28em;
+}
+
+.more_word_inner {
+    display: inline-block;
+    color: #FFFFFF;
+    opacity: 0;
+    transform: translateY(115%);
+    filter: blur(8px);
+    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                filter 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: transform, opacity, filter;
+}
+
+/* Staggered entrance for each word when section appears */
+.more_pets_section.pets-animated .more_word_inner {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+    transition-delay: calc(0.15s + var(--w-idx, 0) * 0.12s);
+}
+
+/* Golden Highlight Shimmer on Yellow Part (Identical to Banner Text .ylwtxt) */
+.more_pets_gold {
+    background: linear-gradient(100deg,
+            #C89C50 0%,
+            #e5c27f 35%,
+            #fff1cf 50%,
+            #e5c27f 65%,
+            #C89C50 100%);
+    background-size: 200% auto;
+    color: transparent !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    display: inline-block;
+    animation: goldShimmer 5s linear infinite;
+    filter: drop-shadow(0 2px 10px rgba(200, 156, 80, 0.45));
+}
+
+/* Description Text (Pure White like Figma design) */
+.more_pets_desc {
+    font-family: "Inter", sans-serif;
+    font-size: 16px;
+    line-height: 1.65;
+    color: #FFFFFF;
+    margin: 0 0 32px 0;
+    max-width: 480px;
+    opacity: 0;
+    transform: translateY(22px);
+    filter: blur(4px);
+    transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.90s,
+                transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.90s,
+                filter 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.90s;
+    will-change: transform, opacity, filter;
+}
+
+.more_pets_section.pets-animated .more_pets_desc {
+    opacity: 0.95;
+    transform: translateY(0);
+    filter: blur(0);
+}
+
+/* Contact Us Button Entrance */
+.more_pets_btn_wrap {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+    transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 1.10s,
+                transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 1.10s;
+    will-change: transform, opacity;
+}
+
+.more_pets_section.pets-animated .more_pets_btn_wrap {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+.more_pets_btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+}
+.more_pets_content_col.cmn_hdr p {
+    color: #fff;
+}
+
+@media (max-width: 991px) {
+    .more_pets_section {
+        position: relative;
+        inset: auto;
+        width: 100%;
+        height: auto;
+        transform: none !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        padding: 60px 20px;
+    }
+    .more_pets_container {
+        flex-direction: column;
+        padding: 0;
+        gap: 40px;
+        text-align: center;
+    }
+    .more_pets_stage {
+        width: 100%;
+        max-width: 450px;
+        height: 320px;
+    }
+    .more_pet_golden {
+        width: 180px;
+        left: 10px;
+    }
+    .more_pet_cat {
+        width: 100px;
+        left: 140px;
+    }
+    .more_pet_beagle {
+        width: 170px;
+        left: 200px;
+    }
+    .more_pets_desc {
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .more_pets_title {
+        font-size: 32px;
     }
 }

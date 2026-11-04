@@ -14,6 +14,39 @@
 (function () {
     'use strict';
 
+    // ========================================================
+    // Force return to hero banner section on page reload / refresh
+    // ========================================================
+    if ('scrollRestoration' in history) {
+        history.scrollRestoration = 'manual';
+    }
+
+    function scrollToBanner() {
+        window.scrollTo(0, 0);
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+    }
+
+    // Scroll to top immediately on script execution
+    scrollToBanner();
+
+    // Reset before unload so the browser doesn't cache/save scrolled coordinates
+    window.addEventListener('beforeunload', function () {
+        window.scrollTo(0, 0);
+    });
+
+    // Reset on pageshow (e.g. reload or back/forward cache restore)
+    window.addEventListener('pageshow', function () {
+        scrollToBanner();
+    });
+
+    // Reset again after resources and images finish loading
+    window.addEventListener('load', function () {
+        scrollToBanner();
+        setTimeout(scrollToBanner, 40);
+        setTimeout(scrollToBanner, 150);
+    });
+
     function initAll() {
         initBannerEntrance();
         initSmoothParallax();
@@ -21,6 +54,9 @@
         initChooseSection();
         initProfileSection();
         initProductDuoSection();
+        initDogSectionObserver();
+        initDogDesignInteractive();
+        initMorePetsObserver();
         initTopBarClose();
         initBackToTop();
     }
@@ -553,23 +589,40 @@
         var profileSection = document.getElementById('profileSection');
         var productSection = document.getElementById('productDuoSection');
         var whyChooseSection = document.getElementById('whyChooseSection');
+        var dogSection = document.getElementById('dogDesignSection');
+        var morePetsSection = document.getElementById('morePetsSection');
         if (!wrapper || !profileSection) return;
 
         var duoCards = productSection ? productSection.querySelectorAll('.duo_card') : [];
         var whySpotlight = document.getElementById('whySpotlight');
+        var whyColumns = whyChooseSection ? whyChooseSection.querySelectorAll('.compare_table_grid > .compare_col') : [];
+        var whyHeader = whyChooseSection ? whyChooseSection.querySelector('.why_choose_header') : null;
+        var whyLightTrack = whyChooseSection ? whyChooseSection.querySelector('.why_travel_light_track') : null;
 
-        var targetProgress = 0; // Range: 0.0 to 4.0 (0-1: Profile in, 1-2: Product opens, 2-3: Product dwell 4s, 3-4: Why Choose from bottom)
+        var targetProgress = 0; // Range: 0.0 to 8.0
+        // 0-1: Profile in from right (3.4s)
+        // 1-2: Product opens from middle (3.4s)
+        // 2-3: Product dwell (3.0s)
+        // 3-4: Why Choose from bottom (3.6s)
+        // 4-5: Why Choose dwell (2.5s)
+        // 5-6: Why Choose columns part like window -> Dog Section appears from middle (3.4s)
+        // 6-7: Scroll for 2.0s on Dog Section (dwell)
+        // 7-8: More Pets section appears from bottom like a parallax (3.4s)
         var currentProgress = 0;
         var profileRevealed = false;
         var rafId = null;
         var handTimer = null;
         var arrowTimer = null;
 
-        // ~3-4 seconds of continuous wheel scrolling per stage (~3400px scroll delta each)
-        var stage1Delta = 3400;
-        var stage2Delta = 3400;
-        var productDwellDelta = 3000; // Scroll for 3 SECONDS on the Product section!
-        var stage4Delta = 3600;       // THEN ONLY Why Choose section appears from bottom smoothly (3-4s)
+        // Scroll deltas per stage
+        var stage1Delta = 3400;         // Choose -> Profile (3.4s)
+        var stage2Delta = 3400;         // Profile -> Product window opens (3.4s)
+        var productDwellDelta = 3000;   // Scroll for 3 SECONDS on the Product section!
+        var stage4Delta = 3600;         // Why Choose appears from bottom smoothly (3.6s)
+        var whyChooseDwellDelta = 2500; // Scroll for 2.5 SECONDS on the Why Choose section!
+        var dogSectionDelta = 3400;     // Dog Section appears from middle of comparison columns (3.4s)
+        var dogDwellDelta = 2000;       // Scroll for 2.0 SECONDS on the Dog section!
+        var morePetsDelta = 3400;       // More Pets section appears from bottom like a parallax (3.4s)
 
         function lerp(start, end, factor) {
             return start + (end - start) * factor;
@@ -588,24 +641,17 @@
                 // ========================================== 
                 var p1 = Math.min(1, Math.max(0, currentProgress));
 
-                // 1. Choose Section: stays stacked right there in place
                 if (chooseSection) {
                     chooseSection.style.transform = 'translate3d(0, 0, 0)';
                     chooseSection.style.opacity = '1';
                     chooseSection.style.visibility = 'visible';
                 }
 
-                // 2. Profile Section: slides over stacked Choose section from the right (100% -> 0%)
                 var translateX = (1 - p1) * 100;
                 profileSection.style.transform = 'translate3d(' + translateX.toFixed(3) + '%, 0, 0)';
                 profileSection.style.opacity = '1';
                 profileSection.style.filter = '';
-
-                if (p1 > 0.005) {
-                    profileSection.style.visibility = 'visible';
-                } else {
-                    profileSection.style.visibility = 'hidden';
-                }
+                profileSection.style.visibility = (p1 > 0.005) ? 'visible' : 'hidden';
 
                 if (p1 > 0.3) {
                     profileSection.classList.add('in-view');
@@ -613,7 +659,6 @@
                     profileSection.classList.remove('in-view');
                 }
 
-                // Hand & arrow animation on arrival
                 if (p1 >= 0.98) {
                     if (!profileRevealed) {
                         profileRevealed = true;
@@ -638,7 +683,6 @@
                     }
                 }
 
-                // Product Section closed in center
                 if (productSection) {
                     productSection.style.clipPath = 'inset(50% 50% 50% 50% round 32px)';
                     productSection.style.webkitClipPath = 'inset(50% 50% 50% 50% round 32px)';
@@ -652,11 +696,36 @@
                     c.style.opacity = '';
                 });
 
-                // Why Choose Section hidden at bottom
                 if (whyChooseSection) {
                     whyChooseSection.style.transform = 'translate3d(0, 100%, 0)';
                     whyChooseSection.style.visibility = 'hidden';
                     whyChooseSection.classList.remove('in-view', 'spotlight-active');
+                }
+                whyColumns.forEach(function (col) {
+                    col.style.transform = '';
+                    col.style.opacity = '';
+                });
+                if (whyHeader) {
+                    whyHeader.style.transform = '';
+                    whyHeader.style.opacity = '';
+                }
+                if (whyLightTrack) {
+                    whyLightTrack.style.opacity = '';
+                }
+
+                if (dogSection) {
+                    dogSection.style.clipPath = 'inset(0% 50% 0% 50% round 24px)';
+                    dogSection.style.webkitClipPath = 'inset(0% 50% 0% 50% round 24px)';
+                    dogSection.style.transform = 'scale(0.88)';
+                    dogSection.style.opacity = '0';
+                    dogSection.style.visibility = 'hidden';
+                    dogSection.classList.remove('in-view', 'dog-animated');
+                }
+                if (morePetsSection) {
+                    morePetsSection.style.transform = 'translate3d(0, 100%, 0)';
+                    morePetsSection.style.opacity = '0';
+                    morePetsSection.style.visibility = 'hidden';
+                    morePetsSection.classList.remove('pets-animated');
                 }
 
             } else if (currentProgress <= 2.0) {
@@ -672,7 +741,6 @@
                     chooseSection.style.visibility = 'visible';
                 }
 
-                // Profile recedes into depth
                 var profScale = 1 - (p2 * 0.08);
                 var profBrightness = 1 - (p2 * 0.18);
                 var profBlur = p2 * 2.5;
@@ -682,7 +750,6 @@
                 profileSection.style.opacity = profOpacity.toFixed(3);
                 profileSection.style.visibility = 'visible';
 
-                // Product section aperture opens from center
                 if (productSection) {
                     var insetY = (1 - p2) * 50;
                     var insetX = (1 - p2) * 50;
@@ -718,18 +785,42 @@
                     }
                 }
 
-                // Why Choose Section remains hidden at bottom
                 if (whyChooseSection) {
                     whyChooseSection.style.transform = 'translate3d(0, 100%, 0)';
                     whyChooseSection.style.visibility = 'hidden';
                     whyChooseSection.classList.remove('in-view', 'spotlight-active');
+                }
+                whyColumns.forEach(function (col) {
+                    col.style.transform = '';
+                    col.style.opacity = '';
+                });
+                if (whyHeader) {
+                    whyHeader.style.transform = '';
+                    whyHeader.style.opacity = '';
+                }
+                if (whyLightTrack) {
+                    whyLightTrack.style.opacity = '';
+                }
+
+                if (dogSection) {
+                    dogSection.style.clipPath = 'inset(0% 50% 0% 50% round 24px)';
+                    dogSection.style.webkitClipPath = 'inset(0% 50% 0% 50% round 24px)';
+                    dogSection.style.transform = 'scale(0.88)';
+                    dogSection.style.opacity = '0';
+                    dogSection.style.visibility = 'hidden';
+                    dogSection.classList.remove('in-view', 'dog-animated');
+                }
+                if (morePetsSection) {
+                    morePetsSection.style.transform = 'translate3d(0, 100%, 0)';
+                    morePetsSection.style.opacity = '0';
+                    morePetsSection.style.visibility = 'hidden';
+                    morePetsSection.classList.remove('pets-animated');
                 }
 
             } else if (currentProgress <= 3.0) {
                 // ========================================== 
                 // STAGE 3: SCROLL FOR 3 SECONDS ON PRODUCT SECTION (2.0 to 3.0)
                 // Product section remains completely still, open and interactive!
-                // Why Choose section remains hidden below until 3 seconds of scroll finish.
                 // ========================================== 
                 if (chooseSection) {
                     chooseSection.style.transform = 'translate3d(0, 0, 0)';
@@ -742,7 +833,6 @@
                 profileSection.style.opacity = '0.75';
                 profileSection.style.visibility = 'visible';
 
-                // Product section remains 100% active, pinned and stable in place!
                 if (productSection) {
                     productSection.style.clipPath = 'inset(0% 0% 0% 0% round 0px)';
                     productSection.style.webkitClipPath = 'inset(0% 0% 0% 0% round 0px)';
@@ -755,17 +845,42 @@
                     c.style.transform = '';
                 });
 
-                // Why Choose section remains hidden at bottom during the 3-second scroll on product section
                 if (whyChooseSection) {
                     whyChooseSection.style.transform = 'translate3d(0, 100%, 0)';
                     whyChooseSection.style.visibility = 'hidden';
                     whyChooseSection.classList.remove('in-view', 'spotlight-active');
                 }
+                whyColumns.forEach(function (col) {
+                    col.style.transform = '';
+                    col.style.opacity = '';
+                });
+                if (whyHeader) {
+                    whyHeader.style.transform = '';
+                    whyHeader.style.opacity = '';
+                }
+                if (whyLightTrack) {
+                    whyLightTrack.style.opacity = '';
+                }
 
-            } else {
+                if (dogSection) {
+                    dogSection.style.clipPath = 'inset(0% 50% 0% 50% round 24px)';
+                    dogSection.style.webkitClipPath = 'inset(0% 50% 0% 50% round 24px)';
+                    dogSection.style.transform = 'scale(0.88)';
+                    dogSection.style.opacity = '0';
+                    dogSection.style.visibility = 'hidden';
+                    dogSection.classList.remove('in-view', 'dog-animated');
+                }
+                if (morePetsSection) {
+                    morePetsSection.style.transform = 'translate3d(0, 100%, 0)';
+                    morePetsSection.style.opacity = '0';
+                    morePetsSection.style.visibility = 'hidden';
+                    morePetsSection.classList.remove('pets-animated');
+                }
+
+            } else if (currentProgress <= 4.0) {
                 // ========================================== 
                 // STAGE 4: AFTER 3 SECONDS SCROLL ON PRODUCT SECTION,
-                // THEN ONLY WHY CHOOSE SECTION APPEARS FROM BOTTOM SMOOTHLY (3.0 to 4.0)
+                // WHY CHOOSE SECTION APPEARS FROM BOTTOM SMOOTHLY (3.0 to 4.0)
                 // ========================================== 
                 var p4 = Math.min(1, Math.max(0, currentProgress - 3.0));
 
@@ -780,7 +895,6 @@
                 profileSection.style.opacity = '0.75';
                 profileSection.style.visibility = 'visible';
 
-                // Product section remains pinned in place under Why Choose
                 if (productSection) {
                     productSection.style.clipPath = 'inset(0% 0% 0% 0% round 0px)';
                     productSection.style.webkitClipPath = 'inset(0% 0% 0% 0% round 0px)';
@@ -793,19 +907,12 @@
                     c.style.transform = '';
                 });
 
-                // Why Choose section appears smoothly from bottom (100% -> 0%)
                 if (whyChooseSection) {
                     var translateY = (1 - p4) * 100;
                     whyChooseSection.style.transform = 'translate3d(0, ' + translateY.toFixed(3) + '%, 0)';
                     whyChooseSection.style.opacity = '1';
                     whyChooseSection.style.visibility = (p4 > 0.005) ? 'visible' : 'hidden';
 
-                    // Suggested animation timeline:
-                    // 0-15%: Heading fades and moves upward
-                    // 15-35%: Golden wave sweeps across
-                    // 35-55%: Four columns reveal sequentially
-                    // 55-80%: Feature rows and checkmarks animate (scanner)
-                    // 80-100%: Golden spotlight interaction becomes active
                     if (p4 > 0.15) {
                         whyChooseSection.classList.add('in-view');
                     } else {
@@ -816,6 +923,260 @@
                         whyChooseSection.classList.add('spotlight-active');
                     } else {
                         whyChooseSection.classList.remove('spotlight-active');
+                    }
+                }
+
+                whyColumns.forEach(function (col) {
+                    col.style.transform = '';
+                    col.style.opacity = '';
+                });
+                if (whyHeader) {
+                    whyHeader.style.transform = '';
+                    whyHeader.style.opacity = '';
+                }
+                if (whyLightTrack) {
+                    whyLightTrack.style.opacity = '';
+                }
+
+                if (dogSection) {
+                    dogSection.style.clipPath = 'inset(0% 50% 0% 50% round 24px)';
+                    dogSection.style.webkitClipPath = 'inset(0% 50% 0% 50% round 24px)';
+                    dogSection.style.transform = 'scale(0.88)';
+                    dogSection.style.opacity = '0';
+                    dogSection.style.visibility = 'hidden';
+                    dogSection.classList.remove('in-view', 'dog-animated');
+                }
+                if (morePetsSection) {
+                    morePetsSection.style.transform = 'translate3d(0, 100%, 0)';
+                    morePetsSection.style.opacity = '0';
+                    morePetsSection.style.visibility = 'hidden';
+                    morePetsSection.classList.remove('pets-animated');
+                }
+
+            } else if (currentProgress <= 5.0) {
+                // ========================================== 
+                // STAGE 5: SCROLL FOR 2.5 SECONDS ON WHY CHOOSE SECTION! (4.0 to 5.0)
+                // Why Choose section remains completely stationary, in-view, spotlight active!
+                // Dog section remains closed in center slit until 2.5s finishes!
+                // ========================================== 
+                if (chooseSection) {
+                    chooseSection.style.transform = 'translate3d(0, 0, 0)';
+                    chooseSection.style.opacity = '1';
+                }
+
+                profileSection.style.transform = 'scale(0.92)';
+                profileSection.style.filter = 'brightness(0.82) blur(2.5px)';
+                profileSection.style.opacity = '0.75';
+
+                if (productSection) {
+                    productSection.style.clipPath = 'inset(0% 0% 0% 0% round 0px)';
+                    productSection.style.webkitClipPath = 'inset(0% 0% 0% 0% round 0px)';
+                    productSection.style.transform = 'scale(1)';
+                    productSection.style.opacity = '1';
+                }
+
+                if (whyChooseSection) {
+                    whyChooseSection.style.transform = 'translate3d(0, 0, 0)';
+                    whyChooseSection.style.opacity = '1';
+                    whyChooseSection.style.visibility = 'visible';
+                    whyChooseSection.classList.add('in-view', 'spotlight-active');
+                }
+
+                // Comparison columns remain intact and in position
+                whyColumns.forEach(function (col) {
+                    col.style.transform = '';
+                    col.style.opacity = '';
+                });
+                if (whyHeader) {
+                    whyHeader.style.transform = '';
+                    whyHeader.style.opacity = '';
+                }
+                if (whyLightTrack) {
+                    whyLightTrack.style.opacity = '';
+                }
+
+                // Dog section remains closed and hidden
+                if (dogSection) {
+                    dogSection.style.clipPath = 'inset(0% 50% 0% 50% round 24px)';
+                    dogSection.style.webkitClipPath = 'inset(0% 50% 0% 50% round 24px)';
+                    dogSection.style.transform = 'scale(0.88)';
+                    dogSection.style.opacity = '0';
+                    dogSection.style.visibility = 'hidden';
+                    dogSection.classList.remove('in-view', 'dog-animated');
+                }
+                if (morePetsSection) {
+                    morePetsSection.style.transform = 'translate3d(0, 100%, 0)';
+                    morePetsSection.style.opacity = '0';
+                    morePetsSection.style.visibility = 'hidden';
+                    morePetsSection.classList.remove('pets-animated');
+                }
+
+            } else if (currentProgress <= 6.0) {
+                // ========================================== 
+                // STAGE 6: AFTER 2.5s SCROLL ON WHY CHOOSE,
+                // WHY CHOOSE COLUMNS PART LIKE TWO SIDES OF A WINDOW OPENING,
+                // AND DOG SECTION APPEARS FROM THE MIDDLE! (5.0 to 6.0)
+                // ========================================== 
+                var p5 = Math.min(1, Math.max(0, currentProgress - 5.0));
+
+                if (chooseSection) {
+                    chooseSection.style.transform = 'translate3d(0, 0, 0)';
+                    chooseSection.style.opacity = '1';
+                }
+
+                profileSection.style.transform = 'scale(0.92)';
+                profileSection.style.opacity = '0.75';
+
+                if (whyChooseSection) {
+                    whyChooseSection.style.transform = 'translate3d(0, 0, 0)';
+                    whyChooseSection.style.opacity = '1';
+                    whyChooseSection.style.visibility = 'visible';
+                }
+
+                // Window Parting Effect on Comparison Columns:
+                var colShiftLeft = p5 * 115;
+                if (whyColumns[0]) {
+                    whyColumns[0].style.transform = 'translate3d(' + (-colShiftLeft).toFixed(2) + '%, 0, 0)';
+                }
+                if (whyColumns[1]) {
+                    whyColumns[1].style.transform = 'translate3d(' + (-colShiftLeft).toFixed(2) + '%, 0, 0)';
+                }
+
+                var colShiftRight = p5 * 115;
+                if (whyColumns[2]) {
+                    whyColumns[2].style.transform = 'translate3d(' + colShiftRight.toFixed(2) + '%, 0, 0)';
+                }
+                if (whyColumns[3]) {
+                    whyColumns[3].style.transform = 'translate3d(' + colShiftRight.toFixed(2) + '%, 0, 0)';
+                }
+
+                var colOpacity = Math.max(0, 1 - (p5 * 0.75));
+                whyColumns.forEach(function (col) {
+                    col.style.opacity = colOpacity.toFixed(3);
+                });
+
+                var headY = -p5 * 50;
+                var headOpacity = Math.max(0, 1 - (p5 * 1.3));
+                if (whyHeader) {
+                    whyHeader.style.transform = 'translate3d(0, ' + headY.toFixed(1) + 'px, 0)';
+                    whyHeader.style.opacity = headOpacity.toFixed(3);
+                }
+                if (whyLightTrack) {
+                    whyLightTrack.style.opacity = Math.max(0, 1 - (p5 * 1.5)).toFixed(3);
+                }
+
+                // Dog Section appears from the middle between the parting columns:
+                if (dogSection) {
+                    var dogInsetX = (1 - p5) * 50;
+                    var dogInsetRound = (1 - p5) * 24;
+
+                    dogSection.style.clipPath = 'inset(0% ' + dogInsetX.toFixed(2) + '% 0% ' + dogInsetX.toFixed(2) + '% round ' + dogInsetRound.toFixed(1) + 'px)';
+                    dogSection.style.webkitClipPath = 'inset(0% ' + dogInsetX.toFixed(2) + '% 0% ' + dogInsetX.toFixed(2) + '% round ' + dogInsetRound.toFixed(1) + 'px)';
+
+                    var dogScale = 0.88 + (p5 * 0.12);
+                    var dogOpacity = Math.min(1, p5 * 1.6);
+
+                    dogSection.style.transform = 'scale(' + dogScale.toFixed(3) + ')';
+                    dogSection.style.opacity = dogOpacity.toFixed(3);
+                    dogSection.style.visibility = (p5 > 0.005) ? 'visible' : 'hidden';
+
+                    if (p5 >= 0.85) {
+                        if (!dogSection.classList.contains('dog-animated')) {
+                            dogSection.classList.add('dog-animated');
+                        }
+                    } else if (p5 < 0.60) {
+                        dogSection.classList.remove('dog-animated');
+                    }
+
+                    if (p5 >= 0.99) {
+                        dogSection.style.clipPath = 'inset(0% 0% 0% 0% round 0px)';
+                        dogSection.style.webkitClipPath = 'inset(0% 0% 0% 0% round 0px)';
+                        dogSection.style.transform = 'scale(1)';
+                        dogSection.style.opacity = '1';
+                    }
+                }
+
+                if (morePetsSection) {
+                    morePetsSection.style.transform = 'translate3d(0, 100%, 0)';
+                    morePetsSection.style.opacity = '0';
+                    morePetsSection.style.visibility = 'hidden';
+                    morePetsSection.classList.remove('pets-animated');
+                }
+
+            } else if (currentProgress <= 7.0) {
+                // ========================================== 
+                // STAGE 7: SCROLL FOR 2 SECONDS ON DOG SECTION (6.0 to 7.0)
+                // Dog section remains completely open, stationary, fully visible, interactive!
+                // More Pets section waits hidden below until 2s dwell finishes.
+                // ========================================== 
+                if (whyChooseSection) {
+                    whyChooseSection.style.opacity = '0';
+                    whyChooseSection.style.visibility = 'hidden';
+                }
+
+                if (dogSection) {
+                    dogSection.style.clipPath = 'inset(0% 0% 0% 0% round 0px)';
+                    dogSection.style.webkitClipPath = 'inset(0% 0% 0% 0% round 0px)';
+                    dogSection.style.transform = 'scale(1)';
+                    dogSection.style.opacity = '1';
+                    dogSection.style.visibility = 'visible';
+                    if (!dogSection.classList.contains('dog-animated')) {
+                        dogSection.classList.add('dog-animated');
+                    }
+                }
+
+                if (morePetsSection) {
+                    morePetsSection.style.transform = 'translate3d(0, 100%, 0)';
+                    morePetsSection.style.opacity = '0';
+                    morePetsSection.style.visibility = 'hidden';
+                    morePetsSection.classList.remove('pets-animated');
+                }
+
+            } else {
+                // ========================================== 
+                // STAGE 8: AFTER 2s SCROLL ON DOG SECTION,
+                // MORE PETS SECTION APPEARS FROM BOTTOM LIKE A PARALLAX! (7.0 to 8.0)
+                // ========================================== 
+                var p7 = Math.min(1, Math.max(0, currentProgress - 7.0));
+
+                if (whyChooseSection) {
+                    whyChooseSection.style.opacity = '0';
+                    whyChooseSection.style.visibility = 'hidden';
+                }
+
+                if (dogSection) {
+                    // Parallax on dog section: moves upward slightly and scales subtly as More Pets section rises
+                    var dogParallaxY = -p7 * 28;
+                    var dogParallaxScale = 1 - (p7 * 0.05);
+                    var dogParallaxOpacity = Math.max(0, 1 - (p7 * 0.5));
+                    dogSection.style.transform = 'translate3d(0, ' + dogParallaxY.toFixed(2) + '%, 0) scale(' + dogParallaxScale.toFixed(3) + ')';
+                    dogSection.style.opacity = dogParallaxOpacity.toFixed(3);
+                    dogSection.style.visibility = (p7 < 0.99) ? 'visible' : 'hidden';
+                }
+
+                if (morePetsSection) {
+                    // Parallax entrance from bottom:
+                    var morePetsY = (1 - p7) * 100;
+                    morePetsSection.style.transform = 'translate3d(0, ' + morePetsY.toFixed(2) + '%, 0)';
+                    morePetsSection.style.opacity = Math.min(1, p7 * 1.6).toFixed(3);
+                    morePetsSection.style.visibility = (p7 > 0.005) ? 'visible' : 'hidden';
+
+                    // Trigger the 3 pet entrance animations:
+                    // 1. Golden retriever smoothly slides up from the bottom
+                    // 2. Cat appears with a slight scale animation
+                    // 3. Beagle enters from the left with a subtle movement
+                    // All three settle into their original positions
+                    if (p7 >= 0.85) {
+                        if (!morePetsSection.classList.contains('pets-animated')) {
+                            morePetsSection.classList.add('pets-animated');
+                        }
+                    } else if (p7 < 0.60) {
+                        morePetsSection.classList.remove('pets-animated');
+                    }
+
+                    if (p7 >= 0.99) {
+                        morePetsSection.style.transform = 'translate3d(0, 0%, 0)';
+                        morePetsSection.style.opacity = '1';
                     }
                 }
             }
@@ -873,9 +1234,42 @@
                 whyChooseSection.style.visibility = 'hidden';
                 whyChooseSection.classList.remove('in-view', 'spotlight-active');
             }
+            whyColumns.forEach(function (col) {
+                col.style.transform = '';
+                col.style.opacity = '';
+            });
+            if (whyHeader) {
+                whyHeader.style.transform = '';
+                whyHeader.style.opacity = '';
+            }
+            if (whyLightTrack) {
+                whyLightTrack.style.opacity = '';
+            }
+
+            if (dogSection) {
+                dogSection.style.clipPath = 'inset(0% 50% 0% 50% round 24px)';
+                dogSection.style.webkitClipPath = 'inset(0% 50% 0% 50% round 24px)';
+                dogSection.style.transform = 'scale(0.88)';
+                dogSection.style.opacity = '0';
+                dogSection.style.visibility = 'hidden';
+                dogSection.classList.remove('dog-animated');
+            }
+            if (morePetsSection) {
+                morePetsSection.style.transform = 'translate3d(0, 100%, 0)';
+                morePetsSection.style.opacity = '0';
+                morePetsSection.style.visibility = 'hidden';
+                morePetsSection.classList.remove('pets-animated');
+            }
+            var dogTagInner = document.getElementById('dogTagInner');
+            if (dogTagInner) {
+                dogTagInner.style.transform = '';
+            }
         }
 
-        // Active mouse wheel scroll handler (bidirectional 4-stage navigation)
+        // Initialize pinned sections to stage 0 on load/reload
+        resetAll();
+
+        // Active mouse wheel scroll handler (bidirectional 6-stage navigation)
         window.addEventListener('wheel', function (e) {
             if (window.innerWidth <= 991) return;
 
@@ -887,11 +1281,11 @@
             if (e.deltaY > 0) {
                 // User scrolling DOWN:
                 if (targetProgress < 1.0) {
-                    // Stage 1: Choose -> Profile (3-4s scroll)
+                    // Stage 1: Choose -> Profile (3.4s scroll)
                     targetProgress = Math.min(1.0, targetProgress + (e.deltaY / stage1Delta));
                     wakeRender();
                 } else if (targetProgress >= 1.0 && targetProgress < 2.0) {
-                    // Stage 2: Profile -> Product window opens (3-4s scroll)
+                    // Stage 2: Profile -> Product window opens (3.4s scroll)
                     if (currentProgress >= 0.96) {
                         targetProgress = Math.min(2.0, targetProgress + (e.deltaY / stage2Delta));
                         wakeRender();
@@ -903,18 +1297,66 @@
                         wakeRender();
                     }
                 } else if (targetProgress >= 3.0 && targetProgress < 4.0) {
-                    // Stage 4: THEN ONLY Why Choose appears from bottom smoothly (3-4s scroll)!
+                    // Stage 4: Why Choose appears from bottom smoothly (3.6s scroll)
                     if (currentProgress >= 2.96) {
                         targetProgress = Math.min(4.0, targetProgress + (e.deltaY / stage4Delta));
+                        wakeRender();
+                    }
+                } else if (targetProgress >= 4.0 && targetProgress < 5.0) {
+                    // Stage 5: Scroll for 2.5 SECONDS on the Why Choose section!
+                    if (currentProgress >= 3.96) {
+                        targetProgress = Math.min(5.0, targetProgress + (e.deltaY / whyChooseDwellDelta));
+                        wakeRender();
+                    }
+                } else if (targetProgress >= 5.0 && targetProgress < 6.0) {
+                    // Stage 6: Why Choose columns part like window -> Dog Section appears from middle!
+                    if (currentProgress >= 4.96) {
+                        targetProgress = Math.min(6.0, targetProgress + (e.deltaY / dogSectionDelta));
+                        wakeRender();
+                    }
+                } else if (targetProgress >= 6.0 && targetProgress < 7.0) {
+                    // Stage 7: Scroll for 2.0 SECONDS on the Dog section!
+                    if (currentProgress >= 5.96) {
+                        targetProgress = Math.min(7.0, targetProgress + (e.deltaY / dogDwellDelta));
+                        wakeRender();
+                    }
+                } else if (targetProgress >= 7.0 && targetProgress < 8.0) {
+                    // Stage 8: More Pets section appears from bottom like a parallax! (3.4s scroll)
+                    if (currentProgress >= 6.96) {
+                        targetProgress = Math.min(8.0, targetProgress + (e.deltaY / morePetsDelta));
                         wakeRender();
                     }
                 }
             } else if (e.deltaY < 0) {
                 // User scrolling UP:
-                if (targetProgress > 3.0) {
-                    // Stage 4 Reverse: Why choose section slides back down to bottom smoothly
-                    targetProgress = Math.max(3.0, targetProgress - (Math.abs(e.deltaY) / stage4Delta));
+                if (targetProgress > 7.0) {
+                    // Stage 8 Reverse: More Pets section slides back down to bottom
+                    targetProgress = Math.max(7.0, targetProgress - (Math.abs(e.deltaY) / morePetsDelta));
                     wakeRender();
+                } else if (targetProgress <= 7.0 && targetProgress > 6.0) {
+                    // Stage 7 Reverse: Scroll back up on Dog section (2.0s dwell)
+                    if (currentProgress <= 7.04) {
+                        targetProgress = Math.max(6.0, targetProgress - (Math.abs(e.deltaY) / dogDwellDelta));
+                        wakeRender();
+                    }
+                } else if (targetProgress <= 6.0 && targetProgress > 5.0) {
+                    // Stage 6 Reverse: Dog Section window closes back, columns slide back together
+                    if (currentProgress <= 6.04) {
+                        targetProgress = Math.max(5.0, targetProgress - (Math.abs(e.deltaY) / dogSectionDelta));
+                        wakeRender();
+                    }
+                } else if (targetProgress <= 5.0 && targetProgress > 4.0) {
+                    // Stage 5 Reverse: Scroll back up on Why Choose section (2.5s dwell)
+                    if (currentProgress <= 5.04) {
+                        targetProgress = Math.max(4.0, targetProgress - (Math.abs(e.deltaY) / whyChooseDwellDelta));
+                        wakeRender();
+                    }
+                } else if (targetProgress <= 4.0 && targetProgress > 3.0) {
+                    // Stage 4 Reverse: Why choose section slides back down to bottom smoothly
+                    if (currentProgress <= 4.04) {
+                        targetProgress = Math.max(3.0, targetProgress - (Math.abs(e.deltaY) / stage4Delta));
+                        wakeRender();
+                    }
                 } else if (targetProgress <= 3.0 && targetProgress > 2.0) {
                     // Stage 3 Reverse: Scroll back up on Product section (3s dwell)
                     if (currentProgress <= 3.04) {
@@ -975,6 +1417,7 @@
                         whyChooseSection.classList.add('in-view');
                     }
                 }
+
                 return;
             }
 
@@ -1009,8 +1452,96 @@
                     whyChooseSection.style.opacity = '1';
                     whyChooseSection.style.visibility = 'visible';
                 }
+                whyColumns.forEach(function (col) {
+                    col.style.transform = '';
+                    col.style.opacity = '';
+                });
+                if (whyHeader) {
+                    whyHeader.style.transform = '';
+                    whyHeader.style.opacity = '';
+                }
+                if (whyLightTrack) {
+                    whyLightTrack.style.opacity = '';
+                }
+
+                if (dogSection) {
+                    dogSection.style.clipPath = 'none';
+                    dogSection.style.webkitClipPath = 'none';
+                    dogSection.style.transform = '';
+                    dogSection.style.opacity = '1';
+                    dogSection.style.visibility = 'visible';
+                }
             }
         }, { passive: true });
+    }
+
+    // ========================================================
+    // 5b. Dog Section Intersection Observer (Scroll-Triggered Animation)
+    // ========================================================
+    function initDogSectionObserver() {
+        var dogSection = document.getElementById('dogDesignSection');
+        if (!dogSection) return;
+
+        // On mobile / tablet: Use Intersection Observer to trigger when scrolled into view
+        if (window.innerWidth <= 991 && 'IntersectionObserver' in window) {
+            var dogObserver = new IntersectionObserver(function (entries) {
+                entries.forEach(function (entry) {
+                    if (entry.isIntersecting && !dogSection.classList.contains('dog-animated')) {
+                        dogSection.classList.add('dog-animated');
+                        dogObserver.unobserve(dogSection);
+                    }
+                });
+            }, {
+                threshold: 0.15,
+                rootMargin: '0px 0px -40px 0px'
+            });
+
+            dogObserver.observe(dogSection);
+        }
+    }
+
+    // ========================================================
+    // 5c. Dog Design Showcase Section AI Prompt Interactive Demo
+    // ========================================================
+    function initDogDesignInteractive() {
+        var dogSection = document.getElementById('dogDesignSection');
+        var promptBtn = document.getElementById('dogPromptBtn');
+        var promptPlaceholder = dogSection ? dogSection.querySelector('.dog_prompt_placeholder') : null;
+
+        // Interactive AI Prompt Generator button click feedback
+        if (promptBtn) {
+            var prompts = [
+                "A golden retriever in the mountains at sunset...",
+                "A playful french bulldog in a blooming flower meadow...",
+                "A majestic husky running through arctic northern lights...",
+                "A cute corgi wearing astronaut goggles in space...",
+                "A happy labrador retriever on a sunny golden beach..."
+            ];
+            var promptIdx = 0;
+
+            promptBtn.addEventListener('click', function () {
+                promptBtn.style.transform = 'scale(0.92)';
+                setTimeout(function () {
+                    promptBtn.style.transform = '';
+                }, 180);
+
+                if (promptPlaceholder) {
+                    promptPlaceholder.style.opacity = '0';
+                    promptPlaceholder.style.transform = 'translateY(-6px)';
+                    promptPlaceholder.style.transition = 'all 0.25s ease';
+
+                    setTimeout(function () {
+                        promptIdx = (promptIdx + 1) % prompts.length;
+                        promptPlaceholder.textContent = prompts[promptIdx];
+                        promptPlaceholder.style.transform = 'translateY(6px)';
+                        setTimeout(function () {
+                            promptPlaceholder.style.opacity = '1';
+                            promptPlaceholder.style.transform = 'translateY(0)';
+                        }, 50);
+                    }, 250);
+                }
+            });
+        }
     }
 
     // ========================================================
@@ -1113,3 +1644,27 @@
         }
     }
 })();
+
+    // ========================================================
+    // 5d. More Pets Section Intersection Observer (Mobile)
+    // ========================================================
+    function initMorePetsObserver() {
+        var morePetsSection = document.getElementById('morePetsSection');
+        if (!morePetsSection) return;
+
+        if (window.innerWidth <= 991 && 'IntersectionObserver' in window) {
+            var petsObserver = new IntersectionObserver(function (entries) {
+                entries.forEach(function (entry) {
+                    if (entry.isIntersecting && !morePetsSection.classList.contains('pets-animated')) {
+                        morePetsSection.classList.add('pets-animated');
+                        petsObserver.unobserve(morePetsSection);
+                    }
+                });
+            }, {
+                threshold: 0.20,
+                rootMargin: '0px 0px -40px 0px'
+            });
+
+            petsObserver.observe(morePetsSection);
+        }
+    }

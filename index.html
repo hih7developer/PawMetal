@@ -5,6 +5,13 @@
 	<meta charset="utf-8" />
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 	<title>PawMedal</title>
+	<!-- Force return to banner section on page reload -->
+	<script>
+		if ('scrollRestoration' in history) {
+			history.scrollRestoration = 'manual';
+		}
+		window.scrollTo(0, 0);
+	</script>
 	<meta name="description" content="" />
 	<meta name="author" content="admin" />
 	<meta name="viewport" content="width=device-width; initial-scale=1.0" />
@@ -664,6 +671,10 @@
                     </div>
 
                     <div class="compare_table_wrapper">
+                        <!-- Soft Golden Light Traveling Across Comparison Columns -->
+                        <div class="why_travel_light_track" aria-hidden="true">
+                            <div class="why_travel_light"></div>
+                        </div>
                         <!-- Golden Liquid Wave Animation (left to right) -->
                         <div class="golden_liquid_wave_wrap" aria-hidden="true">
                             <div class="golden_liquid_wave"></div>
@@ -780,6 +791,211 @@
                     </div>
                 </div>
             </section>
+
+            <!-- Dog Design Showcase Section ("Choose from designs created by our artists...") -->
+            <section class="dog_design_section" id="dogDesignSection" aria-label="Custom Dog Tag Design Showcase">
+                <div class="dog_design_container">
+                    <!-- Main Top Row: Left Content & Right Visual Stage -->
+                    <div class="dog_hero_grid">
+                        <!-- Left Column: Typography & AI Prompt Generator -->
+                        <div class="dog_content_col cmn_hdr">
+                            <h2 class="dog_section_title">
+                                Choose from designs created by our <span class="dog_accent_gold">artists</span> or <span class="dog_accent_gold">design</span> your own!
+                            </h2>
+                            <p class="dog_section_desc">
+                                This works well as a common heading because it covers both the Finder's tracking capability and the Tag's durability/design.
+                            </p>
+
+                            <!-- Interactive AI Prompt Generator Pill -->
+                            <div class="dog_prompt_bar">
+                                <div class="dog_prompt_input_wrap">
+                                    <span class="dog_prompt_placeholder">A golden retriever in the mountains at sunset...</span>
+                                </div>
+                                <button type="button" class="cmn_btn" id="dogPromptBtn" aria-label="Generate Now">
+                                    <span>Generate Now</span>
+                                  <span class="btn_icn"><img src="./images/btn_icn.png" alt="btn_icn"></span>
+					<span class="btn_hvr_icn"><img src="./images/btn_hvr_icn.png" alt="btn_icn"></span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Right Column: Visual Stage with Arc, Dashed Circle & Dog Tag -->
+                        <div class="dog_visual_col">
+                            <div class="dog_visual_stage" id="dogVisualStage">
+                                <!-- Layer 1: Background Warm Outer Arc (reveals from bottom to top) -->
+                                <div class="dog_arc_wrap" id="dogArcWrap">
+                                    <img src="images/dog_design_arc.png" alt="" class="dog_arc_img" aria-hidden="true">
+                                </div>
+
+                                <!-- Layer 2: Dashed Beige Circle (scales from point to big circle, only dot border whirls) -->
+                                <div class="dog_circle_wrap" id="dogCircleWrap">
+                                    <!-- Stationary circular base covering section like Figma -->
+                                    <div class="dog_circle_base"></div>
+
+                                    <!-- Whirling dot border (only the dot border whirls) -->
+                                    <svg class="dog_circle_dots_svg" viewBox="0 0 800 800" fill="none" aria-hidden="true">
+                                        <circle class="dog_dot_circle" cx="400" cy="400" r="396" stroke="#C49B55" stroke-width="2" stroke-dasharray="8 12" stroke-linecap="round"></circle>
+                                    </svg>
+                                </div>
+
+                                <!-- Layer 3: Central Golden Retriever PawMedal Tag (appears last with hover effect) -->
+                                <div class="dog_tag_wrap" id="dogTagWrap">
+                                    <div class="dog_tag_inner" id="dogTagInner">
+                                        <img src="images/dog_design_tag.png" alt="Custom PawMedal Tag with Golden Retriever" class="dog_tag_img">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bottom 4 Feature Columns Bar with Vertical Dividers -->
+                <div class="dog_features_bar">
+                        <!-- Feature 1 -->
+                        <div class="dog_feat_col">
+                            <div class="dog_feat_icon_wrap">
+                                <svg class="dog_feat_svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="8" r="4"></circle>
+                                    <path d="M6 20v-1a6 6 0 0 1 12 0v1"></path>
+                                    <path d="M12 4v2m-2-1h4"></path>
+                                </svg>
+                            </div>
+                            <h4 class="dog_feat_title">Personalized by real artists</h4>
+                            <p class="dog_feat_subtitle">or your own imagination</p>
+                        </div>
+
+                        <!-- Feature 2 -->
+                        <div class="dog_feat_col">
+                            <div class="dog_feat_icon_wrap">
+                                <svg class="dog_feat_svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="4" y1="21" x2="4" y2="14"></line>
+                                    <line x1="4" y1="10" x2="4" y2="3"></line>
+                                    <line x1="12" y1="21" x2="12" y2="12"></line>
+                                    <line x1="12" y1="8" x2="12" y2="3"></line>
+                                    <line x1="20" y1="21" x2="20" y2="16"></line>
+                                    <line x1="20" y1="12" x2="20" y2="3"></line>
+                                    <line x1="1" y1="14" x2="7" y2="14"></line>
+                                    <line x1="9" y1="8" x2="15" y2="8"></line>
+                                    <line x1="17" y1="16" x2="23" y2="16"></line>
+                                </svg>
+                            </div>
+                            <h4 class="dog_feat_title">Choose from 100 designs</h4>
+                        </div>
+
+                        <!-- Feature 3 -->
+                        <div class="dog_feat_col">
+                            <div class="dog_feat_icon_wrap">
+                                <svg class="dog_feat_svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 19l7-7 3 3-7 7-3-3z"></path>
+                                    <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path>
+                                    <path d="M2 2l7.586 7.586"></path>
+                                    <circle cx="11" cy="11" r="2"></circle>
+                                </svg>
+                            </div>
+                            <h4 class="dog_feat_title">Fast and easy customization</h4>
+                        </div>
+
+                        <!-- Feature 4 -->
+                        <div class="dog_feat_col">
+                            <div class="dog_feat_icon_wrap">
+                                <svg class="dog_feat_svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="3" width="18" height="14" rx="2"></rect>
+                                    <path d="M8 21h8m-4-4v4"></path>
+                                    <path d="M7 10l3 3 5-5"></path>
+                                </svg>
+                            </div>
+                            <h4 class="dog_feat_title">Preview result</h4>
+                            <p class="dog_feat_subtitle">before ordering</p>
+                        </div>
+                    </div>
+            </section>
+
+            <!-- More Than Just Pets Section (Parallax entrance from bottom after 2s scroll on dog section) -->
+            <section class="more_pets_section" id="morePetsSection" aria-label="Because they're more than just pets">
+                <!-- Right side Drawing Paw Icon (Appears after section loads like it draws) -->
+                <div class="more_pets_paw_draw_wrap" id="morePetsPawDrawWrap" aria-hidden="true">
+                    <svg class="more_pets_paw_svg" viewBox="0 0 268 390" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <filter id="pawDrawGlow" x="-30%" y="-30%" width="160%" height="160%">
+                                <feGaussianBlur stdDeviation="3.5" result="blur"/>
+                                <feMerge>
+                                    <feMergeNode in="blur"/>
+                                    <feMergeNode in="SourceGraphic"/>
+                                </feMerge>
+                            </filter>
+                            <mask id="pawImageMask" maskUnits="userSpaceOnUse">
+                                <path class="paw_draw_mask_path" 
+                                      d="M 268 325 C 205 325 145 305 95 245 C 50 190 55 125 105 85 C 160 45 240 85 245 165 C 248 220 200 265 155 245 C 120 230 125 180 165 155 C 190 140 215 165 205 195 C 195 220 170 215 168 190" 
+                                      stroke="#FFFFFF" stroke-width="95" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                                <ellipse class="paw_draw_mask_toe toe1" cx="48" cy="160" rx="30" ry="42" transform="rotate(-35 48 160)" fill="#FFFFFF"/>
+                                <ellipse class="paw_draw_mask_toe toe2" cx="85" cy="95" rx="30" ry="42" transform="rotate(-18 85 95)" fill="#FFFFFF"/>
+                                <ellipse class="paw_draw_mask_toe toe3" cx="140" cy="60" rx="30" ry="42" transform="rotate(5 140 60)" fill="#FFFFFF"/>
+                                <ellipse class="paw_draw_mask_toe toe4" cx="200" cy="75" rx="30" ry="42" transform="rotate(25 200 75)" fill="#FFFFFF"/>
+                            </mask>
+                        </defs>
+                        <!-- Layer 1: Uploaded Figma Paw image unmasked by the drawing path -->
+                        <image href="images/more_pets_paw.png" width="268" height="390" class="more_pets_paw_masked_img" mask="url(#pawImageMask)"/>
+                        <!-- Layer 2: Glowing Golden Drawing Pen Stroke that visibly sweeps and draws! -->
+                        <path class="paw_draw_golden_stroke" 
+                              d="M 268 325 C 205 325 145 305 95 245 C 50 190 55 125 105 85 C 160 45 240 85 245 165 C 248 220 200 265 155 245 C 120 230 125 180 165 155 C 190 140 215 165 205 195 C 195 220 170 215 168 190" 
+                              stroke="#E6CA92" stroke-width="3.2" stroke-linecap="round" fill="none" filter="url(#pawDrawGlow)"/>
+                        <!-- Toe strokes drawn in sequence -->
+                        <ellipse class="paw_draw_toe_stroke toe_st1" cx="48" cy="160" rx="22" ry="32" transform="rotate(-35 48 160)" stroke="#E6CA92" stroke-width="2.2" fill="none" filter="url(#pawDrawGlow)"/>
+                        <ellipse class="paw_draw_toe_stroke toe_st2" cx="85" cy="95" rx="22" ry="32" transform="rotate(-18 85 95)" stroke="#E6CA92" stroke-width="2.2" fill="none" filter="url(#pawDrawGlow)"/>
+                        <ellipse class="paw_draw_toe_stroke toe_st3" cx="140" cy="60" rx="22" ry="32" transform="rotate(5 140 60)" stroke="#E6CA92" stroke-width="2.2" fill="none" filter="url(#pawDrawGlow)"/>
+                        <ellipse class="paw_draw_toe_stroke toe_st4" cx="200" cy="75" rx="22" ry="32" transform="rotate(25 200 75)" stroke="#E6CA92" stroke-width="2.2" fill="none" filter="url(#pawDrawGlow)"/>
+                    </svg>
+                </div>
+
+                <div class="more_pets_container">
+                    <!-- Left Column: Interactive 3 Pets Stage (Golden Retriever, Cat, Beagle) -->
+                    <div class="more_pets_visual_col">
+                        <div class="more_pets_stage" id="morePetsStage">
+                            <!-- Golden Retriever: Smoothly slides up from the bottom -->
+                            <div class="more_pet_item more_pet_golden">
+                                <img src="images/more_pets_golden.png" alt="Golden Retriever" class="more_pet_img">
+                            </div>
+
+                            <!-- Cat: Appears with a slight scale animation -->
+                            <div class="more_pet_item more_pet_cat">
+                                <img src="images/more_pets_cat.png" alt="Cat" class="more_pet_img">
+                            </div>
+
+                            <!-- Beagle: Enters from the left with a subtle movement -->
+                            <div class="more_pet_item more_pet_beagle">
+                                <img src="images/more_pets_beagle.png" alt="Beagle" class="more_pet_img">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Content & Contact Us CTA with Text Entrance Animations -->
+                    <div class="more_pets_content_col cmn_hdr">
+                        <h2 class="more_pets_title">
+                            <span class="more_title_line more_title_line1">
+                                <span class="more_word_wrap"><span class="more_word_inner" style="--w-idx: 0;">Because</span></span>
+                                <span class="more_word_wrap"><span class="more_word_inner" style="--w-idx: 1;">they're</span></span>
+                            </span>
+                            <span class="more_title_line more_title_line2">
+                                <span class="more_word_wrap"><span class="more_word_inner more_pets_gold" style="--w-idx: 2;">more</span></span>
+                                <span class="more_word_wrap"><span class="more_word_inner more_pets_gold" style="--w-idx: 3;">than</span></span>
+                                <span class="more_word_wrap"><span class="more_word_inner more_pets_gold" style="--w-idx: 4;">just</span></span>
+                                <span class="more_word_wrap"><span class="more_word_inner more_pets_gold" style="--w-idx: 5;">pets.</span></span>
+                            </span>
+                        </h2>
+                        <p class="more_pets_desc">
+                            Get answers to the most common questions about PawMedal and how it helps keep your pet safe.
+                        </p>
+                        <div class="more_pets_btn_wrap">
+                            <a href="javascript:void(0);" class="cmn_btn more_pets_btn" aria-label="Contact Us">
+                                <span>Contact Us</span>
+                                <span class="btn_icn"><img src="./images/btn_icn.png" alt="btn_icn"></span>
+                                <span class="btn_hvr_icn"><img src="./images/btn_hvr_icn.png" alt="btn_icn"></span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
 
         </div>
     </div>

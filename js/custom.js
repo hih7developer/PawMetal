@@ -48,7 +48,9 @@
     });
 
     function initAll() {
+        initIntroCurtain();
         initBannerEntrance();
+        initBannerMedal3D();
         initSmoothParallax();
         initSpyltNextSection();
         initChooseSection();
@@ -57,6 +59,8 @@
         initDogSectionObserver();
         initDogDesignInteractive();
         initMorePetsObserver();
+        initFaqAccordion();
+        initFaqObserver();
         initTopBarClose();
         initBackToTop();
     }
@@ -68,7 +72,77 @@
     }
 
     // ========================================================
-    // 1. Kinetic Staggered Word Entrance
+    // 0. Full-Screen Gold Intro Curtain with 0-100% Counter
+    // ========================================================
+    function initIntroCurtain() {
+        var curtain = document.getElementById('goldIntroCurtain');
+        var counterEl = document.getElementById('curtainCounter');
+        var barFill = document.getElementById('curtainBarFill');
+        var mottoEl = document.getElementById('curtainMotto');
+        var banner = document.querySelector('.banner');
+        if (!curtain) {
+            if (banner) banner.classList.add('revealed');
+            return;
+        }
+
+        var isDone = false;
+        var start = null;
+        var duration = 1200; // 1.2s smooth counter
+
+        function easeOutCubic(t) {
+            return 1 - Math.pow(1 - t, 3);
+        }
+
+        function finishCurtain() {
+            if (isDone) return;
+            isDone = true;
+
+            if (counterEl) counterEl.textContent = '100';
+            if (barFill) barFill.style.width = '100%';
+            if (mottoEl) mottoEl.textContent = 'Welcome to PawMedal';
+
+            setTimeout(function () {
+                curtain.classList.add('curtain_revealed');
+
+                // Trigger banner entrance right as curtain slides up
+                if (banner) {
+                    banner.classList.add('revealed');
+                }
+
+                setTimeout(function () {
+                    curtain.style.display = 'none';
+                }, 1050);
+            }, 140);
+        }
+
+        function step(timestamp) {
+            if (isDone) return;
+            if (!start) start = timestamp;
+            var elapsed = timestamp - start;
+            var progress = Math.min(1, elapsed / duration);
+            var easedProgress = easeOutCubic(progress);
+            var count = Math.floor(easedProgress * 100);
+
+            if (counterEl) counterEl.textContent = count;
+            if (barFill) barFill.style.width = count + '%';
+
+            if (progress < 1) {
+                requestAnimationFrame(step);
+            } else {
+                finishCurtain();
+            }
+        }
+
+        requestAnimationFrame(step);
+
+        // Click curtain to fast-forward into the site immediately
+        curtain.addEventListener('click', function () {
+            finishCurtain();
+        });
+    }
+
+    // ========================================================
+    // 1. Staggered Headline Animation & Interactive Letter Hover
     // ========================================================
     function initBannerEntrance() {
         var banner = document.querySelector('.banner');
@@ -97,30 +171,81 @@
             });
 
             h1.innerHTML = '';
-            wordsArray.forEach(function (item, index) {
-                var wrap = document.createElement('span');
-                wrap.className = 'word-wrap';
+            var globalCharIndex = 0;
 
-                var inner = document.createElement('span');
-                inner.className = 'word-inner' + (item.isYellow ? ' ylwtxt' : '');
-                inner.textContent = item.text;
-                inner.style.transitionDelay = (index * 0.08 + 0.15).toFixed(2) + 's';
+            wordsArray.forEach(function (item) {
+                var wordSpan = document.createElement('span');
+                wordSpan.className = 'word-wrap';
 
-                wrap.appendChild(inner);
-                h1.appendChild(wrap);
+                for (var i = 0; i < item.text.length; i++) {
+                    var charSpan = document.createElement('span');
+                    charSpan.className = 'bnr_char' + (item.isYellow ? ' ylwtxt' : '');
+                    charSpan.textContent = item.text[i];
+                    charSpan.setAttribute('data-char', item.text[i]);
+                    charSpan.style.transitionDelay = (globalCharIndex * 0.022 + 0.12).toFixed(3) + 's';
+                    wordSpan.appendChild(charSpan);
+                    globalCharIndex++;
+                }
+
+                h1.appendChild(wordSpan);
             });
         }
+    }
 
-        // Trigger entrance
-        requestAnimationFrame(function () {
-            requestAnimationFrame(function () {
-                banner.classList.add('revealed');
-            });
+    // ========================================================
+    // 2. Banner 3D Interactive Medal (NFC Tap Wave -> Dog Reveal)
+    // ========================================================
+    function initBannerMedal3D() {
+        var card = document.getElementById('bnr3DCard');
+        var stage = document.getElementById('bnr3DStage');
+        var nfcEmitter = document.getElementById('nfcRingEmitter');
+        if (!card) return;
+
+        var isFlipping = false;
+
+        function handleClick(e) {
+            // Prevent accidental triggering if user clicked a link
+            if (e && e.target && (e.target.closest('a') || e.target.closest('button'))) return;
+
+            if (isFlipping) return;
+
+            var isFlipped = card.classList.contains('is_flipped');
+
+            if (!isFlipped) {
+                // Front medal clicked -> trigger NFC tap wave first!
+                isFlipping = true;
+                if (nfcEmitter) {
+                    nfcEmitter.classList.remove('nfc_active');
+                    void nfcEmitter.offsetWidth; // Force reflow
+                    nfcEmitter.classList.add('nfc_active');
+                }
+
+                // Expanding gold NFC rings pulse outward before card flips
+                setTimeout(function () {
+                    card.classList.add('is_flipped');
+                    if (stage) stage.classList.add('flipped_active');
+                    isFlipping = false;
+                }, 260);
+            } else {
+                // Back dog clicked -> flip back to medal
+                card.classList.remove('is_flipped');
+                if (stage) stage.classList.remove('flipped_active');
+                if (nfcEmitter) nfcEmitter.classList.remove('nfc_active');
+            }
+        }
+
+        card.addEventListener('click', handleClick);
+        card.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleClick(e);
+            }
         });
     }
 
     // ========================================================
-    // 2. Dog Image Cursor Follower & Reactive Parallax
+    // 2b. Banner Background & Content Reactive Counter-Parallax
+    // (Floating animation on pets has been completely removed)
     // ========================================================
     function initSmoothParallax() {
         var banner = document.querySelector('.banner');
@@ -128,14 +253,8 @@
 
         var bg = banner.querySelector('.bnr_bg');
         var content = banner.querySelector('.bnr_content');
-        var pets = banner.querySelector('.bnr_pets');
 
         if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-        // Reset entrance transition on pets so cursor tracking has direct, responsive control
-        setTimeout(function () {
-            if (pets) pets.style.transition = 'none';
-        }, 1450);
 
         var rect = banner.getBoundingClientRect();
         function updateRect() {
@@ -144,16 +263,8 @@
         window.addEventListener('resize', updateRect, { passive: true });
         window.addEventListener('scroll', updateRect, { passive: true });
 
-        // Physics State (Linear Interpolation for smooth cursor follow)
+        // Physics State for background and content
         var state = {
-            targetPetX: 0,
-            targetPetY: 0,
-            currPetX: 0,
-            currPetY: 0,
-            targetPetRotate: 0,
-            currPetRotate: 0,
-            targetPetScale: 1,
-            currPetScale: 1,
             targetBgX: 0,
             targetBgY: 0,
             currBgX: 0,
@@ -172,12 +283,7 @@
         }
 
         function render() {
-            var ease = 0.075; // Silky cursor follow inertia
-
-            state.currPetX = lerp(state.currPetX, state.targetPetX, ease);
-            state.currPetY = lerp(state.currPetY, state.targetPetY, ease);
-            state.currPetRotate = lerp(state.currPetRotate, state.targetPetRotate, ease);
-            state.currPetScale = lerp(state.currPetScale, state.targetPetScale, ease);
+            var ease = 0.075; // Silky inertia
 
             state.currBgX = lerp(state.currBgX, state.targetBgX, ease);
             state.currBgY = lerp(state.currBgY, state.targetBgY, ease);
@@ -185,10 +291,6 @@
             state.currContentX = lerp(state.currContentX, state.targetContentX, ease);
             state.currContentY = lerp(state.currContentY, state.targetContentY, ease);
 
-            // Dog image cursor effect: extends, leans, and tracks the mouse from bottom right
-            if (pets) {
-                pets.style.transform = 'translate3d(' + state.currPetX.toFixed(2) + 'px, ' + state.currPetY.toFixed(2) + 'px, 0) rotate(' + state.currPetRotate.toFixed(2) + 'deg) scale(' + state.currPetScale.toFixed(3) + ')';
-            }
             if (bg) {
                 bg.style.transform = 'translate3d(' + state.currBgX.toFixed(2) + 'px, ' + state.currBgY.toFixed(2) + 'px, 0)';
             }
@@ -197,9 +299,9 @@
             }
 
             // Sleep when idle to conserve resources
-            var delta = Math.abs(state.currPetX - state.targetPetX) +
-                        Math.abs(state.currPetY - state.targetPetY) +
-                        Math.abs(state.currPetRotate - state.targetPetRotate);
+            var delta = Math.abs(state.currBgX - state.targetBgX) +
+                        Math.abs(state.currBgY - state.targetBgY) +
+                        Math.abs(state.currContentX - state.targetContentX);
 
             if (!state.isHovered && delta < 0.005) {
                 state.isIdle = true;
@@ -231,13 +333,7 @@
             var normX = (relX - 0.5) * 2;
             var normY = (relY - 0.5) * 2;
 
-            // Cursor effect: As cursor moves across banner, the dog reaches, leans, and follows the pointer
-            state.targetPetX = normX * 42;
-            state.targetPetY = normY * 30;
-            state.targetPetRotate = normX * 4.5;
-            state.targetPetScale = 1 + (Math.abs(normX) * 0.02) + (relX > 0.6 ? 0.025 : 0);
-
-            // Subtle counter-parallax on background & content
+            // Subtle counter-parallax on background & content only (no floating pets)
             state.targetBgX = -normX * 14;
             state.targetBgY = -normY * 9;
 
@@ -249,11 +345,6 @@
         banner.addEventListener('mouseleave', function () {
             state.isHovered = false;
             wakeUp();
-
-            state.targetPetX = 0;
-            state.targetPetY = 0;
-            state.targetPetRotate = 0;
-            state.targetPetScale = 1;
 
             state.targetBgX = 0;
             state.targetBgY = 0;
@@ -315,273 +406,341 @@
     }
 
     // ========================================================
-    // 4. Choose Section: Mouse Scroll Reveal & Interactive Cursor Physics
-    //    Inspired by Spylt, Cuberto & Kafe
+    // 4. Choose Section: Scroll Entrance from the Middle (No Floating Effect)
+    // ========================================================
+    // 4. Interactive 3D Product Showcase (Tag, Finder, Bundle)
+    //    - Smooth Y-Axis Spin Carousel Transitions
+    //    - Product-Specific Dynamic Background Glows
+    //    - Giant Outlined Typography & Rotating Gold Orbit Rings
+    //    - NFC Scan Pulses & Cursor-Responsive 3D Tilt Rig
+    //    - Left-Side Picker with Animated Gold Progress Lines & Auto-Cycle
+    //    - Right-Side Info Panel with Text Reveals & Animated Price Counter
+    //    - Touch Swipe, Mouse Drag, Keyboard Arrows & Accessibility
     // ========================================================
     function initChooseSection() {
         var chooseSection = document.getElementById('chooseSection');
         if (!chooseSection) return;
 
-        var cards = chooseSection.querySelectorAll('.choose_card');
-        var buttons = chooseSection.querySelectorAll('.choose_btn');
-        if (!cards || cards.length === 0) return;
+        var stage = document.getElementById('showcaseStage');
+        var tiltRig = document.getElementById('stageTiltRig');
+        var nfcEmitter = document.getElementById('stageNfcEmitter');
+        var cycleStatus = document.getElementById('pickerCycleStatus');
 
-        var hasEntered = false;
+        var products = chooseSection.querySelectorAll('.showcase_product');
+        var giantTypes = chooseSection.querySelectorAll('.stage_giant_type');
+        var pickerItems = chooseSection.querySelectorAll('.picker_item');
+        var dots = chooseSection.querySelectorAll('.stage_dot');
+        var infoCards = chooseSection.querySelectorAll('.info_card');
+        var prevBtn = document.getElementById('stagePrevBtn');
+        var nextBtn = document.getElementById('stageNextBtn');
 
-        // 1. Scroll-driven Entrance Reveal
+        if (!products.length || !pickerItems.length) return;
+
+        var currentIndex = 0;
+        var totalProducts = products.length;
+        var prices = [49.90, 79.90, 99.90];
+        var cycleDuration = 5500; // 5.5s per product
+        var cycleStartTime = Date.now();
+        var isPaused = false;
+        var isSwitching = false;
+        var currentPriceVal = prices[0];
+        var priceRaf = null;
+
+        // Animate Number Count Up for Price
+        function animatePrice(targetVal, priceEl) {
+            if (!priceEl) return;
+            if (priceRaf) cancelAnimationFrame(priceRaf);
+
+            var startVal = currentPriceVal;
+            var startTime = performance.now();
+            var duration = 500; // 500ms smooth count
+
+            function update(now) {
+                var elapsed = now - startTime;
+                var progress = Math.min(1, elapsed / duration);
+                var ease = 1 - (1 - progress) * (1 - progress);
+                var val = startVal + (targetVal - startVal) * ease;
+                priceEl.textContent = val.toFixed(2);
+
+                if (progress < 1) {
+                    priceRaf = requestAnimationFrame(update);
+                } else {
+                    priceEl.textContent = targetVal.toFixed(2);
+                    currentPriceVal = targetVal;
+                    priceRaf = null;
+                }
+            }
+            priceRaf = requestAnimationFrame(update);
+        }
+
+        // Switch to Product
+        function switchProduct(newIndex, direction) {
+            if (newIndex === currentIndex && !isSwitching) return;
+            if (isSwitching) return;
+            isSwitching = true;
+
+            if (direction === undefined) {
+                direction = newIndex > currentIndex ? 1 : -1;
+            }
+
+            var oldProduct = products[currentIndex];
+            var newProduct = products[newIndex];
+
+            // 1. Smooth Y-Axis Spin
+            if (oldProduct) {
+                oldProduct.classList.remove('active');
+                if (direction > 0) {
+                    oldProduct.classList.add('spin_out_left');
+                    oldProduct.classList.remove('spin_out_right');
+                } else {
+                    oldProduct.classList.add('spin_out_right');
+                    oldProduct.classList.remove('spin_out_left');
+                }
+            }
+
+            if (newProduct) {
+                newProduct.classList.remove('spin_out_left', 'spin_out_right');
+                newProduct.classList.add('active');
+            }
+
+            // 2. Giant Outlined Typography
+            giantTypes.forEach(function (gt, idx) {
+                gt.classList.toggle('active', idx === newIndex);
+            });
+
+            // 3. Dynamic Background Theme
+            chooseSection.setAttribute('data-theme', newIndex);
+
+            // 4. Left Product Picker Tabs
+            pickerItems.forEach(function (item, idx) {
+                var isActive = idx === newIndex;
+                item.classList.toggle('active', isActive);
+                item.setAttribute('aria-selected', isActive ? 'true' : 'false');
+                item.setAttribute('tabindex', isActive ? '0' : '-1');
+
+                var fill = item.querySelector('.picker_progress_fill');
+                if (fill && !isActive) {
+                    fill.style.width = '0%';
+                }
+            });
+
+            // 5. Dots Navigation
+            dots.forEach(function (dot, idx) {
+                dot.classList.toggle('active', idx === newIndex);
+            });
+
+            // 6. Right Information Panel & Animated Price Count
+            infoCards.forEach(function (card, idx) {
+                card.classList.toggle('active', idx === newIndex);
+            });
+
+            var newPriceEl = document.getElementById('priceDisplay' + newIndex);
+            animatePrice(prices[newIndex], newPriceEl);
+
+            // 7. Trigger NFC Scan Wave Pulse
+            if (nfcEmitter) {
+                nfcEmitter.classList.remove('pulse_active');
+                void nfcEmitter.offsetWidth; // Force reflow
+                nfcEmitter.classList.add('pulse_active');
+            }
+
+            currentIndex = newIndex;
+            cycleStartTime = Date.now();
+
+            setTimeout(function () {
+                isSwitching = false;
+            }, 850);
+        }
+
+        // Auto-Cycling Animation Loop with Progress Line Fill
+        function autoCycleLoop() {
+            if (!isPaused) {
+                var elapsed = Date.now() - cycleStartTime;
+                var progress = Math.min(1, elapsed / cycleDuration);
+
+                var activeFill = document.getElementById('pickerProgress' + currentIndex);
+                if (activeFill) {
+                    activeFill.style.width = (progress * 100) + '%';
+                }
+
+                if (progress >= 1) {
+                    var nextIndex = (currentIndex + 1) % totalProducts;
+                    switchProduct(nextIndex, 1);
+                }
+            }
+            requestAnimationFrame(autoCycleLoop);
+        }
+        requestAnimationFrame(autoCycleLoop);
+
+        // Hover to Pause Auto-Cycling
+        var stageGrid = document.getElementById('showcaseStageGrid');
+        var pauseProgress = 0;
+
+        if (stageGrid) {
+            stageGrid.addEventListener('mouseenter', function () {
+                isPaused = true;
+                pauseProgress = Math.min(1, (Date.now() - cycleStartTime) / cycleDuration);
+                if (cycleStatus) {
+                    cycleStatus.classList.add('paused');
+                    var statusText = cycleStatus.querySelector('.cycle_status_text');
+                    if (statusText) statusText.textContent = 'Paused (Leave to resume)';
+                }
+            });
+
+            stageGrid.addEventListener('mouseleave', function () {
+                isPaused = false;
+                cycleStartTime = Date.now() - (pauseProgress * cycleDuration);
+                if (cycleStatus) {
+                    cycleStatus.classList.remove('paused');
+                    var statusText = cycleStatus.querySelector('.cycle_status_text');
+                    if (statusText) statusText.textContent = 'Auto-cycling (Hover stage to pause)';
+                }
+            });
+        }
+
+        // Left Column Picker Click
+        pickerItems.forEach(function (item) {
+            item.addEventListener('click', function () {
+                var idx = parseInt(item.getAttribute('data-product'), 10);
+                switchProduct(idx);
+            });
+        });
+
+        // Chevron Controls
+        if (prevBtn) {
+            prevBtn.addEventListener('click', function () {
+                var idx = (currentIndex - 1 + totalProducts) % totalProducts;
+                switchProduct(idx, -1);
+            });
+        }
+        if (nextBtn) {
+            nextBtn.addEventListener('click', function () {
+                var idx = (currentIndex + 1) % totalProducts;
+                switchProduct(idx, 1);
+            });
+        }
+
+        // Dots Click
+        dots.forEach(function (dot) {
+            dot.addEventListener('click', function () {
+                var idx = parseInt(dot.getAttribute('data-dot'), 10);
+                switchProduct(idx);
+            });
+        });
+
+        // Keyboard Arrow Navigation
+        window.addEventListener('keydown', function (e) {
+            var rect = chooseSection.getBoundingClientRect();
+            // Only respond when chooseSection is in view
+            if (rect.top <= window.innerHeight * 0.7 && rect.bottom >= window.innerHeight * 0.2) {
+                if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    switchProduct((currentIndex + 1) % totalProducts, 1);
+                } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    switchProduct((currentIndex - 1 + totalProducts) % totalProducts, -1);
+                }
+            }
+        });
+
+        // Touch Swipe & Mouse Drag on Stage
+        if (stage) {
+            var startX = 0;
+            var isDragging = false;
+
+            // Touch
+            stage.addEventListener('touchstart', function (e) {
+                if (e.touches && e.touches.length) {
+                    startX = e.touches[0].clientX;
+                }
+            }, { passive: true });
+
+            stage.addEventListener('touchend', function (e) {
+                if (e.changedTouches && e.changedTouches.length) {
+                    var endX = e.changedTouches[0].clientX;
+                    var diffX = endX - startX;
+                    if (Math.abs(diffX) > 40) {
+                        if (diffX > 0) {
+                            switchProduct((currentIndex - 1 + totalProducts) % totalProducts, -1);
+                        } else {
+                            switchProduct((currentIndex + 1) % totalProducts, 1);
+                        }
+                    }
+                }
+            }, { passive: true });
+
+            // Mouse Drag
+            stage.addEventListener('mousedown', function (e) {
+                startX = e.clientX;
+                isDragging = true;
+            });
+
+            window.addEventListener('mouseup', function (e) {
+                if (!isDragging) return;
+                isDragging = false;
+                var diffX = e.clientX - startX;
+                if (Math.abs(diffX) > 50) {
+                    if (diffX > 0) {
+                        switchProduct((currentIndex - 1 + totalProducts) % totalProducts, -1);
+                    } else {
+                        switchProduct((currentIndex + 1) % totalProducts, 1);
+                    }
+                }
+            });
+        }
+
+        // Cursor-Responsive 3D Tilt Rig with Inertia
+        if (tiltRig && stage && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            var tiltState = {
+                targetX: 0,
+                targetY: 0,
+                currX: 0,
+                currY: 0,
+                isHovered: false
+            };
+
+            stage.addEventListener('mousemove', function (e) {
+                tiltState.isHovered = true;
+                var rect = stage.getBoundingClientRect();
+                var relX = (e.clientX - rect.left) / rect.width;
+                var relY = (e.clientY - rect.top) / rect.height;
+                var normX = (relX - 0.5) * 2;
+                var normY = (relY - 0.5) * 2;
+
+                tiltState.targetX = -normY * 16; // Pitch (deg)
+                tiltState.targetY = normX * 20;  // Yaw (deg)
+            });
+
+            stage.addEventListener('mouseleave', function () {
+                tiltState.isHovered = false;
+                tiltState.targetX = 0;
+                tiltState.targetY = 0;
+            });
+
+            function renderTilt() {
+                var ease = 0.08;
+                tiltState.currX += (tiltState.targetX - tiltState.currX) * ease;
+                tiltState.currY += (tiltState.targetY - tiltState.currY) * ease;
+
+                tiltRig.style.transform = 'perspective(1200px) rotateX(' + tiltState.currX.toFixed(2) + 'deg) rotateY(' + tiltState.currY.toFixed(2) + 'deg) translateZ(' + (tiltState.isHovered ? '20px' : '0px') + ')';
+                requestAnimationFrame(renderTilt);
+            }
+            renderTilt();
+        }
+
+        // Section entrance trigger
         if ('IntersectionObserver' in window) {
-            var scrollObserver = new IntersectionObserver(function (entries) {
+            var obs = new IntersectionObserver(function (entries) {
                 entries.forEach(function (entry) {
                     if (entry.isIntersecting) {
                         chooseSection.classList.add('in-view');
-                        // After entrance finishes (~1.3s), switch cards from CSS transitions
-                        // to high-performance RAF lerp transforms for butter-smooth cursor tracking
-                        setTimeout(function () {
-                            hasEntered = true;
-                            cards.forEach(function (card) {
-                                card.style.transition = 'box-shadow 0.4s ease, border-color 0.4s ease';
-                            });
-                        }, 1350);
-                        scrollObserver.unobserve(chooseSection);
                     }
                 });
-            }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
-
-            scrollObserver.observe(chooseSection);
-        } else {
-            chooseSection.classList.add('in-view');
-            hasEntered = true;
+            }, { threshold: 0.1 });
+            obs.observe(chooseSection);
         }
-
-        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-        // 2. Physics States for Cards & Product Images
-        // Card 1 (PawMedal Tag), Card 2 (PawMedal Finder - Featured), Card 3 (PawMedal Bundle)
-        var cardStates = [];
-        var imgWraps = [];
-
-        cards.forEach(function (card) {
-            var imgWrap = card.querySelector('.card_img_wrap');
-            imgWraps.push(imgWrap);
-
-            cardStates.push({
-                currX: 0,
-                targetX: 0,
-                currY: 0,
-                targetY: 0,
-                currRotX: 0,
-                targetRotX: 0,
-                currRotY: 0,
-                targetRotY: 0,
-                currRotZ: 0,
-                targetRotZ: 0,
-                currScale: 1,
-                targetScale: 1,
-
-                // Inner image micro-parallax
-                imgCurrX: 0,
-                imgTargetX: 0,
-                imgCurrY: 0,
-                imgTargetY: 0
-            });
-        });
-
-        var isCursorActive = false;
-        var rafChooseId = null;
-
-        function lerp(start, end, factor) {
-            return start + (end - start) * factor;
-        }
-
-        function renderChoose() {
-            if (!hasEntered) {
-                rafChooseId = requestAnimationFrame(renderChoose);
-                return;
-            }
-
-            var ease = 0.08;
-            var maxDelta = 0;
-
-            cards.forEach(function (card, idx) {
-                var s = cardStates[idx];
-                var imgWrap = imgWraps[idx];
-
-                s.currX = lerp(s.currX, s.targetX, ease);
-                s.currY = lerp(s.currY, s.targetY, ease);
-                s.currRotX = lerp(s.currRotX, s.targetRotX, ease);
-                s.currRotY = lerp(s.currRotY, s.targetRotY, ease);
-                s.currRotZ = lerp(s.currRotZ, s.targetRotZ, ease);
-                s.currScale = lerp(s.currScale, s.targetScale, ease);
-
-                s.imgCurrX = lerp(s.imgCurrX, s.imgTargetX, ease);
-                s.imgCurrY = lerp(s.imgCurrY, s.imgTargetY, ease);
-
-                // Apply 3D spatial transform to card
-                card.style.transform = 'perspective(1100px) translate3d(' +
-                    s.currX.toFixed(2) + 'px, ' +
-                    s.currY.toFixed(2) + 'px, 0) ' +
-                    'rotateX(' + s.currRotX.toFixed(2) + 'deg) ' +
-                    'rotateY(' + s.currRotY.toFixed(2) + 'deg) ' +
-                    'rotateZ(' + s.currRotZ.toFixed(2) + 'deg) ' +
-                    'scale(' + s.currScale.toFixed(3) + ')';
-
-                // Apply micro-parallax to inner image
-                if (imgWrap) {
-                    imgWrap.style.transform = 'translate3d(' +
-                        s.imgCurrX.toFixed(2) + 'px, ' +
-                        s.imgCurrY.toFixed(2) + 'px, 0)';
-                }
-
-                maxDelta += Math.abs(s.currX - s.targetX) +
-                    Math.abs(s.currY - s.targetY) +
-                    Math.abs(s.currRotX - s.targetRotX) +
-                    Math.abs(s.currRotY - s.targetRotY);
-            });
-
-            if (!isCursorActive && maxDelta < 0.005) {
-                rafChooseId = null;
-                return;
-            }
-
-            rafChooseId = requestAnimationFrame(renderChoose);
-        }
-
-        function wakeChoose() {
-            if (!rafChooseId) {
-                rafChooseId = requestAnimationFrame(renderChoose);
-            }
-        }
-
-        // 3. Mouse Movement - Multi-Card Wave & 3D Spatial Tilt (Spylt & Cuberto style)
-        window.addEventListener('mousemove', function (e) {
-            isCursorActive = true;
-            wakeChoose();
-
-            var winW = window.innerWidth;
-            var winH = window.innerHeight;
-            var normX = (e.clientX / winW - 0.5) * 2; // -1 to 1
-            var normY = (e.clientY / winH - 0.5) * 2; // -1 to 1
-
-            // Proximity scaling
-            var secRect = chooseSection.getBoundingClientRect();
-            var isNearSection = (
-                e.clientY >= secRect.top - 140 &&
-                e.clientY <= secRect.bottom + 140
-            );
-
-            var intensity = isNearSection ? 1.0 : 0.4;
-
-            if (cardStates[0]) {
-                // Card 1 (Left: PawMedal Tag) - subtle tilt outward to the left
-                cardStates[0].targetX = normX * 14 * intensity;
-                cardStates[0].targetY = normY * 9 * intensity;
-                cardStates[0].targetRotY = normX * 3.5 * intensity;
-                cardStates[0].targetRotX = -normY * 2.8 * intensity;
-                cardStates[0].targetRotZ = normX * 0.9 * intensity;
-                cardStates[0].imgTargetX = -normX * 8 * intensity;
-                cardStates[0].imgTargetY = -normY * 6 * intensity;
-            }
-
-            if (cardStates[1]) {
-                // Card 2 (Center: PawMedal Finder - Featured) - elevated floating prominence
-                cardStates[1].targetX = normX * 6 * intensity;
-                cardStates[1].targetY = (normY * 11 - 6) * intensity;
-                cardStates[1].targetRotY = normX * 1.8 * intensity;
-                cardStates[1].targetRotX = -normY * 2.2 * intensity;
-                cardStates[1].targetRotZ = 0;
-                cardStates[1].imgTargetX = -normX * 6 * intensity;
-                cardStates[1].imgTargetY = -normY * 8 * intensity;
-            }
-
-            if (cardStates[2]) {
-                // Card 3 (Right: PawMedal Bundle) - subtle tilt outward to the right
-                cardStates[2].targetX = normX * 14 * intensity;
-                cardStates[2].targetY = normY * 9 * intensity;
-                cardStates[2].targetRotY = normX * 3.5 * intensity;
-                cardStates[2].targetRotX = -normY * 2.8 * intensity;
-                cardStates[2].targetRotZ = -normX * 0.9 * intensity;
-                cardStates[2].imgTargetX = -normX * 8 * intensity;
-                cardStates[2].imgTargetY = -normY * 6 * intensity;
-            }
-        }, { passive: true });
-
-        // Mouse Leave Window - Reset to Rest Position
-        window.addEventListener('mouseleave', function () {
-            isCursorActive = false;
-            wakeChoose();
-
-            cardStates.forEach(function (s) {
-                s.targetX = 0;
-                s.targetY = 0;
-                s.targetRotX = 0;
-                s.targetRotY = 0;
-                s.targetRotZ = 0;
-                s.targetScale = 1;
-                s.imgTargetX = 0;
-                s.imgTargetY = 0;
-            });
-        });
-
-        // 4. Card Hover Spotlight & Specular Glare (Kafe inspiration)
-        cards.forEach(function (card) {
-            card.addEventListener('mousemove', function (e) {
-                var rect = card.getBoundingClientRect();
-                var x = e.clientX - rect.left;
-                var y = e.clientY - rect.top;
-                card.style.setProperty('--mouse-x', x + 'px');
-                card.style.setProperty('--mouse-y', y + 'px');
-            }, { passive: true });
-        });
-
-        // 5. Cuberto-Style Magnetic Buttons with Elastic Arrow Movement
-        buttons.forEach(function (btn) {
-            var arrow = btn.querySelector('i');
-
-            btn.addEventListener('mousemove', function (e) {
-                var rect = btn.getBoundingClientRect();
-                var relX = e.clientX - rect.left - rect.width / 2;
-                var relY = e.clientY - rect.top - rect.height / 2;
-
-                // Magnetic attraction on button body
-                btn.style.transform = 'translate(' + (relX * 0.22).toFixed(1) + 'px, ' + (relY * 0.22).toFixed(1) + 'px)';
-
-                // Enhanced travel on arrow icon
-                if (arrow) {
-                    arrow.style.transform = 'translate(' + (relX * 0.15 + 4).toFixed(1) + 'px, ' + (relY * 0.12).toFixed(1) + 'px)';
-                }
-            });
-
-            btn.addEventListener('mouseleave', function () {
-                btn.style.transform = 'translate(0px, 0px)';
-                if (arrow) {
-                    arrow.style.transform = 'translate(0px, 0px)';
-                }
-            });
-        });
-
-        // 6. Smooth Mouse Scroll Depth Parallax
-        window.addEventListener('scroll', function () {
-            if (!chooseSection) return;
-            var secRect = chooseSection.getBoundingClientRect();
-            var winH = window.innerHeight;
-
-            if (secRect.top < winH && secRect.bottom > 0) {
-                var progress = (winH - secRect.top) / (winH + secRect.height);
-                var shiftCenter = (progress - 0.5) * -16;
-                if (hasEntered && cardStates[1]) {
-                    cardStates[1].targetY = shiftCenter;
-                    wakeChoose();
-                }
-            }
-        }, { passive: true });
     }
 
-    // ========================================================
-    // 5. Choose, Profile, Product & Why Choose Sticky-Stack Reveal (Bidirectional 3-Stage Navigation)
-    //    Stage 1: Scroll for 3-4s over Choose section -> Profile section slowly appears from right
-    //    Stage 2: Scroll for 3-4s on Profile section -> Product section opens from middle like a window
-    //    Stage 3: Product section remains same, scroll for 3-4s -> Why Choose section appears from bottom smoothly
-    //    Reverse: Scrolling UP smoothly reverses each section one by one without skipping or sudden jumps!
     // ========================================================
     function initProfileSection() {
         var wrapper = document.getElementById('chooseProfilePinWrapper') || document.getElementById('choosePinWrapper');
@@ -591,6 +750,7 @@
         var whyChooseSection = document.getElementById('whyChooseSection');
         var dogSection = document.getElementById('dogDesignSection');
         var morePetsSection = document.getElementById('morePetsSection');
+        var faqSection = document.getElementById('faqSection');
         if (!wrapper || !profileSection) return;
 
         var duoCards = productSection ? productSection.querySelectorAll('.duo_card') : [];
@@ -599,7 +759,7 @@
         var whyHeader = whyChooseSection ? whyChooseSection.querySelector('.why_choose_header') : null;
         var whyLightTrack = whyChooseSection ? whyChooseSection.querySelector('.why_travel_light_track') : null;
 
-        var targetProgress = 0; // Range: 0.0 to 8.0
+        var targetProgress = 0; // Range: 0.0 to 10.0
         // 0-1: Profile in from right (3.4s)
         // 1-2: Product opens from middle (3.4s)
         // 2-3: Product dwell (3.0s)
@@ -608,6 +768,8 @@
         // 5-6: Why Choose columns part like window -> Dog Section appears from middle (3.4s)
         // 6-7: Scroll for 2.0s on Dog Section (dwell)
         // 7-8: More Pets section appears from bottom like a parallax (3.4s)
+        // 8-9: Scroll for 2.0s on More Pets section (dwell)
+        // 9-10: FAQ section appears from bottom like a parallax (3.4s)
         var currentProgress = 0;
         var profileRevealed = false;
         var rafId = null;
@@ -623,6 +785,8 @@
         var dogSectionDelta = 3400;     // Dog Section appears from middle of comparison columns (3.4s)
         var dogDwellDelta = 2000;       // Scroll for 2.0 SECONDS on the Dog section!
         var morePetsDelta = 3400;       // More Pets section appears from bottom like a parallax (3.4s)
+        var morePetsDwellDelta = 2000;  // Scroll for 2.0 SECONDS on More Pets section!
+        var faqDelta = 3400;            // FAQ section appears from bottom like a parallax (3.4s)
 
         function lerp(start, end, factor) {
             return start + (end - start) * factor;
@@ -727,6 +891,12 @@
                     morePetsSection.style.visibility = 'hidden';
                     morePetsSection.classList.remove('pets-animated');
                 }
+                if (faqSection) {
+                    faqSection.style.transform = 'translate3d(0, 100%, 0)';
+                    faqSection.style.opacity = '0';
+                    faqSection.style.visibility = 'hidden';
+                    faqSection.classList.remove('faq-animated');
+                }
 
             } else if (currentProgress <= 2.0) {
                 // ========================================== 
@@ -816,6 +986,12 @@
                     morePetsSection.style.visibility = 'hidden';
                     morePetsSection.classList.remove('pets-animated');
                 }
+                if (faqSection) {
+                    faqSection.style.transform = 'translate3d(0, 100%, 0)';
+                    faqSection.style.opacity = '0';
+                    faqSection.style.visibility = 'hidden';
+                    faqSection.classList.remove('faq-animated');
+                }
 
             } else if (currentProgress <= 3.0) {
                 // ========================================== 
@@ -875,6 +1051,12 @@
                     morePetsSection.style.opacity = '0';
                     morePetsSection.style.visibility = 'hidden';
                     morePetsSection.classList.remove('pets-animated');
+                }
+                if (faqSection) {
+                    faqSection.style.transform = 'translate3d(0, 100%, 0)';
+                    faqSection.style.opacity = '0';
+                    faqSection.style.visibility = 'hidden';
+                    faqSection.classList.remove('faq-animated');
                 }
 
             } else if (currentProgress <= 4.0) {
@@ -952,6 +1134,12 @@
                     morePetsSection.style.visibility = 'hidden';
                     morePetsSection.classList.remove('pets-animated');
                 }
+                if (faqSection) {
+                    faqSection.style.transform = 'translate3d(0, 100%, 0)';
+                    faqSection.style.opacity = '0';
+                    faqSection.style.visibility = 'hidden';
+                    faqSection.classList.remove('faq-animated');
+                }
 
             } else if (currentProgress <= 5.0) {
                 // ========================================== 
@@ -1009,6 +1197,12 @@
                     morePetsSection.style.opacity = '0';
                     morePetsSection.style.visibility = 'hidden';
                     morePetsSection.classList.remove('pets-animated');
+                }
+                if (faqSection) {
+                    faqSection.style.transform = 'translate3d(0, 100%, 0)';
+                    faqSection.style.opacity = '0';
+                    faqSection.style.visibility = 'hidden';
+                    faqSection.classList.remove('faq-animated');
                 }
 
             } else if (currentProgress <= 6.0) {
@@ -1102,6 +1296,12 @@
                     morePetsSection.style.visibility = 'hidden';
                     morePetsSection.classList.remove('pets-animated');
                 }
+                if (faqSection) {
+                    faqSection.style.transform = 'translate3d(0, 100%, 0)';
+                    faqSection.style.opacity = '0';
+                    faqSection.style.visibility = 'hidden';
+                    faqSection.classList.remove('faq-animated');
+                }
 
             } else if (currentProgress <= 7.0) {
                 // ========================================== 
@@ -1131,8 +1331,14 @@
                     morePetsSection.style.visibility = 'hidden';
                     morePetsSection.classList.remove('pets-animated');
                 }
+                if (faqSection) {
+                    faqSection.style.transform = 'translate3d(0, 100%, 0)';
+                    faqSection.style.opacity = '0';
+                    faqSection.style.visibility = 'hidden';
+                    faqSection.classList.remove('faq-animated');
+                }
 
-            } else {
+            } else if (currentProgress <= 8.0) {
                 // ========================================== 
                 // STAGE 8: AFTER 2s SCROLL ON DOG SECTION,
                 // MORE PETS SECTION APPEARS FROM BOTTOM LIKE A PARALLAX! (7.0 to 8.0)
@@ -1145,7 +1351,6 @@
                 }
 
                 if (dogSection) {
-                    // Parallax on dog section: moves upward slightly and scales subtly as More Pets section rises
                     var dogParallaxY = -p7 * 28;
                     var dogParallaxScale = 1 - (p7 * 0.05);
                     var dogParallaxOpacity = Math.max(0, 1 - (p7 * 0.5));
@@ -1155,17 +1360,11 @@
                 }
 
                 if (morePetsSection) {
-                    // Parallax entrance from bottom:
                     var morePetsY = (1 - p7) * 100;
                     morePetsSection.style.transform = 'translate3d(0, ' + morePetsY.toFixed(2) + '%, 0)';
                     morePetsSection.style.opacity = Math.min(1, p7 * 1.6).toFixed(3);
                     morePetsSection.style.visibility = (p7 > 0.005) ? 'visible' : 'hidden';
 
-                    // Trigger the 3 pet entrance animations:
-                    // 1. Golden retriever smoothly slides up from the bottom
-                    // 2. Cat appears with a slight scale animation
-                    // 3. Beagle enters from the left with a subtle movement
-                    // All three settle into their original positions
                     if (p7 >= 0.85) {
                         if (!morePetsSection.classList.contains('pets-animated')) {
                             morePetsSection.classList.add('pets-animated');
@@ -1177,6 +1376,91 @@
                     if (p7 >= 0.99) {
                         morePetsSection.style.transform = 'translate3d(0, 0%, 0)';
                         morePetsSection.style.opacity = '1';
+                    }
+                }
+
+                if (faqSection) {
+                    faqSection.style.transform = 'translate3d(0, 100%, 0)';
+                    faqSection.style.opacity = '0';
+                    faqSection.style.visibility = 'hidden';
+                    faqSection.classList.remove('faq-animated');
+                }
+
+            } else if (currentProgress <= 9.0) {
+                // ========================================== 
+                // STAGE 9: SCROLL FOR 2.0 SECONDS ON MORE PETS SECTION! (8.0 to 9.0)
+                // ========================================== 
+                if (whyChooseSection) {
+                    whyChooseSection.style.opacity = '0';
+                    whyChooseSection.style.visibility = 'hidden';
+                }
+                if (dogSection) {
+                    dogSection.style.opacity = '0';
+                    dogSection.style.visibility = 'hidden';
+                }
+                if (morePetsSection) {
+                    morePetsSection.style.transform = 'translate3d(0, 0%, 0)';
+                    morePetsSection.style.opacity = '1';
+                    morePetsSection.style.visibility = 'visible';
+                    if (!morePetsSection.classList.contains('pets-animated')) {
+                        morePetsSection.classList.add('pets-animated');
+                    }
+                }
+                if (faqSection) {
+                    faqSection.style.transform = 'translate3d(0, 100%, 0)';
+                    faqSection.style.opacity = '0';
+                    faqSection.style.visibility = 'hidden';
+                    faqSection.classList.remove('faq-animated');
+                }
+
+            } else {
+                // ========================================== 
+                // STAGE 10: FAQ SECTION APPEARS FROM BOTTOM LIKE A PARALLAX! (9.0 to 10.0)
+                // ========================================== 
+                var p9 = Math.min(1, Math.max(0, currentProgress - 9.0));
+
+                if (whyChooseSection) {
+                    whyChooseSection.style.opacity = '0';
+                    whyChooseSection.style.visibility = 'hidden';
+                }
+                if (dogSection) {
+                    dogSection.style.opacity = '0';
+                    dogSection.style.visibility = 'hidden';
+                }
+
+                if (morePetsSection) {
+                    // Parallax on more pets section: moves upward slightly as FAQ rises
+                    var morePetsParallaxY = -p9 * 25;
+                    var morePetsParallaxScale = 1 - (p9 * 0.04);
+                    var morePetsParallaxOpacity = Math.max(0, 1 - (p9 * 0.5));
+                    morePetsSection.style.transform = 'translate3d(0, ' + morePetsParallaxY.toFixed(2) + '%, 0) scale(' + morePetsParallaxScale.toFixed(3) + ')';
+                    morePetsSection.style.opacity = morePetsParallaxOpacity.toFixed(3);
+                    morePetsSection.style.visibility = (p9 < 0.99) ? 'visible' : 'hidden';
+                }
+
+                if (faqSection) {
+                    // Parallax entrance from bottom:
+                    var faqY = (1 - p9) * 100;
+                    faqSection.style.transform = 'translate3d(0, ' + faqY.toFixed(2) + '%, 0)';
+                    faqSection.style.opacity = Math.min(1, p9 * 1.6).toFixed(3);
+                    faqSection.style.visibility = (p9 > 0.005) ? 'visible' : 'hidden';
+
+                    // Trigger the 4-step visual stage sequence when in view:
+                    // 1. Mobile phone appears
+                    // 2. Arc draws top to bottom
+                    // 3. Medal shows
+                    // 4. Dog homepage appears in mobile screen
+                    if (p9 >= 0.85) {
+                        if (!faqSection.classList.contains('faq-animated')) {
+                            faqSection.classList.add('faq-animated');
+                        }
+                    } else if (p9 < 0.60) {
+                        faqSection.classList.remove('faq-animated');
+                    }
+
+                    if (p9 >= 0.99) {
+                        faqSection.style.transform = 'translate3d(0, 0%, 0)';
+                        faqSection.style.opacity = '1';
                     }
                 }
             }
@@ -1260,6 +1544,12 @@
                 morePetsSection.style.visibility = 'hidden';
                 morePetsSection.classList.remove('pets-animated');
             }
+            if (faqSection) {
+                faqSection.style.transform = 'translate3d(0, 100%, 0)';
+                faqSection.style.opacity = '0';
+                faqSection.style.visibility = 'hidden';
+                faqSection.classList.remove('faq-animated');
+            }
             var dogTagInner = document.getElementById('dogTagInner');
             if (dogTagInner) {
                 dogTagInner.style.transform = '';
@@ -1326,13 +1616,37 @@
                         targetProgress = Math.min(8.0, targetProgress + (e.deltaY / morePetsDelta));
                         wakeRender();
                     }
+                } else if (targetProgress >= 8.0 && targetProgress < 9.0) {
+                    // Stage 9: Scroll for 2.0 SECONDS on More Pets section! (dwell)
+                    if (currentProgress >= 7.96) {
+                        targetProgress = Math.min(9.0, targetProgress + (e.deltaY / morePetsDwellDelta));
+                        wakeRender();
+                    }
+                } else if (targetProgress >= 9.0 && targetProgress < 10.0) {
+                    // Stage 10: FAQ section appears from bottom like a parallax! (3.4s scroll)
+                    if (currentProgress >= 8.96) {
+                        targetProgress = Math.min(10.0, targetProgress + (e.deltaY / faqDelta));
+                        wakeRender();
+                    }
                 }
             } else if (e.deltaY < 0) {
                 // User scrolling UP:
-                if (targetProgress > 7.0) {
-                    // Stage 8 Reverse: More Pets section slides back down to bottom
-                    targetProgress = Math.max(7.0, targetProgress - (Math.abs(e.deltaY) / morePetsDelta));
+                if (targetProgress > 9.0) {
+                    // Stage 10 Reverse: FAQ section slides back down to bottom
+                    targetProgress = Math.max(9.0, targetProgress - (Math.abs(e.deltaY) / faqDelta));
                     wakeRender();
+                } else if (targetProgress <= 9.0 && targetProgress > 8.0) {
+                    // Stage 9 Reverse: Scroll back up on More Pets section (2.0s dwell)
+                    if (currentProgress <= 9.04) {
+                        targetProgress = Math.max(8.0, targetProgress - (Math.abs(e.deltaY) / morePetsDwellDelta));
+                        wakeRender();
+                    }
+                } else if (targetProgress <= 8.0 && targetProgress > 7.0) {
+                    // Stage 8 Reverse: More Pets section slides back down to bottom
+                    if (currentProgress <= 8.04) {
+                        targetProgress = Math.max(7.0, targetProgress - (Math.abs(e.deltaY) / morePetsDelta));
+                        wakeRender();
+                    }
                 } else if (targetProgress <= 7.0 && targetProgress > 6.0) {
                     // Stage 7 Reverse: Scroll back up on Dog section (2.0s dwell)
                     if (currentProgress <= 7.04) {
@@ -1422,6 +1736,16 @@
             }
 
             var rect = wrapper.getBoundingClientRect();
+            var winH = window.innerHeight;
+            if (rect.top > winH * 0.95) {
+                if (chooseSection && chooseSection.classList.contains('in-view')) {
+                    chooseSection.classList.remove('in-view');
+                }
+            } else if (rect.top < winH * 0.88 && rect.bottom > 80) {
+                if (chooseSection && !chooseSection.classList.contains('in-view')) {
+                    chooseSection.classList.add('in-view');
+                }
+            }
             if (rect.top > window.innerHeight * 0.7) {
                 if (targetProgress > 0 || profileRevealed) {
                     resetAll();
@@ -1470,6 +1794,11 @@
                     dogSection.style.transform = '';
                     dogSection.style.opacity = '1';
                     dogSection.style.visibility = 'visible';
+                }
+                if (faqSection) {
+                    faqSection.style.transform = '';
+                    faqSection.style.opacity = '1';
+                    faqSection.style.visibility = 'visible';
                 }
             }
         }, { passive: true });
@@ -1666,5 +1995,85 @@
             });
 
             petsObserver.observe(morePetsSection);
+        }
+    }
+
+
+    // ========================================================
+    // 5e. Frequently Asked Questions (FAQ) Accordion
+    // ========================================================
+    function initFaqAccordion() {
+        var accordion = document.getElementById('faqAccordion');
+        if (!accordion) return;
+
+        var items = accordion.querySelectorAll('.faq_item');
+        items.forEach(function (item) {
+            var btn = item.querySelector('.faq_question');
+            var answer = item.querySelector('.faq_answer');
+            if (!btn || !answer) return;
+
+            btn.addEventListener('click', function () {
+                var isOpen = item.classList.contains('active');
+
+                // Close all items
+                items.forEach(function (otherItem) {
+                    otherItem.classList.remove('active');
+                    var otherBtn = otherItem.querySelector('.faq_question');
+                    var otherAns = otherItem.querySelector('.faq_answer');
+                    var otherIcon = otherItem.querySelector('.faq_arrow_icon i');
+                    if (otherBtn) otherBtn.setAttribute('aria-expanded', 'false');
+                    if (otherAns) {
+                        if (window.jQuery) {
+                            $(otherAns).slideUp(220);
+                        } else {
+                            otherAns.style.display = 'none';
+                        }
+                    }
+                    if (otherIcon) {
+                        otherIcon.classList.remove('fa-chevron-up');
+                        otherIcon.classList.add('fa-chevron-down');
+                    }
+                });
+
+                // If this item was closed, open it
+                if (!isOpen) {
+                    item.classList.add('active');
+                    btn.setAttribute('aria-expanded', 'true');
+                    if (window.jQuery) {
+                        $(answer).slideDown(220);
+                    } else {
+                        answer.style.display = 'block';
+                    }
+                    var icon = item.querySelector('.faq_arrow_icon i');
+                    if (icon) {
+                        icon.classList.remove('fa-chevron-down');
+                        icon.classList.add('fa-chevron-up');
+                    }
+                }
+            });
+        });
+    }
+
+    // ========================================================
+    // 5f. FAQ Section Intersection Observer (Mobile)
+    // ========================================================
+    function initFaqObserver() {
+        var faqSection = document.getElementById('faqSection');
+        if (!faqSection) return;
+
+        if (window.innerWidth <= 991 && 'IntersectionObserver' in window) {
+            var faqObserver = new IntersectionObserver(function (entries) {
+                entries.forEach(function (entry) {
+                    if (entry.isIntersecting && !faqSection.classList.contains('faq-animated')) {
+                        faqSection.classList.add('faq-animated');
+                        faqObserver.unobserve(faqSection);
+                    }
+                });
+            }, {
+                threshold: 0.15,
+                rootMargin: '0px 0px -40px 0px'
+            });
+
+            faqObserver.observe(faqSection);
         }
     }

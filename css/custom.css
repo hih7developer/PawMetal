@@ -892,29 +892,54 @@ header .navbar-nav {
     color: #111111;
 }
 
-/* Smooth Blur-to-Sharp Word Entrance */
+/* Staggered Headline Animation & Interactive Letter Hover */
 .word-wrap {
     display: inline-block;
-    overflow: hidden;
+    overflow: visible;
     vertical-align: top;
-    margin-right: 0.26em;
+    margin-right: 0.28em;
+    white-space: nowrap;
 }
 
-.word-inner {
+.bnr_char {
     display: inline-block;
     opacity: 0;
-    transform: translateY(28px);
-    filter: blur(6px);
-    transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
-        transform 0.9s cubic-bezier(0.16, 1, 0.3, 1),
-        filter 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+    transform: translateY(32px) rotateX(-40deg);
+    filter: blur(5px);
+    transition: opacity 0.7s cubic-bezier(0.2, 1, 0.3, 1),
+                transform 0.7s cubic-bezier(0.2, 1, 0.3, 1),
+                filter 0.7s cubic-bezier(0.2, 1, 0.3, 1);
     will-change: transform, opacity, filter;
+    cursor: pointer;
+    user-select: none;
 }
 
-.banner.revealed .word-inner {
+.banner.revealed .bnr_char {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) rotateX(0deg);
     filter: blur(0);
+}
+
+/* Interactive Elastic Spring Hover on Individual Headline Letters */
+.banner.revealed .bnr_char {
+    transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1),
+                color 0.22s ease,
+                filter 0.22s ease,
+                text-shadow 0.22s ease;
+}
+
+.banner.revealed .bnr_char:hover {
+    transform: translateY(-12px) scale(1.3) rotate(-3.5deg);
+    color: #C89C50 !important;
+    -webkit-text-fill-color: #C89C50 !important;
+    text-shadow: 0 8px 24px rgba(200, 156, 80, 0.7), 0 0 12px rgba(255, 241, 207, 0.85);
+    filter: drop-shadow(0 4px 10px rgba(200, 156, 80, 0.55));
+    z-index: 10;
+}
+
+/* Backward compatibility for word-inner */
+.word-inner {
+    display: inline-block;
 }
 
 /* Eye-Catching Animated Shimmer on Personalized */
@@ -1079,7 +1104,172 @@ header .navbar-nav {
     background: #eadbc3;
 }
 
-/* Pets Showcase Container (Comes out from bottom right corner) */
+/* =========================================================
+   1. Full-Screen Gold Intro Curtain with 0-100% Counter & Upward Reveal
+   ========================================================= */
+.gold_intro_curtain {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 999999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    pointer-events: all;
+    user-select: none;
+}
+
+/* Deep Luxury Charcoal & Gold Glow Panel */
+.curtain_shutter_panel {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 50% 45%, #241c14 0%, #15110c 55%, #0c0906 100%);
+    box-shadow: inset 0 0 140px rgba(0, 0, 0, 0.85);
+    transform: translateY(0);
+    transition: transform 0.95s cubic-bezier(0.76, 0, 0.18, 1);
+    will-change: transform;
+}
+
+.curtain_shutter_panel::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 30%, rgba(200, 156, 80, 0.18) 0%, transparent 60%);
+    pointer-events: none;
+}
+
+/* Upward Reveal: Slides Curtain Panel Upward into the Sky */
+.gold_intro_curtain.curtain_revealed .curtain_shutter_panel {
+    transform: translateY(-100%);
+}
+
+.curtain_content_wrap {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 20px;
+    transition: opacity 0.4s ease, transform 0.5s cubic-bezier(0.76, 0, 0.18, 1);
+    will-change: opacity, transform;
+}
+
+.gold_intro_curtain.curtain_revealed .curtain_content_wrap {
+    opacity: 0;
+    transform: translateY(-50px) scale(0.95);
+}
+
+.curtain_brand_badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 24px;
+}
+
+.curtain_brand_logo {
+    width: 52px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(200, 156, 80, 0.12);
+    border: 1px solid rgba(200, 156, 80, 0.4);
+    border-radius: 50%;
+    box-shadow: 0 0 24px rgba(200, 156, 80, 0.25);
+}
+
+.curtain_paw_svg {
+    width: 32px;
+    height: 32px;
+    filter: drop-shadow(0 2px 8px rgba(200, 156, 80, 0.5));
+}
+
+.curtain_brand_title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: 0.5px;
+}
+
+.curtain_brand_title span {
+    color: #C89C50;
+    background: linear-gradient(135deg, #FFF1CF 0%, #C89C50 60%, #9B7023 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* 0-100% Counter Display */
+.curtain_counter_container {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    line-height: 1;
+    margin-bottom: 22px;
+}
+
+.curtain_counter_digits {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 88px;
+    font-weight: 800;
+    letter-spacing: -2px;
+    background: linear-gradient(135deg, #FFF6E0 0%, #E5BE72 40%, #C89C50 70%, #93681D 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 4px 20px rgba(200, 156, 80, 0.45));
+    min-width: 140px;
+    text-align: right;
+}
+
+.curtain_counter_symbol {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 38px;
+    font-weight: 700;
+    color: #C89C50;
+    margin-left: 6px;
+    opacity: 0.9;
+}
+
+/* Glowing Gold Progress Track */
+.curtain_bar_track {
+    width: 260px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.curtain_bar_fill {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, #A87625 0%, #C89C50 50%, #FFF1CF 100%);
+    border-radius: 4px;
+    box-shadow: 0 0 14px rgba(200, 156, 80, 0.85);
+    transition: width 0.05s linear;
+}
+
+.curtain_motto {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13.5px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.55);
+}
+
+/* =========================================================
+   2. Banner 3D Showcase: SVG Collar, Teal-to-Gold Medal, Sheen,
+      Damped Pendulum Swing, NFC Tap Wave & Dog Reveal
+   ========================================================= */
+
 .bnr_pets {
     position: absolute;
     right: 0;
@@ -1092,10 +1282,10 @@ header .navbar-nav {
     transform-origin: bottom right;
     will-change: transform, opacity;
     opacity: 0;
-    transform: translate(160px, 160px) scale(0.85);
-    transition: opacity 1.3s cubic-bezier(0.16, 1, 0.3, 1) 0.15s,
-        transform 1.3s cubic-bezier(0.16, 1, 0.3, 1) 0.15s;
-    pointer-events: none;
+    transform: translate(140px, 120px) scale(0.92);
+    transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.15s,
+        transform 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.15s;
+    pointer-events: auto;
 }
 
 .banner.revealed .bnr_pets {
@@ -1103,8 +1293,361 @@ header .navbar-nav {
     transform: translate(0px, 0px) scale(1);
 }
 
-/* Soft Natural Ground Contact Shadow */
-.bnr_pets::after {
+/* 3D Perspective Stage */
+.bnr_3d_stage {
+    perspective: 1600px;
+    -webkit-perspective: 1600px;
+}
+
+/* 3D Flippable Card Container */
+.bnr_3d_card {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1020 / 708;
+    min-height: 460px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    transform-style: preserve-3d;
+    -webkit-transform-style: preserve-3d;
+    transform: rotateY(0deg);
+    transition: transform 1.05s cubic-bezier(0.25, 1, 0.35, 1);
+    cursor: pointer;
+    user-select: none;
+    outline: none;
+}
+
+.bnr_3d_card:focus-visible {
+    outline: 2px solid #C89C50;
+    outline-offset: 4px;
+    border-radius: 16px;
+}
+
+/* Flipped State (Dog image revealed in 3D on click) */
+.bnr_3d_card.is_flipped {
+    transform: rotateY(180deg);
+}
+
+/* Card Faces */
+.bnr_3d_face {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    transform-style: preserve-3d;
+    -webkit-transform-style: preserve-3d;
+}
+
+/* Front Face: SVG Collar & Teal-to-Gold Medal */
+.bnr_3d_front {
+    z-index: 2;
+    transform: rotateY(0deg) translateZ(2px);
+    justify-content: center;
+    align-items: center;
+}
+
+/* Back Face: Dog Image */
+.bnr_3d_back {
+    z-index: 1;
+    transform: rotateY(180deg) translateZ(2px);
+    justify-content: flex-end;
+    align-items: flex-end;
+}
+
+/* --- Pendulum Stage & Assembly --- */
+.bnr_pendulum_stage {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+/* Pendulum Arm (Pivot at Top Center 50% 0%) */
+.bnr_pendulum_arm {
+    position: relative;
+    width: 100%;
+    max-width: 380px;
+    height: auto;
+    transform-origin: 50% 0%;
+    transform: rotate(0deg);
+    will-change: transform;
+    cursor: pointer;
+    transition: filter 0.4s ease;
+}
+
+/* Realistic Damped Harmonic Pendulum Swing */
+.banner.revealed .bnr_pendulum_arm {
+    animation: realisticDampedPendulum 4.2s cubic-bezier(0.28, 0.05, 0.25, 1) forwards;
+}
+
+@keyframes realisticDampedPendulum {
+    0%   { transform: rotate(0deg); }
+    8%   { transform: rotate(20.5deg); }
+    20%  { transform: rotate(-15.8deg); }
+    34%  { transform: rotate(11.2deg); }
+    48%  { transform: rotate(-7.2deg); }
+    62%  { transform: rotate(4.2deg); }
+    74%  { transform: rotate(-2.2deg); }
+    85%  { transform: rotate(1.0deg); }
+    94%  { transform: rotate(-0.3deg); }
+    100% { transform: rotate(0deg); }
+}
+
+.bnr_pendulum_stage:hover .bnr_pendulum_arm {
+    filter: drop-shadow(0 26px 42px rgba(200, 156, 80, 0.42));
+}
+
+.bnr_collar_medal_svg {
+    width: 100%;
+    height: auto;
+    max-height: 480px;
+    display: block;
+    object-fit: contain;
+    filter: drop-shadow(0 18px 34px rgba(40, 25, 10, 0.32));
+    transition: filter 0.45s ease;
+}
+
+/* Moving Specular Sheen across Medal */
+.bnr_sheen_rect {
+    transform-origin: 210px 295px;
+    animation: medalSheenSweep 3.6s infinite ease-in-out;
+    pointer-events: none;
+}
+
+@keyframes medalSheenSweep {
+    0% {
+        transform: translate(-140px, -140px) rotate(25deg);
+        opacity: 0;
+    }
+    18% {
+        opacity: 0.95;
+    }
+    52% {
+        transform: translate(140px, 140px) rotate(25deg);
+        opacity: 0;
+    }
+    100% {
+        transform: translate(140px, 140px) rotate(25deg);
+        opacity: 0;
+    }
+}
+
+/* Realistic Ground Shadow underneath Medal with Pendulum Counter-Shift */
+.bnr_pendulum_ground_shadow {
+    position: absolute;
+    bottom: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 240px;
+    height: 26px;
+    background: radial-gradient(ellipse at center, rgba(30, 18, 6, 0.38) 0%, rgba(30, 18, 6, 0.12) 50%, transparent 75%);
+    border-radius: 50%;
+    filter: blur(8px);
+    pointer-events: none;
+    transition: transform 0.4s ease, opacity 0.4s ease;
+}
+
+.banner.revealed .bnr_pendulum_ground_shadow {
+    animation: pendulumShadowShift 4.2s cubic-bezier(0.28, 0.05, 0.25, 1) forwards;
+}
+
+@keyframes pendulumShadowShift {
+    0%   { transform: translateX(-50%) scale(1); }
+    8%   { transform: translateX(-36%) scale(0.84); }
+    20%  { transform: translateX(-64%) scale(0.86); }
+    34%  { transform: translateX(-43%) scale(0.91); }
+    48%  { transform: translateX(-57%) scale(0.93); }
+    62%  { transform: translateX(-47%) scale(0.96); }
+    74%  { transform: translateX(-53%) scale(0.98); }
+    85%  { transform: translateX(-49%) scale(0.99); }
+    100% { transform: translateX(-50%) scale(1); }
+}
+
+/* --- 3. NFC Tap Interaction: Three Concentric Expanding Gold Rings --- */
+.nfc_ring_emitter {
+    position: absolute;
+    left: 50%;
+    top: 54.6%;
+    transform: translate(-50%, -50%);
+    width: 0;
+    height: 0;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.nfc_ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.3);
+    width: 60px;
+    height: 60px;
+    border: 2.5px solid #E5BF74;
+    border-radius: 50%;
+    opacity: 0;
+    box-shadow: 0 0 16px rgba(200, 156, 80, 0.75), inset 0 0 12px rgba(255, 241, 207, 0.5);
+    pointer-events: none;
+}
+
+.nfc_ring_emitter.nfc_active .nfc_ring_1 {
+    animation: nfcRingPulse 0.85s cubic-bezier(0.1, 0.8, 0.2, 1) forwards;
+}
+
+.nfc_ring_emitter.nfc_active .nfc_ring_2 {
+    animation: nfcRingPulse 0.85s cubic-bezier(0.1, 0.8, 0.2, 1) 0.14s forwards;
+}
+
+.nfc_ring_emitter.nfc_active .nfc_ring_3 {
+    animation: nfcRingPulse 0.85s cubic-bezier(0.1, 0.8, 0.2, 1) 0.28s forwards;
+}
+
+@keyframes nfcRingPulse {
+    0% {
+        transform: translate(-50%, -50%) scale(0.3);
+        opacity: 0.95;
+        border-width: 3.5px;
+    }
+    50% {
+        opacity: 0.8;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(5.8);
+        opacity: 0;
+        border-width: 1px;
+    }
+}
+
+.nfc_center_spark {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    width: 48px;
+    height: 48px;
+    background: radial-gradient(circle, #FFF6E0 0%, #C89C50 60%, transparent 80%);
+    border-radius: 50%;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.nfc_ring_emitter.nfc_active .nfc_center_spark {
+    animation: nfcSparkFlash 0.5s ease-out forwards;
+}
+
+@keyframes nfcSparkFlash {
+    0% {
+        transform: translate(-50%, -50%) scale(0.2);
+        opacity: 1;
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(2.4);
+        opacity: 0.85;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(3.5);
+        opacity: 0;
+    }
+}
+
+/* Interactive Hint Badge */
+.bnr_medal_hint_pill {
+    position: absolute;
+    bottom: 18px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 22px;
+    background: rgba(255, 255, 255, 0.94);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1.5px solid rgba(200, 156, 80, 0.5);
+    border-radius: 30px;
+    box-shadow: 0 8px 24px rgba(40, 25, 10, 0.14), 0 0 16px rgba(200, 156, 80, 0.2);
+    color: #1a1a1a;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 5;
+}
+
+.bnr_hint_pulse {
+    width: 9px;
+    height: 9px;
+    background: #C89C50;
+    border-radius: 50%;
+    position: relative;
+    box-shadow: 0 0 0 0 rgba(200, 156, 80, 0.7);
+    animation: bnrPillPulse 2s infinite ease-out;
+}
+
+@keyframes bnrPillPulse {
+    0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(200, 156, 80, 0.75);
+    }
+    70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 10px rgba(200, 156, 80, 0);
+    }
+    100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(200, 156, 80, 0);
+    }
+}
+
+.bnr_medal_hint_pill i {
+    color: #C89C50;
+    font-size: 14px;
+    transition: transform 0.3s ease;
+}
+
+.bnr_pendulum_stage:hover .bnr_medal_hint_pill {
+    background: #ffffff;
+    border-color: #C89C50;
+    box-shadow: 0 12px 30px rgba(200, 156, 80, 0.35);
+    transform: translateX(-50%) translateY(-3px);
+}
+
+.bnr_pendulum_stage:hover .bnr_medal_hint_pill i {
+    transform: scale(1.15) rotate(-8deg);
+}
+
+/* --- Back Face: Dog Showcase (3D Effect on Click) --- */
+.bnr_dog_showcase {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+}
+
+.bnr_dog_img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: contain;
+    object-position: bottom right;
+    filter: drop-shadow(0 20px 32px rgba(40, 25, 10, 0.22)) drop-shadow(0 6px 12px rgba(40, 25, 10, 0.1));
+    transition: filter 0.4s ease;
+}
+
+/* Stable Ground Contact Shadow */
+.bnr_dog_showcase::after {
     content: "";
     position: absolute;
     bottom: 8px;
@@ -1119,42 +1662,111 @@ header .navbar-nav {
     z-index: -1;
     filter: blur(12px);
     pointer-events: none;
-    animation: smoothShadowPulse 5.5s ease-in-out infinite alternate;
 }
 
-@keyframes smoothShadowPulse {
-    0% {
-        transform: scale(1);
-        opacity: 0.8;
+/* Flip-Back Subtle Pill on Dog Face */
+.bnr_dog_flip_pill {
+    position: absolute;
+    top: 15px;
+    right: 25px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 16px;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(200, 156, 80, 0.45);
+    border-radius: 20px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+    color: #333;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    opacity: 0.9;
+    transition: all 0.3s ease;
+    z-index: 5;
+}
+
+.bnr_dog_flip_pill:hover {
+    opacity: 1;
+    background: #ffffff;
+    border-color: #C89C50;
+    box-shadow: 0 6px 18px rgba(200, 156, 80, 0.25);
+    transform: translateY(-2px);
+}
+
+.bnr_dog_flip_pill i {
+    color: #C89C50;
+    font-size: 11px;
+    transition: transform 0.4s ease;
+}
+
+.bnr_dog_flip_pill:hover i {
+    transform: rotate(-180deg);
+}
+
+/* Responsive Overrides for 3D Banner Showcase */
+@media (max-width: 991px) {
+    .bnr_3d_card {
+        min-height: 380px;
+        justify-content: center;
     }
 
-    100% {
-        transform: scale(0.88, 0.82);
-        opacity: 0.45;
+    .bnr_3d_front,
+    .bnr_3d_back {
+        justify-content: center;
+        align-items: center;
+    }
+
+    .bnr_dog_showcase {
+        justify-content: center;
+    }
+
+    .bnr_dog_img {
+        object-position: center bottom;
+    }
+
+    .bnr_dog_showcase::after {
+        right: 15%;
+        width: 70%;
     }
 }
 
-/* Organic 2D Smooth Floating Levitation */
-.bnr_pets img {
-    width: 100%;
-    height: auto;
-    display: block;
-    object-fit: contain;
-    object-position: bottom right;
-    transform-origin: bottom right;
-    will-change: transform, filter;
-    filter: drop-shadow(0 20px 32px rgba(40, 25, 10, 0.22)) drop-shadow(0 6px 12px rgba(40, 25, 10, 0.1));
-    animation: petFloat2D 5.5s ease-in-out infinite alternate;
-    transition: filter 0.4s ease;
-}
-
-@keyframes petFloat2D {
-    0% {
-        transform: translateY(0px);
+@media (max-width: 767px) {
+    .bnr_3d_card {
+        min-height: 300px;
     }
 
-    100% {
-        transform: translateY(-14px);
+    .bnr_pendulum_arm {
+        max-width: 270px;
+    }
+
+    .bnr_medal_hint_pill {
+        font-size: 11.5px;
+        padding: 8px 16px;
+        bottom: 8px;
+    }
+
+    .bnr_dog_flip_pill {
+        top: 8px;
+        right: 10px;
+        padding: 5px 12px;
+        font-size: 11px;
+    }
+
+    .curtain_counter_digits {
+        font-size: 64px;
+        min-width: 100px;
+    }
+
+    .curtain_counter_symbol {
+        font-size: 28px;
+    }
+
+    .curtain_bar_track {
+        width: 200px;
     }
 }
 
@@ -1488,7 +2100,7 @@ header .navbar-nav {
 
 .choose_profile_pin_wrapper {
     position: relative;
-    height: 1250vh; /* Smooth track for 6 stages: Choose -> Profile (3.4s), Profile -> Product (3.4s), Product dwell (3s), Why Choose from bottom (3.6s), Why Choose dwell (2.5s), Window opens to Dog Section (3.4s) */
+    height: 1600vh; /* Smooth track for 8 stages: Choose -> Profile (3.4s), Profile -> Product (3.4s), Product dwell (3s), Why Choose from bottom (3.6s), Why Choose dwell (2.5s), Window opens to Dog Section (3.4s) */
     background: #FFF9EF;
     border-radius: 40px 40px 0 0;
     margin-top: -30px;
@@ -1508,7 +2120,21 @@ header .navbar-nav {
     perspective: 1200px;
 }
 
-/* Choose Your PawMedal Section (Base Layer) */
+/* =========================================================
+   Choose Your PawMedal: Interactive 3D Product Showcase
+   Featuring Tag, Finder, and Bundle one at a time on a 3D Stage
+   - Smooth Y-Axis Spin Carousel Transitions
+   - Product-Specific Dynamic Background Glows
+   - Giant Outlined Typography (TAG, FINDER, BUNDLE)
+   - Rotating 3D Gold Orbit Rings with Satellite Beads
+   - Periodic NFC Scan Wave Pulses
+   - Cursor-Responsive 3D Tilt Rig & Gentle Floating Levitation
+   - Left-Side Product Picker with Animated Gold Progress Lines
+   - Auto-Cycling with Hover-Pause
+   - Right-Side Info Panel with Text Reveals & Animated Price Counter
+   - Touch Swiping, Dragging, Arrow Keys, Dark Mode & Reduced Motion
+   ========================================================= */
+
 .choose_section {
     position: absolute;
     inset: 0;
@@ -1524,308 +2150,995 @@ header .navbar-nav {
     align-items: center;
     overflow: hidden;
     will-change: transform, opacity;
+    transition: background 0.85s cubic-bezier(0.2, 0.8, 0.3, 1);
 }
 
-/* Subtle ambient background glow */
-.choose_section::before {
-    content: "";
+/* Dynamic Ambient Backdrop (Product-Specific Tone) */
+.showcase_ambient_backdrop {
     position: absolute;
-    top: 10%;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 800px;
-    height: 400px;
-    background: radial-gradient(ellipse, rgba(200, 156, 80, 0.12) 0%, transparent 70%);
-    filter: blur(60px);
+    inset: 0;
+    width: 100%;
+    height: 100%;
     pointer-events: none;
     z-index: 0;
+    opacity: 0.85;
+    transition: background 0.85s cubic-bezier(0.2, 0.8, 0.3, 1), opacity 0.6s ease;
+    background: radial-gradient(circle at 50% 45%, rgba(200, 156, 80, 0.22) 0%, rgba(255, 248, 238, 0.4) 50%, transparent 75%);
 }
 
-.choose_hdr {
+.choose_section[data-theme="0"] .showcase_ambient_backdrop {
+    background: radial-gradient(circle at 50% 45%, rgba(200, 156, 80, 0.26) 0%, rgba(255, 246, 232, 0.5) 50%, transparent 75%);
+}
+
+.choose_section[data-theme="1"] .showcase_ambient_backdrop {
+    background: radial-gradient(circle at 50% 45%, rgba(24, 155, 163, 0.26) 0%, rgba(234, 248, 248, 0.55) 50%, transparent 75%);
+}
+
+.choose_section[data-theme="2"] .showcase_ambient_backdrop {
+    background: radial-gradient(circle at 50% 45%, rgba(212, 160, 69, 0.28) 0%, rgba(252, 244, 230, 0.55) 50%, transparent 75%);
+}
+
+/* Container & Header */
+.showcase_container {
     position: relative;
     z-index: 2;
-    margin-bottom: 28px;
-    text-align: center;
-    opacity: 0;
-    transform: translateY(24px);
-    filter: blur(5px);
-    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
-        transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
-        filter 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    width: 100%;
+    max-width: 1320px;
+    padding: 0 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+    max-height: 900px;
 }
 
-.choose_section.in-view .choose_hdr {
+.showcase_hdr {
+    text-align: center;
+    margin-bottom: 24px;
+    position: relative;
+    z-index: 5;
+}
+
+.showcase_pill_tag {
+    display: inline-block;
+    padding: 6px 16px;
+    background: rgba(200, 156, 80, 0.12);
+    border: 1px solid rgba(200, 156, 80, 0.38);
+    border-radius: 30px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #9E742A;
+    margin-bottom: 8px;
+}
+
+.showcase_hdr h2 {
+    font-family: "Montserrat", sans-serif;
+    font-size: 42px;
+    font-weight: 700;
+    line-height: 1.15;
+    color: #111111;
+    margin-bottom: 6px;
+}
+
+.showcase_hdr p {
+    font-family: "Montserrat", sans-serif;
+    font-size: 15.5px;
+    font-weight: 400;
+    color: #666666;
+    line-height: 1.45;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* --- 3-Column Showcase Stage Grid --- */
+.showcase_stage_grid {
+    display: grid;
+    grid-template-columns: 295px 1fr 320px;
+    gap: 32px;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+    width: 100%;
+}
+
+/* =========================================================
+   LEFT COLUMN: Product Picker with Gold Progress Lines
+   ========================================================= */
+.showcase_picker_col {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    position: relative;
+    z-index: 6;
+}
+
+.picker_item {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1.5px solid rgba(220, 205, 185, 0.7);
+    border-radius: 18px;
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 4px 16px rgba(40, 25, 10, 0.04);
+    outline: none;
+}
+
+.picker_item:hover {
+    background: #ffffff;
+    border-color: rgba(200, 156, 80, 0.6);
+    transform: translateX(4px);
+    box-shadow: 0 8px 24px rgba(200, 156, 80, 0.15);
+}
+
+.picker_item.active {
+    background: #ffffff;
+    border-color: #C89C50;
+    box-shadow: 0 10px 32px rgba(200, 156, 80, 0.22);
+    transform: translateX(8px);
+}
+
+/* Animated Gold Progress Line at top edge */
+.picker_item_progress {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: rgba(200, 156, 80, 0.15);
+    overflow: hidden;
+}
+
+.picker_progress_fill {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, #A87625 0%, #C89C50 60%, #FFF1CF 100%);
+    box-shadow: 0 0 8px rgba(200, 156, 80, 0.7);
+    transition: width 0.08s linear;
+}
+
+.picker_item:not(.active) .picker_progress_fill {
+    width: 0% !important;
+}
+
+.picker_item_content {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+}
+
+.picker_num {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+    color: rgba(40, 25, 10, 0.25);
+    transition: color 0.3s ease;
+}
+
+.picker_item.active .picker_num {
+    color: #C89C50;
+}
+
+.picker_info {
+    flex-grow: 1;
+}
+
+.picker_badge {
+    display: inline-block;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: #8C651F;
+    background: rgba(200, 156, 80, 0.12);
+    padding: 2px 8px;
+    border-radius: 10px;
+    margin-bottom: 4px;
+}
+
+.picker_badge.finder_badge {
+    color: #0F757C;
+    background: rgba(24, 155, 163, 0.12);
+}
+
+.picker_badge.bundle_badge {
+    color: #9E6B18;
+    background: rgba(212, 160, 69, 0.14);
+}
+
+.picker_title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: #111111;
+    margin: 0 0 2px;
+    line-height: 1.25;
+}
+
+.picker_price_preview {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #777777;
+}
+
+.picker_arrow {
+    color: rgba(40, 25, 10, 0.2);
+    font-size: 13px;
+    transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.picker_item.active .picker_arrow {
+    color: #C89C50;
+    transform: translateX(4px);
+}
+
+/* Auto-Cycle Status Bar */
+.picker_cycle_status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11.5px;
+    font-weight: 500;
+    color: #888888;
+}
+
+.cycle_status_dot {
+    width: 7px;
+    height: 7px;
+    background: #C89C50;
+    border-radius: 50%;
+    box-shadow: 0 0 0 0 rgba(200, 156, 80, 0.6);
+    animation: cycleDotPulse 2s infinite ease-out;
+}
+
+@keyframes cycleDotPulse {
+    0% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(200, 156, 80, 0.7); }
+    70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(200, 156, 80, 0); }
+    100% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(200, 156, 80, 0); }
+}
+
+.picker_cycle_status.paused .cycle_status_dot {
+    background: #999999;
+    animation: none;
+    box-shadow: none;
+}
+
+/* =========================================================
+   CENTER COLUMN: 3D Animated Product Stage
+   ========================================================= */
+.showcase_center_stage {
+    position: relative;
+    width: 100%;
+    min-height: 480px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    perspective: 1400px;
+    transform-style: preserve-3d;
+    outline: none;
+    cursor: grab;
+    user-select: none;
+}
+
+.showcase_center_stage:active {
+    cursor: grabbing;
+}
+
+/* Giant Outlined Typography Behind Product */
+.stage_giant_type_wrap {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.stage_giant_type {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.85);
+    font-family: 'Montserrat', sans-serif;
+    font-size: clamp(90px, 14vw, 180px);
+    font-weight: 900;
+    letter-spacing: 14px;
+    color: transparent;
+    -webkit-text-stroke: 1.8px rgba(200, 156, 80, 0.28);
+    opacity: 0;
+    white-space: nowrap;
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: transform, opacity;
+}
+
+.stage_giant_type.active {
+    opacity: 0.85;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.choose_section[data-theme="1"] .stage_giant_type {
+    -webkit-text-stroke-color: rgba(24, 155, 163, 0.32);
+}
+
+.choose_section[data-theme="2"] .stage_giant_type {
+    -webkit-text-stroke-color: rgba(212, 160, 69, 0.34);
+}
+
+/* Rotating Gold Orbit Rings System */
+.stage_orbit_system {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 2;
+    transform-style: preserve-3d;
+}
+
+.orbit_ring {
+    position: absolute;
+    border-radius: 50%;
+    transform-style: preserve-3d;
+    transform: rotateX(68deg) rotateZ(0deg);
+    pointer-events: none;
+}
+
+.orbit_ring_outer {
+    width: 440px;
+    height: 440px;
+    border: 1.5px dashed rgba(200, 156, 80, 0.45);
+    animation: goldOrbitSpin 26s linear infinite;
+}
+
+.orbit_ring_middle {
+    width: 350px;
+    height: 350px;
+    border: 1.5px solid rgba(200, 156, 80, 0.3);
+    animation: goldOrbitSpinRev 18s linear infinite;
+}
+
+.orbit_ring_inner {
+    width: 260px;
+    height: 260px;
+    border: 1px dashed rgba(200, 156, 80, 0.35);
+    animation: goldOrbitSpin 14s linear infinite;
+}
+
+@keyframes goldOrbitSpin {
+    from { transform: rotateX(68deg) rotateZ(0deg); }
+    to { transform: rotateX(68deg) rotateZ(360deg); }
+}
+
+@keyframes goldOrbitSpinRev {
+    from { transform: rotateX(68deg) rotateZ(360deg); }
+    to { transform: rotateX(68deg) rotateZ(0deg); }
+}
+
+/* Orbit Satellite Beads */
+.orbit_satellite {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: #FFF1CF;
+    border-radius: 50%;
+    box-shadow: 0 0 12px #C89C50, 0 0 20px #FFF1CF;
+    transform: translate(-50%, -50%);
+}
+
+.orbit_satellite.sat_1 { top: 0%; left: 50%; }
+.orbit_satellite.sat_2 { bottom: 0%; left: 50%; }
+.orbit_satellite.sat_3 { top: 50%; left: 100%; }
+
+/* Ground Disc Spotlight */
+.stage_ground_disc {
+    position: absolute;
+    bottom: 30px;
+    width: 300px;
+    height: 90px;
+    background: radial-gradient(ellipse at center, rgba(200, 156, 80, 0.28) 0%, rgba(200, 156, 80, 0.08) 45%, transparent 70%);
+    border-radius: 50%;
+    filter: blur(14px);
+    pointer-events: none;
+}
+
+/* NFC Wave Pulses */
+.stage_nfc_emitter {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 0;
+    height: 0;
+    pointer-events: none;
+    z-index: 3;
+}
+
+.stage_nfc_wave {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.2);
+    width: 90px;
+    height: 90px;
+    border: 2px solid rgba(200, 156, 80, 0.6);
+    border-radius: 50%;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.stage_nfc_emitter.pulse_active .wave_1 {
+    animation: nfcShowcaseWave 1.4s cubic-bezier(0.1, 0.7, 0.3, 1) forwards;
+}
+
+.stage_nfc_emitter.pulse_active .wave_2 {
+    animation: nfcShowcaseWave 1.4s cubic-bezier(0.1, 0.7, 0.3, 1) 0.22s forwards;
+}
+
+.stage_nfc_emitter.pulse_active .wave_3 {
+    animation: nfcShowcaseWave 1.4s cubic-bezier(0.1, 0.7, 0.3, 1) 0.44s forwards;
+}
+
+@keyframes nfcShowcaseWave {
+    0% { transform: translate(-50%, -50%) scale(0.2); opacity: 0.95; }
+    60% { opacity: 0.7; }
+    100% { transform: translate(-50%, -50%) scale(4.2); opacity: 0; }
+}
+
+/* 3D Product Rig & Carousel Viewport */
+.stage_product_viewport {
+    position: relative;
+    width: 100%;
+    height: 420px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform-style: preserve-3d;
+    z-index: 5;
+}
+
+.stage_product_tilt_rig {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform-style: preserve-3d;
+    will-change: transform;
+}
+
+/* Individual Showcase Product with Smooth Y-Axis Spin */
+.showcase_product {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transform: rotateY(90deg) translateZ(-160px) scale(0.85);
+    transition: transform 0.85s cubic-bezier(0.25, 1, 0.35, 1),
+                opacity 0.65s cubic-bezier(0.25, 1, 0.35, 1),
+                filter 0.65s ease;
+    filter: blur(6px);
+    will-change: transform, opacity, filter;
+}
+
+.showcase_product.active {
     opacity: 1;
+    pointer-events: auto;
+    transform: rotateY(0deg) translateZ(0px) scale(1);
+    filter: blur(0);
+    z-index: 5;
+}
+
+.showcase_product.spin_out_left {
+    transform: rotateY(-90deg) translateZ(-160px) scale(0.85);
+    opacity: 0;
+    filter: blur(6px);
+}
+
+.showcase_product.spin_out_right {
+    transform: rotateY(90deg) translateZ(-160px) scale(0.85);
+    opacity: 0;
+    filter: blur(6px);
+}
+
+/* Gentle Floating Levitation */
+.product_float_wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: gentleProductFloat 5.8s ease-in-out infinite alternate;
+    will-change: transform;
+}
+
+@keyframes gentleProductFloat {
+    0% { transform: translateY(0px) rotate(0deg); }
+    100% { transform: translateY(-13px) rotate(1.2deg); }
+}
+
+.product_3d_img {
+    max-width: 330px;
+    max-height: 350px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    display: block;
+    filter: drop-shadow(0 24px 38px rgba(35, 20, 10, 0.32)) drop-shadow(0 6px 14px rgba(35, 20, 10, 0.16));
+    transition: transform 0.4s ease, filter 0.4s ease;
+}
+
+.product_3d_img:hover {
+    transform: scale(1.04);
+    filter: drop-shadow(0 30px 48px rgba(200, 156, 80, 0.42)) drop-shadow(0 8px 18px rgba(35, 20, 10, 0.22));
+}
+
+.product_contact_shadow {
+    position: absolute;
+    bottom: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 220px;
+    height: 26px;
+    background: radial-gradient(ellipse at center, rgba(35, 20, 8, 0.38) 0%, rgba(35, 20, 8, 0.12) 50%, transparent 75%);
+    border-radius: 50%;
+    filter: blur(10px);
+    pointer-events: none;
+    animation: productShadowPulse 5.8s ease-in-out infinite alternate;
+}
+
+@keyframes productShadowPulse {
+    0% { transform: translateX(-50%) scale(1); opacity: 0.85; }
+    100% { transform: translateX(-50%) scale(0.88); opacity: 0.55; }
+}
+
+/* Stage Navigation Controls */
+.stage_nav_controls {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    z-index: 10;
+}
+
+.stage_nav_btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(200, 156, 80, 0.4);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #333333;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.stage_nav_btn:hover {
+    background: #ffffff;
+    border-color: #C89C50;
+    color: #C89C50;
+    transform: scale(1.1);
+    box-shadow: 0 6px 18px rgba(200, 156, 80, 0.25);
+}
+
+.stage_dots_wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.stage_dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: rgba(200, 156, 80, 0.3);
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    transition: all 0.3s ease;
+}
+
+.stage_dot.active {
+    width: 24px;
+    border-radius: 10px;
+    background: #C89C50;
+    box-shadow: 0 0 10px rgba(200, 156, 80, 0.6);
+}
+
+.stage_swipe_hint {
+    position: absolute;
+    bottom: -22px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    color: #999999;
+    white-space: nowrap;
+    opacity: 0.85;
+}
+
+/* =========================================================
+   RIGHT COLUMN: Information Panel & Animated Price Counter
+   ========================================================= */
+.showcase_info_col {
+    position: relative;
+    z-index: 6;
+    min-height: 440px;
+    display: flex;
+    align-items: center;
+}
+
+.info_card {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(22px);
+    filter: blur(4px);
+    transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+                filter 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: transform, opacity, filter;
+}
+
+.info_card.active {
+    position: relative;
+    opacity: 1;
+    pointer-events: auto;
     transform: translateY(0);
     filter: blur(0);
 }
 
-.choose_hdr h2 {
-    font-family: "Montserrat", sans-serif;
-    font-size: 46px;
-    font-weight: 600;
-    line-height: 1.15;
-    color: #111111;
+.info_badge {
+    display: inline-block;
+    align-self: flex-start;
+    padding: 5px 14px;
+    border-radius: 20px;
+    background: rgba(200, 156, 80, 0.12);
+    border: 1px solid rgba(200, 156, 80, 0.4);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: #8C651F;
     margin-bottom: 10px;
 }
 
-.choose_hdr p {
-    font-family: "Montserrat", sans-serif;
-    font-size: 16.5px;
-    font-weight: 400;
-    color: #555555;
-    line-height: 1.45;
-    max-width: 650px;
-    margin: 0 auto;
+.info_badge.finder_badge {
+    background: rgba(24, 155, 163, 0.12);
+    border-color: rgba(24, 155, 163, 0.4);
+    color: #0F757C;
 }
 
-/* 3-Column Card Grid */
-.choose_grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 30px;
-    position: relative;
-    z-index: 2;
-    perspective: 1200px;
+.info_badge.bundle_badge {
+    background: rgba(212, 160, 69, 0.14);
+    border-color: rgba(212, 160, 69, 0.4);
+    color: #9E6B18;
 }
 
-/* Card Container */
-.choose_card {
-    background: #FFFFFF;
-    border-radius: 28px;
-    padding: 16px;
-    box-shadow: 0 10px 30px rgba(50, 35, 20, 0.05);
-    border: 1px solid rgba(230, 215, 195, 0.6);
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    overflow: hidden;
-    opacity: 0;
-    transform: translateY(50px);
-    transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
-        transform 0.9s cubic-bezier(0.16, 1, 0.3, 1),
-        box-shadow 0.4s ease,
-        border-color 0.4s ease;
-    will-change: transform, opacity;
-    transform-style: preserve-3d;
-}
-
-/* Dynamic Spotlight / Specular Sheen (Kafe & Cuberto style) */
-.choose_card::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    background: radial-gradient(circle 320px at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.5) 0%, transparent 75%);
-    opacity: 0;
-    transition: opacity 0.35s ease;
-    pointer-events: none;
-    z-index: 5;
-}
-
-.choose_card:hover::after {
-    opacity: 1;
-}
-
-/* Staggered Scroll-Triggered Entrance */
-.choose_section.in-view .choose_card:nth-child(1) {
-    transition-delay: 0.1s;
-}
-
-.choose_section.in-view .choose_card:nth-child(2) {
-    transition-delay: 0.22s;
-}
-
-.choose_section.in-view .choose_card:nth-child(3) {
-    transition-delay: 0.34s;
-}
-
-.choose_section.in-view .choose_card {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.choose_card:hover {
-    box-shadow: 0 22px 50px rgba(180, 140, 80, 0.16);
-    border-color: rgba(200, 156, 80, 0.5);
-}
-
-/* Card Top Image Container */
-.card_media {
-    position: relative;
-    width: 100%;
-    aspect-ratio: 1 / 1;
-    border-radius: 20px;
-    overflow: hidden;
-    background: #f7f3ee;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-/* Top Pill Badge */
-.card_badge {
-    position: absolute;
-    top: 14px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(255, 255, 255, 0.88);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border: 1px solid rgba(220, 200, 175, 0.7);
-    padding: 6px 14px;
-    border-radius: 20px;
-    font-size: 13px;
-    font-weight: 500;
-    color: #333333;
-    white-space: nowrap;
-    z-index: 3;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
-}
-
-.card_img_wrap {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    will-change: transform;
-    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.card_img_wrap img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.choose_card:hover .card_img_wrap {
-    transform: scale(1.035);
-}
-
-/* Card Body Content */
-.card_body {
-    padding: 22px 10px 10px 10px;
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-    justify-content: space-between;
-}
-
-.card_info_row {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 22px;
-    gap: 15px;
-}
-
-.card_text h3 {
-    font-family: "Montserrat", sans-serif;
-    font-size: 22px;
-    font-weight: 600;
-    color: #111111;
-    margin-bottom: 8px;
-    line-height: 1.25;
-}
-
-.card_text p {
-    font-family: "Montserrat", sans-serif;
-    font-size: 14px;
-    font-weight: 400;
-    color: #666666;
-    line-height: 1.5;
-}
-
-.card_price {
-    font-family: "Montserrat", sans-serif;
-    font-size: 22px;
+.info_title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 32px;
     font-weight: 700;
     color: #111111;
-    white-space: nowrap;
-    line-height: 1.25;
+    line-height: 1.2;
+    margin-bottom: 10px;
 }
 
-/* Choose CTA Button */
-.choose_btn {
+.info_desc {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14.5px;
+    font-weight: 400;
+    color: #555555;
+    line-height: 1.5;
+    margin-bottom: 18px;
+}
+
+.info_features_list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.info_features_list li {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    height: 52px;
-    padding: 0 24px;
-    border-radius: 50px;
-    font-family: "Montserrat", sans-serif;
-    font-size: 16px;
+    gap: 10px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13.5px;
     font-weight: 500;
-    text-decoration: none;
-    cursor: pointer;
-    transition: background 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
-    position: relative;
-    overflow: hidden;
-    will-change: transform;
+    color: #333333;
 }
 
-.choose_btn i {
-    font-size: 14px;
-    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-    will-change: transform;
+.info_features_list li i {
+    color: #C89C50;
+    font-size: 12px;
+    background: rgba(200, 156, 80, 0.14);
+    padding: 4px;
+    border-radius: 50%;
 }
 
-.choose_btn:hover i {
-    transform: translateX(4px);
+.info_price_row {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 22px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(220, 205, 185, 0.5);
 }
 
-/* Outline Button (Cards 1 & 3) */
-.outline_btn {
-    border: 1.5px solid #222222;
-    background: transparent;
+.price_box {
+    display: flex;
+    align-items: baseline;
     color: #111111;
+    line-height: 1;
 }
 
-.outline_btn:hover {
-    background: #111111;
-    color: #FFFFFF;
-    border-color: #111111;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+.price_curr {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: #C89C50;
+    margin-right: 3px;
 }
 
-/* Solid Button (Card 2 - Featured) */
-.solid_btn {
+.price_val {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 38px;
+    font-weight: 800;
+    letter-spacing: -1px;
+}
+
+.price_shipping {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    color: #777777;
+}
+
+.info_cta_wrap {
+    width: 100%;
+}
+
+.showcase_cta_btn {
     background: #C89C50;
-    border: 1.5px solid #C89C50;
-    color: #FFFFFF;
-    box-shadow: 0 6px 18px rgba(200, 156, 80, 0.28);
+    border-color: #C89C50;
+    color: #ffffff;
+    box-shadow: 0 8px 24px rgba(200, 156, 80, 0.32);
 }
 
-.solid_btn:hover {
-    background: #b5893f;
-    border-color: #b5893f;
-    box-shadow: 0 10px 25px rgba(200, 156, 80, 0.45);
-    color: #FFFFFF;
+.showcase_cta_btn:hover {
+    background: #A87625;
+    border-color: #A87625;
+    box-shadow: 0 12px 32px rgba(200, 156, 80, 0.45);
+    color: #ffffff;
 }
 
-/* Diagonal Sheen on Hover */
-.choose_btn::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: -120%;
-    width: 60%;
-    height: 100%;
-    background: linear-gradient(90deg,
-            transparent,
-            rgba(255, 255, 255, 0.35),
-            transparent);
-    transform: skewX(-22deg);
-    transition: left 0.7s ease;
-    pointer-events: none;
+.showcase_cta_btn.finder_cta {
+    background: #189BA3;
+    border-color: #189BA3;
+    box-shadow: 0 8px 24px rgba(24, 155, 163, 0.35);
 }
 
-.choose_btn:hover::before {
-    left: 140%;
+.showcase_cta_btn.finder_cta:hover {
+    background: #127980;
+    border-color: #127980;
+    box-shadow: 0 12px 32px rgba(24, 155, 163, 0.48);
+}
+
+.showcase_cta_btn.bundle_cta {
+    background: #D4A045;
+    border-color: #D4A045;
+    box-shadow: 0 8px 24px rgba(212, 160, 69, 0.38);
+}
+
+.showcase_cta_btn.bundle_cta:hover {
+    background: #B68328;
+    border-color: #B68328;
+    box-shadow: 0 12px 32px rgba(212, 160, 69, 0.5);
+}
+
+/* =========================================================
+   Responsive Breakpoints for 3D Product Showcase
+   ========================================================= */
+@media (max-width: 1199px) {
+    .showcase_stage_grid {
+        grid-template-columns: 260px 1fr 280px;
+        gap: 20px;
+    }
+    .product_3d_img {
+        max-width: 280px;
+        max-height: 300px;
+    }
+    .orbit_ring_outer {
+        width: 360px;
+        height: 360px;
+    }
+    .info_title {
+        font-size: 28px;
+    }
+}
+
+@media (max-width: 991px) {
+    .showcase_container {
+        height: auto;
+        max-height: none;
+        padding: 50px 20px;
+    }
+    .showcase_stage_grid {
+        grid-template-columns: 1fr;
+        gap: 28px;
+    }
+    .showcase_picker_col {
+        flex-direction: row;
+        justify-content: center;
+        gap: 10px;
+    }
+    .picker_item {
+        flex: 1;
+        padding: 12px 14px;
+    }
+    .picker_item.active {
+        transform: translateY(-4px);
+    }
+    .picker_num,
+    .picker_arrow,
+    .picker_cycle_status {
+        display: none;
+    }
+    .picker_title {
+        font-size: 15px;
+    }
+    .showcase_center_stage {
+        min-height: 400px;
+    }
+    .showcase_info_col {
+        min-height: auto;
+        text-align: center;
+    }
+    .info_card {
+        position: relative;
+        align-items: center;
+    }
+    .info_badge {
+        align-self: center;
+    }
+    .info_features_list {
+        align-items: flex-start;
+        display: inline-flex;
+    }
+    .info_price_row {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 767px) {
+    .showcase_hdr h2 {
+        font-size: 32px;
+    }
+    .showcase_picker_col {
+        flex-direction: column;
+    }
+    .picker_num {
+        display: block;
+    }
+    .showcase_center_stage {
+        min-height: 340px;
+    }
+    .stage_product_viewport {
+        height: 300px;
+    }
+    .product_3d_img {
+        max-width: 220px;
+        max-height: 240px;
+    }
+    .orbit_ring_outer {
+        width: 280px;
+        height: 280px;
+    }
+    .orbit_ring_middle {
+        width: 220px;
+        height: 220px;
+    }
+    .orbit_ring_inner {
+        width: 160px;
+        height: 160px;
+    }
+}
+
+/* =========================================================
+   Dark Mode Support
+   ========================================================= */
+@media (prefers-color-scheme: dark) {
+    .choose_section {
+        background: #110e0a;
+    }
+    .showcase_hdr h2,
+    .info_title,
+    .picker_title,
+    .price_val {
+        color: #F8F4EE;
+    }
+    .showcase_hdr p,
+    .info_desc,
+    .price_shipping,
+    .picker_price_preview {
+        color: #B5ACA0;
+    }
+    .info_features_list li {
+        color: #E2DBD0;
+    }
+    .picker_item {
+        background: rgba(28, 24, 18, 0.85);
+        border-color: rgba(200, 156, 80, 0.25);
+    }
+    .picker_item.active {
+        background: rgba(38, 32, 24, 0.95);
+        border-color: #C89C50;
+    }
+    .stage_nav_btn {
+        background: rgba(30, 26, 20, 0.9);
+        border-color: rgba(200, 156, 80, 0.4);
+        color: #E2DBD0;
+    }
+}
+
+/* =========================================================
+   Reduced Motion Support
+   ========================================================= */
+@media (prefers-reduced-motion: reduce) {
+    .showcase_product,
+    .stage_giant_type,
+    .info_card,
+    .picker_item {
+        transition: opacity 0.3s ease !important;
+        transform: none !important;
+    }
+    .orbit_ring_outer,
+    .orbit_ring_middle,
+    .orbit_ring_inner,
+    .product_float_wrapper,
+    .product_contact_shadow,
+    .cycle_status_dot {
+        animation: none !important;
+    }
 }
 
 /* =========================================================
@@ -4580,7 +5893,7 @@ header .navbar-nav {
 
 /* Right Column: Typography, Pure White Text & Word-by-Word Animation */
 .more_pets_content_col {
-    flex: 0.9;
+    /* flex: 0.9; */
     color: #FFFFFF;
     position: relative;
     z-index: 3;
@@ -4731,5 +6044,444 @@ header .navbar-nav {
     }
     .more_pets_title {
         font-size: 32px;
+    }
+}
+
+
+/* =========================================================
+   Frequently Asked Questions (FAQ) Section Styles & Animations
+   - Section appears with parallax from bottom after 2s dwell on more_pets section
+   - Full beige circle ring (draws from top to bottom)
+   - Larger mobile phone frame upright on the right side
+   - Medal on the right overlapping phone
+   - Lastly, on the mobile image, dog homepage slowly fades in
+   ========================================================= */
+
+.faq_section {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background: #FFF9EF;
+    z-index: 60;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transform: translate3d(0, 100%, 0);
+    will-change: transform, opacity;
+    overflow-x: hidden;
+    overflow-y: auto;
+    box-sizing: border-box;
+    padding: 30px 0;
+}
+
+.faq_container {
+    width: 100%;
+    max-width: 1520px;
+    margin: 0 auto;
+    padding: 0 40px;
+    display: flex;
+    align-items: center;
+}
+
+.faq_grid {
+    display: grid;
+    grid-template-columns: minmax(440px, 1fr) minmax(560px, 1.2fr);
+    gap: 30px;
+    align-items: center;
+    width: 100%;
+}
+
+/* Left Column: Typography & Accordion */
+.faq_content_col {
+    max-width: 600px;
+}
+
+.faq_section_title {
+    font-family: "Cabinet Grotesk", sans-serif;
+    font-size: 40px;
+    font-weight: 700;
+    line-height: 1.22;
+    color: #2C221A;
+    margin: 0 0 8px 0;
+}
+
+.faq_accent_gold {
+    color: #C89C50;
+    background: linear-gradient(100deg, #C89C50 0%, #E6C280 40%, #FFE6A5 60%, #C89C50 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: inline-block;
+    font-weight: 700;
+}
+
+.faq_section_desc {
+    font-family: "Inter", sans-serif;
+    font-size: 15.5px;
+    line-height: 1.5;
+    color: #6E6359;
+    margin: 0 0 20px 0;
+}
+
+/* Interactive Accordion List */
+.faq_accordion {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 0 0 20px 0;
+}
+
+.faq_item {
+    background: #FAF3E7;
+    border-radius: 12px;
+    transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+    border: 1px solid rgba(200, 156, 80, 0.14);
+}
+
+.faq_item.active {
+    background: #F4E7D0;
+    border-color: rgba(200, 156, 80, 0.40);
+    box-shadow: 0 4px 14px rgba(44, 34, 26, 0.06);
+}
+
+.faq_question {
+    width: 100%;
+    background: none;
+    border: none;
+    outline: none;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 18px;
+    cursor: pointer;
+    text-align: left;
+    transition: color 0.2s ease;
+}
+
+.faq_q_bullet {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #2C221A;
+    flex-shrink: 0;
+    display: inline-block;
+    transition: background-color 0.3s ease;
+}
+
+.faq_item.active .faq_q_bullet {
+    background: #C89C50;
+}
+
+.faq_q_text {
+    font-family: "Cabinet Grotesk", sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: #2C221A;
+    flex-grow: 1;
+}
+
+.faq_arrow_icon {
+    font-size: 13px;
+    color: #2C221A;
+    transition: transform 0.3s ease;
+    flex-shrink: 0;
+}
+
+.faq_answer {
+    display: none;
+    padding: 0 18px 14px 37px;
+}
+
+.faq_item.active .faq_answer {
+    display: block;
+}
+
+.faq_answer p {
+    font-family: "Inter", sans-serif;
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: #554A40;
+    margin: 0;
+}
+
+.faq_btn_wrap {
+    margin-top: 10px;
+}
+
+.faq_btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Right Column: Visual Stage (Stays at the right side) */
+.faq_visual_col {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    width: 100%;
+    position: relative;
+}
+
+.faq_visual_stage {
+    position: relative;
+    width: 580px;
+    height: 660px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-left: auto;
+    margin-right: 0;
+}
+
+/* =========================================================
+   Visual Stage Elements - Initially Hidden Until Section Animates
+   ========================================================= */
+.faq_phone_wrap,
+.faq_arc_wrap,
+.faq_medal_wrap,
+.faq_screen_img {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+/* Layer 1: Circle Ring Behind Phone & Medal (Draws from top to bottom) */
+.faq_arc_wrap {
+    position: absolute;
+    right: -40px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 640px;
+    height: 640px;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.faq_arc_img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+/* Step 2 in Animation Sequence: Circle Ring draws from TOP to BOTTOM */
+.faq_section.faq-animated .faq_arc_wrap {
+    visibility: visible;
+    animation: faqArcDrawDown 1.10s cubic-bezier(0.25, 1, 0.5, 1) 0.90s both;
+}
+
+@keyframes faqArcDrawDown {
+    0% {
+        opacity: 0;
+        clip-path: inset(0% 0% 100% 0%);
+        -webkit-clip-path: inset(0% 0% 100% 0%);
+    }
+    12% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 1;
+        clip-path: inset(0% 0% 0% 0%);
+        -webkit-clip-path: inset(0% 0% 0% 0%);
+    }
+}
+
+/* Layer 2: Mobile Phone Frame (Larger phone standing upright on the left side of stage) */
+.faq_phone_wrap {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 336px;
+    height: 642px;
+    z-index: 2;
+}
+
+.faq_phone_frame_img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    z-index: 1;
+    pointer-events: none;
+    filter: drop-shadow(0 25px 50px rgba(44, 34, 26, 0.22));
+}
+
+.faq_screen_window {
+    position: absolute;
+    top: 4.12%;
+    left: 9.46%;
+    width: 81.08%;
+    height: 91.87%;
+    border-radius: 38px;
+    overflow: hidden;
+    z-index: 2;
+    background: #FFFFFF;
+}
+
+.faq_screen_img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    opacity: 0;
+}
+
+/* iPhone Dynamic Island Pill Overlay */
+.faq_dynamic_island {
+    position: absolute;
+    top: 35px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 82px;
+    height: 23px;
+    background: #000000;
+    border-radius: 20px;
+    z-index: 4;
+    pointer-events: none;
+}
+
+.faq_dynamic_island::after {
+    content: '';
+    position: absolute;
+    right: 11px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #111B24;
+}
+
+/* Step 1 in Animation Sequence: Mobile Phone Appears */
+.faq_section.faq-animated .faq_phone_wrap {
+    visibility: visible;
+    pointer-events: auto;
+    animation: faqPhoneEntrance 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both;
+}
+
+@keyframes faqPhoneEntrance {
+    0% {
+        opacity: 0;
+        transform: translateY(-42%) scale(0.92);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(-50%) scale(1);
+    }
+}
+
+/* Layer 3: Medal Tag (Overlaps the right side of the phone exactly matching Figma) */
+.faq_medal_wrap {
+    position: absolute;
+    left: 285px;
+    top: 320px;
+    width: 215px;
+    height: 274px;
+    z-index: 4;
+}
+
+.faq_medal_img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.28));
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    cursor: pointer;
+}
+
+.faq_medal_wrap:hover .faq_medal_img {
+    transform: translateY(-8px) scale(1.05) rotate(-3deg);
+}
+
+/* Step 3 in Animation Sequence: Medal shows after circle drawing */
+.faq_section.faq-animated .faq_medal_wrap {
+    visibility: visible;
+    pointer-events: auto;
+    animation: faqMedalEntrance 0.85s cubic-bezier(0.34, 1.45, 0.64, 1) 1.95s both;
+}
+
+@keyframes faqMedalEntrance {
+    0% {
+        opacity: 0;
+        transform: translate3d(25px, 35px, 0) scale(0.78);
+    }
+    100% {
+        opacity: 1;
+        transform: translate3d(0, 0, 0) scale(1);
+    }
+}
+
+/* Step 4 in Animation Sequence: Lastly, when the medal image appears, on the mobile image, the dog homepage slowly fades in! */
+.faq_section.faq-animated .faq_screen_img {
+    visibility: visible;
+    animation: faqDogHomepageSlowFadeIn 1.80s cubic-bezier(0.25, 1, 0.5, 1) 2.75s both;
+}
+
+@keyframes faqDogHomepageSlowFadeIn {
+    0% {
+        opacity: 0;
+        filter: blur(2px);
+    }
+    100% {
+        opacity: 1;
+        filter: blur(0);
+    }
+}
+
+@media (max-width: 991px) {
+    .faq_section {
+        position: relative;
+        inset: auto;
+        width: 100%;
+        height: auto;
+        transform: none !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        padding: 60px 20px 40px 20px;
+    }
+
+    .faq_container {
+        padding: 0;
+    }
+
+    .faq_grid {
+        grid-template-columns: 1fr;
+        gap: 50px;
+    }
+
+    .faq_visual_col {
+        justify-content: center;
+    }
+
+    .faq_visual_stage {
+        width: 100%;
+        max-width: 440px;
+        height: 520px;
+        margin: 0 auto;
+    }
+
+    .faq_phone_wrap {
+        left: 10px;
+        width: 250px;
+        height: 478px;
+    }
+
+    .faq_medal_wrap {
+        left: 215px;
+        top: 240px;
+        width: 160px;
+        height: 203px;
+    }
+
+    .faq_arc_wrap {
+        width: 360px;
+        height: 360px;
+        right: -10px;
     }
 }

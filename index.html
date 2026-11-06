@@ -16,6 +16,9 @@
 	<meta name="author" content="admin" />
 	<meta name="viewport" content="width=device-width; initial-scale=1.0" />
 	<link rel="shortcut icon" href="images/favicon.ico" alt="" />
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap">
 	<link rel="stylesheet" href="css/font-awesome.css" />
 	<link rel="stylesheet" href="css/aos.css" />
 	<link rel="stylesheet" href="css/bootstrap.min.css" />
@@ -29,6 +32,44 @@
 </head>
 
 <body>
+	<!-- Full-Screen Gold Intro Curtain with 0-100% Counter & Upward Reveal -->
+	<div class="gold_intro_curtain" id="goldIntroCurtain" aria-hidden="true">
+		<div class="curtain_shutter_panel"></div>
+		<div class="curtain_content_wrap">
+			<div class="curtain_brand_badge">
+				<div class="curtain_brand_logo">
+					<svg viewBox="0 0 60 60" class="curtain_paw_svg" fill="none">
+						<ellipse cx="16" cy="22" rx="4.5" ry="7" fill="url(#curtainGoldGleam)" transform="rotate(-15 16 22)"/>
+						<ellipse cx="25" cy="14" rx="4.8" ry="7.2" fill="url(#curtainGoldGleam)"/>
+						<ellipse cx="35" cy="14" rx="4.8" ry="7.2" fill="url(#curtainGoldGleam)"/>
+						<ellipse cx="44" cy="22" rx="4.5" ry="7" fill="url(#curtainGoldGleam)" transform="rotate(15 44 22)"/>
+						<path d="M18 36 C16 30 23 25 30 25 C37 25 44 30 42 36 C40 43 36 49 30 49 C24 49 20 43 18 36 Z" fill="url(#curtainGoldGleam)"/>
+						<defs>
+							<linearGradient id="curtainGoldGleam" x1="0" y1="0" x2="60" y2="60" gradientUnits="userSpaceOnUse">
+								<stop offset="0%" stop-color="#FFF1CF"/>
+								<stop offset="50%" stop-color="#C89C50"/>
+								<stop offset="100%" stop-color="#8A631E"/>
+							</linearGradient>
+						</defs>
+					</svg>
+				</div>
+				<div class="curtain_brand_title">Paw<span>Medal</span></div>
+			</div>
+
+			<!-- 0-100% Loading Counter -->
+			<div class="curtain_counter_container">
+				<span class="curtain_counter_digits" id="curtainCounter">0</span>
+				<span class="curtain_counter_symbol">%</span>
+			</div>
+
+			<!-- Glowing Gold Progress Bar -->
+			<div class="curtain_bar_track">
+				<div class="curtain_bar_fill" id="curtainBarFill"></div>
+			</div>
+
+			<div class="curtain_motto" id="curtainMotto">Crafting Smart Pet Protection...</div>
+		</div>
+	</div>
 	<!-- Header -->
 	<header>
 
@@ -196,9 +237,184 @@
 
             </div>
 
-            <!-- Pets Image -->
-            <div class="bnr_pets">
-                <img src="images/bnr_dog.png" alt="Pets wearing PawMedal tags">
+            <!-- Pets Showcase Container with 3D Medal-to-Dog Reveal -->
+            <div class="bnr_pets bnr_3d_stage" id="bnr3DStage">
+                <div class="bnr_3d_card" id="bnr3DCard" role="button" tabindex="0" aria-label="Click to reveal pet" title="Click to reveal pet">
+                    <!-- Front Face: PetMedal on load -->
+                    <div class="bnr_3d_face bnr_3d_front" id="bnrMedalFront">
+                        <div class="bnr_pendulum_stage" id="bnrPendulumStage">
+                            
+                            <!-- Pendulum Assembly: SVG Collar + Teal-to-Gold Medal with Damped Swing -->
+                            <div class="bnr_pendulum_arm" id="bnrPendulumArm">
+                                <svg class="bnr_collar_medal_svg" viewBox="0 0 420 540" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <defs>
+                                        <!-- Realistic Collar Leather/Strap Gradient -->
+                                        <linearGradient id="collarStrapGrad" x1="0" y1="0" x2="420" y2="0" gradientUnits="userSpaceOnUse">
+                                            <stop offset="0%" stop-color="#141414"/>
+                                            <stop offset="50%" stop-color="#2c2a26"/>
+                                            <stop offset="100%" stop-color="#141414"/>
+                                        </linearGradient>
+
+                                        <!-- Polished Gold Metallic Gradients -->
+                                        <linearGradient id="goldRimGrad" x1="60" y1="130" x2="360" y2="430" gradientUnits="userSpaceOnUse">
+                                            <stop offset="0%" stop-color="#FFF2D6"/>
+                                            <stop offset="25%" stop-color="#E5BF74"/>
+                                            <stop offset="50%" stop-color="#9C6F23"/>
+                                            <stop offset="75%" stop-color="#FCE1A8"/>
+                                            <stop offset="100%" stop-color="#805615"/>
+                                        </linearGradient>
+
+                                        <linearGradient id="goldBuckleGrad" x1="180" y1="45" x2="240" y2="125" gradientUnits="userSpaceOnUse">
+                                            <stop offset="0%" stop-color="#FFF5DE"/>
+                                            <stop offset="40%" stop-color="#C89C50"/>
+                                            <stop offset="80%" stop-color="#8A631E"/>
+                                            <stop offset="100%" stop-color="#EAC178"/>
+                                        </linearGradient>
+
+                                        <!-- Teal-to-Gold Ocean Beach Medal Gradient -->
+                                        <linearGradient id="tealToGoldGrad" x1="100" y1="140" x2="320" y2="420" gradientUnits="userSpaceOnUse">
+                                            <stop offset="0%" stop-color="#066b7a"/>
+                                            <stop offset="26%" stop-color="#0a95a5"/>
+                                            <stop offset="48%" stop-color="#1fc6b7"/>
+                                            <stop offset="54%" stop-color="#e3f6f5"/>
+                                            <stop offset="64%" stop-color="#f5e1b8"/>
+                                            <stop offset="82%" stop-color="#dfb46c"/>
+                                            <stop offset="100%" stop-color="#c89c50"/>
+                                        </linearGradient>
+
+                                        <!-- Moving Specular Sheen Gradient -->
+                                        <linearGradient id="sheenLinearGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                            <stop offset="0%" stop-color="#ffffff" stop-opacity="0"/>
+                                            <stop offset="38%" stop-color="#ffffff" stop-opacity="0"/>
+                                            <stop offset="50%" stop-color="#ffffff" stop-opacity="0.85"/>
+                                            <stop offset="62%" stop-color="#ffffff" stop-opacity="0"/>
+                                            <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+                                        </linearGradient>
+
+                                        <!-- Clip path for circular medal face -->
+                                        <clipPath id="medalInnerClip">
+                                            <circle cx="210" cy="295" r="136"/>
+                                        </clipPath>
+
+                                        <!-- Soft Drop Shadows -->
+                                        <filter id="medalFilterShadow" x="-20%" y="-20%" width="150%" height="150%">
+                                            <feDropShadow dx="0" dy="16" stdDeviation="18" flood-color="#140a02" flood-opacity="0.38"/>
+                                            <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#140a02" flood-opacity="0.2"/>
+                                        </filter>
+
+                                        <filter id="pawInnerShadow" x="-30%" y="-30%" width="160%" height="160%">
+                                            <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#033038" flood-opacity="0.45"/>
+                                        </filter>
+                                    </defs>
+
+                                    <!-- 1. SVG COLLAR STRAP (At Top, pivot at 210, 0) -->
+                                    <g id="svgCollarStrap">
+                                        <!-- Collar Belt Arch -->
+                                        <path d="M70 20 Q210 50 350 20" stroke="url(#collarStrapGrad)" stroke-width="26" stroke-linecap="round"/>
+                                        <!-- Gold Saddle Stitching -->
+                                        <path d="M80 14 Q210 44 340 14" stroke="#c89c50" stroke-width="2" stroke-dasharray="5 4" opacity="0.85"/>
+                                        <path d="M80 26 Q210 56 340 26" stroke="#c89c50" stroke-width="2" stroke-dasharray="5 4" opacity="0.85"/>
+                                        
+                                        <!-- Polished Gold Collar Buckle / Center Loop Mount -->
+                                        <rect x="194" y="24" width="32" height="30" rx="6" fill="url(#goldBuckleGrad)" stroke="#5c4010" stroke-width="1.5"/>
+                                        <rect x="201" y="30" width="18" height="18" rx="3" fill="#141414"/>
+
+                                        <!-- Hanging Gold Split Jump Ring connecting Collar to Medal -->
+                                        <circle cx="210" cy="85" r="24" stroke="url(#goldBuckleGrad)" stroke-width="7" fill="none" filter="drop-shadow(0 4px 6px rgba(0,0,0,0.3))"/>
+                                        <!-- Ring Join Highlight -->
+                                        <circle cx="210" cy="85" r="24" stroke="#FFF5DE" stroke-width="1.5" stroke-dasharray="14 130" fill="none"/>
+                                    </g>
+
+                                    <!-- 2. MEDAL DISC ASSEMBLY (Teal-to-Gold, Paw Icon, Max, Sheen) -->
+                                    <g id="svgMedalDisc" filter="url(#medalFilterShadow)">
+                                        <!-- Medal Top Ring Attachment Eyelet -->
+                                        <circle cx="210" cy="144" r="16" fill="url(#goldRimGrad)" stroke="#664611" stroke-width="2"/>
+                                        <circle cx="210" cy="144" r="8" fill="#1a140e"/>
+
+                                        <!-- Outer Metallic Gold Beveled Rim -->
+                                        <circle cx="210" cy="295" r="150" fill="url(#goldRimGrad)"/>
+                                        <circle cx="210" cy="295" r="145" fill="#14100b" opacity="0.45"/>
+                                        <circle cx="210" cy="295" r="141" fill="url(#goldRimGrad)"/>
+                                        <circle cx="210" cy="295" r="137" fill="#805615"/>
+
+                                        <!-- Inner Dial: Teal-to-Gold Gradient Face (Clipped) -->
+                                        <g clip-path="url(#medalInnerClip)">
+                                            <!-- Teal-to-Gold Gradient Base -->
+                                            <circle cx="210" cy="295" r="136" fill="url(#tealToGoldGrad)"/>
+
+                                            <!-- Stylized Foam Wave Crests (Beach/Ocean Aesthetic) -->
+                                            <path d="M74 275 C120 250 160 295 210 270 C260 245 300 285 346 260 L346 320 C300 320 250 330 210 320 C160 310 120 330 74 320 Z" fill="#ffffff" opacity="0.22"/>
+                                            <path d="M74 285 C130 265 170 300 220 280 C270 260 310 295 346 275 L346 295 C310 305 270 285 220 295 C170 305 130 280 74 295 Z" fill="#ffffff" opacity="0.38"/>
+
+                                            <!-- Moving Specular Sheen (Sweeping across medal face) -->
+                                            <g class="bnr_svg_sheen_group">
+                                                <rect x="50" y="140" width="320" height="320" fill="url(#sheenLinearGrad)" class="bnr_sheen_rect"/>
+                                            </g>
+
+                                            <!-- Paw Icon & "Max" Typography Group -->
+                                            <g id="svgMedalCenterContent" filter="url(#pawInnerShadow)">
+                                                <!-- Embossed Central Paw Icon -->
+                                                <!-- Top Left Toe -->
+                                                <ellipse cx="178" cy="228" rx="10" ry="14" fill="#ffffff" transform="rotate(-18 178 228)"/>
+                                                <!-- Middle Left Toe -->
+                                                <ellipse cx="198" cy="214" rx="10" ry="15" fill="#ffffff" transform="rotate(-6 198 214)"/>
+                                                <!-- Middle Right Toe -->
+                                                <ellipse cx="222" cy="214" rx="10" ry="15" fill="#ffffff" transform="rotate(6 222 214)"/>
+                                                <!-- Top Right Toe -->
+                                                <ellipse cx="242" cy="228" rx="10" ry="14" fill="#ffffff" transform="rotate(18 242 228)"/>
+                                                <!-- Main Paw Pad -->
+                                                <path d="M182 254 C176 242 192 232 210 232 C228 232 244 242 238 254 C232 268 224 278 210 278 C196 278 188 268 182 254 Z" fill="#ffffff"/>
+
+                                                <!-- Typography: "Max" in Signature Script -->
+                                                <text x="210" y="325" text-anchor="middle" font-family="'Dancing Script', 'Brush Script MT', cursive, serif" font-size="46" font-weight="700" fill="#ffffff" letter-spacing="1">Max</text>
+
+                                                <!-- Badge Subtitle: "TAP TO SCAN" -->
+                                                <text x="210" y="356" text-anchor="middle" font-family="'Montserrat', sans-serif" font-size="10.5" font-weight="800" letter-spacing="3.2" fill="#ffffff" opacity="0.95">TAP TO SCAN</text>
+                                                
+                                                <!-- NFC Radar Dots -->
+                                                <circle cx="148" cy="353" r="2.5" fill="#FFE5A3"/>
+                                                <circle cx="272" cy="353" r="2.5" fill="#FFE5A3"/>
+                                            </g>
+
+                                            <!-- Inner Glass Lens Edge Highlight -->
+                                            <circle cx="210" cy="295" r="134" stroke="url(#goldRimGrad)" stroke-width="2.5" fill="none" opacity="0.65"/>
+                                            <!-- Curved Specular Top Reflection -->
+                                            <path d="M96 240 C120 180 180 165 240 165 C280 165 310 180 324 210 C290 190 250 180 210 180 C160 180 120 205 96 240 Z" fill="#ffffff" opacity="0.22"/>
+                                        </g>
+                                    </g>
+                                </svg>
+
+                                <!-- 3. NFC TAP INTERACTION: Three Expanding Gold Concentric Rings -->
+                                <div class="nfc_ring_emitter" id="nfcRingEmitter">
+                                    <span class="nfc_ring nfc_ring_1"></span>
+                                    <span class="nfc_ring nfc_ring_2"></span>
+                                    <span class="nfc_ring nfc_ring_3"></span>
+                                    <span class="nfc_center_spark"></span>
+                                </div>
+                            </div>
+
+                            <!-- Interactive Hint Pill -->
+                            <div class="bnr_medal_hint_pill" id="bnrMedalHintPill">
+                                <span class="bnr_hint_pulse"></span>
+                                <i class="fa-solid fa-hand-pointer"></i>
+                                <span class="bnr_hint_text">Tap medal to scan & reveal</span>
+                            </div>
+
+                            <!-- Realistic Ground Shadow underneath Medal -->
+                            <div class="bnr_pendulum_ground_shadow"></div>
+                        </div>
+                    </div>
+
+                    <div class="bnr_3d_face bnr_3d_back" id="bnrDogBack">
+                        <div class="bnr_dog_showcase">
+                            <img src="images/bnr_dog.png" alt="Pets wearing PawMedal tags" class="bnr_dog_img">
+                            <div class="bnr_dog_flip_pill" title="Click to view medal">
+                                <i class="fa-solid fa-rotate-left"></i>
+                                <span>Show Medal</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
         </div>
@@ -244,92 +460,259 @@
         <div class="choose_profile_pinned" id="chooseProfilePinned">
 
             <!-- Choose Your PawMedal Section (Base Stacked Layer) -->
-            <section class="choose_section" id="chooseSection">
-        <div class="container">
+            <section class="choose_section choose_showcase_section" id="chooseSection" aria-label="PawMedal Product Showcase">
+                <!-- Ambient Dynamic Background Glow (Product-Specific Tone) -->
+                <div class="showcase_ambient_backdrop" id="showcaseAmbient"></div>
 
-            <!-- Section Header -->
-            <div class="choose_hdr">
-                <h2>Choose your <span class="ylwtxt">PawMedal</span></h2>
-                <p>Choose the PawMedal solution that fits your pet's lifestyle and your peace of mind.</p>
-            </div>
-
-            <!-- 3-Card Grid -->
-            <div class="choose_grid">
-
-                <!-- Card 1: PawMedal Tag -->
-                <div class="choose_card" data-card="1">
-                    <div class="card_media">
-                        <span class="card_badge">Personalized, stylish, safe.</span>
-                        <div class="card_img_wrap">
-                            <img src="images/choose_tag.png" alt="PawMedal Tag">
-                        </div>
+                <div class="container showcase_container">
+                    <!-- Section Header -->
+                    <div class="choose_hdr showcase_hdr">
+                        <span class="showcase_pill_tag">The PawMedal Collection</span>
+                        <h2>Choose your <span class="ylwtxt">PawMedal</span></h2>
+                        <p>Select the safety solution that fits your pet's lifestyle and your peace of mind.</p>
                     </div>
-                    <div class="card_body">
-                        <div class="card_info_row">
-                            <div class="card_text">
-                                <h3>PawMedal Tag</h3>
-                                <p>Features: Personalized design,<br>NFC + QR, Lightweight & durable.</p>
+
+                    <!-- 3-Column Showcase Stage -->
+                    <div class="showcase_stage_grid" id="showcaseStageGrid">
+                        
+                        <!-- LEFT COLUMN: Product Picker with Animated Gold Progress Lines & Auto-Cycle -->
+                        <div class="showcase_picker_col" role="tablist" aria-label="Product selection">
+                            
+                            <!-- Tab 0: Tag -->
+                            <button type="button" class="picker_item active" data-product="0" role="tab" aria-selected="true" id="tabTag" aria-controls="showcaseStage" tabindex="0">
+                                <div class="picker_item_progress">
+                                    <div class="picker_progress_fill" id="pickerProgress0"></div>
+                                </div>
+                                <div class="picker_item_content">
+                                    <span class="picker_num">01</span>
+                                    <div class="picker_info">
+                                        <span class="picker_badge">Personalized Art</span>
+                                        <h3 class="picker_title">PawMedal Tag</h3>
+                                        <span class="picker_price_preview">From €49.90</span>
+                                    </div>
+                                    <i class="fa-solid fa-chevron-right picker_arrow"></i>
+                                </div>
+                            </button>
+
+                            <!-- Tab 1: Finder -->
+                            <button type="button" class="picker_item" data-product="1" role="tab" aria-selected="false" id="tabFinder" aria-controls="showcaseStage" tabindex="-1">
+                                <div class="picker_item_progress">
+                                    <div class="picker_progress_fill" id="pickerProgress1"></div>
+                                </div>
+                                <div class="picker_item_content">
+                                    <span class="picker_num">02</span>
+                                    <div class="picker_info">
+                                        <span class="picker_badge finder_badge">Apple Find My</span>
+                                        <h3 class="picker_title">PawMedal Finder</h3>
+                                        <span class="picker_price_preview">From €79.90</span>
+                                    </div>
+                                    <i class="fa-solid fa-chevron-right picker_arrow"></i>
+                                </div>
+                            </button>
+
+                            <!-- Tab 2: Bundle -->
+                            <button type="button" class="picker_item" data-product="2" role="tab" aria-selected="false" id="tabBundle" aria-controls="showcaseStage" tabindex="-1">
+                                <div class="picker_item_progress">
+                                    <div class="picker_progress_fill" id="pickerProgress2"></div>
+                                </div>
+                                <div class="picker_item_content">
+                                    <span class="picker_num">03</span>
+                                    <div class="picker_info">
+                                        <span class="picker_badge bundle_badge">Complete Suite</span>
+                                        <h3 class="picker_title">PawMedal Bundle</h3>
+                                        <span class="picker_price_preview">From €99.90</span>
+                                    </div>
+                                    <i class="fa-solid fa-chevron-right picker_arrow"></i>
+                                </div>
+                            </button>
+
+                            <!-- Auto-Cycle Indicator (Pauses on Hover) -->
+                            <div class="picker_cycle_status" id="pickerCycleStatus">
+                                <span class="cycle_status_dot"></span>
+                                <span class="cycle_status_text">Auto-cycling (Hover stage to pause)</span>
                             </div>
-                            <div class="card_price">€49.90</div>
                         </div>
-                        <a href="javascript:void(0);" class="choose_btn outline_btn">
-                            <span>Design My Tag</span>
-                            <i class="fa-solid fa-arrow-right"></i>
-                        </a>
+
+                        <!-- CENTER COLUMN: Large Animated 3D Stage with Outlined Type, Orbit Rings, NFC Waves & 3D Tilt -->
+                        <div class="showcase_center_stage" id="showcaseStage" role="region" aria-label="3D Product Stage" tabindex="0">
+                            
+                            <!-- Giant Outlined Typography Behind Product -->
+                            <div class="stage_giant_type_wrap" aria-hidden="true">
+                                <div class="stage_giant_type active" data-type="0">TAG</div>
+                                <div class="stage_giant_type" data-type="1">FINDER</div>
+                                <div class="stage_giant_type" data-type="2">BUNDLE</div>
+                            </div>
+
+                            <!-- Rotating Gold Orbit Rings System -->
+                            <div class="stage_orbit_system" aria-hidden="true">
+                                <div class="orbit_ring orbit_ring_outer">
+                                    <span class="orbit_satellite sat_1"></span>
+                                    <span class="orbit_satellite sat_2"></span>
+                                </div>
+                                <div class="orbit_ring orbit_ring_middle">
+                                    <span class="orbit_satellite sat_3"></span>
+                                </div>
+                                <div class="orbit_ring orbit_ring_inner"></div>
+                                <div class="stage_ground_disc"></div>
+                            </div>
+
+                            <!-- NFC Scan Wave Pulses -->
+                            <div class="stage_nfc_emitter" id="stageNfcEmitter" aria-hidden="true">
+                                <span class="stage_nfc_wave wave_1"></span>
+                                <span class="stage_nfc_wave wave_2"></span>
+                                <span class="stage_nfc_wave wave_3"></span>
+                            </div>
+
+                            <!-- 3D Product Rig (Cursor-responsive tilt + Y-axis spin) -->
+                            <div class="stage_product_viewport" id="stageViewport">
+                                <div class="stage_product_tilt_rig" id="stageTiltRig">
+                                    
+                                    <!-- Product 0: Tag -->
+                                    <div class="showcase_product active" data-index="0">
+                                        <div class="product_float_wrapper">
+                                            <img src="images/choose_tag.png" alt="PawMedal Tag 3D Model" class="product_3d_img">
+                                            <div class="product_contact_shadow"></div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Product 1: Finder -->
+                                    <div class="showcase_product" data-index="1">
+                                        <div class="product_float_wrapper">
+                                            <img src="images/choose_finder.png" alt="PawMedal Finder 3D Model" class="product_3d_img">
+                                            <div class="product_contact_shadow"></div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Product 2: Bundle -->
+                                    <div class="showcase_product" data-index="2">
+                                        <div class="product_float_wrapper">
+                                            <img src="images/choose_bundle.png" alt="PawMedal Bundle 3D Model" class="product_3d_img">
+                                            <div class="product_contact_shadow"></div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <!-- Mobile / Chevron Navigation Controls -->
+                            <div class="stage_nav_controls">
+                                <button type="button" class="stage_nav_btn prev_btn" id="stagePrevBtn" aria-label="Previous product">
+                                    <i class="fa-solid fa-chevron-left"></i>
+                                </button>
+                                <div class="stage_dots_wrap" role="tablist" aria-label="Product dots">
+                                    <button type="button" class="stage_dot active" data-dot="0" aria-label="Select Tag"></button>
+                                    <button type="button" class="stage_dot" data-dot="1" aria-label="Select Finder"></button>
+                                    <button type="button" class="stage_dot" data-dot="2" aria-label="Select Bundle"></button>
+                                </div>
+                                <button type="button" class="stage_nav_btn next_btn" id="stageNextBtn" aria-label="Next product">
+                                    <i class="fa-solid fa-chevron-right"></i>
+                                </button>
+                            </div>
+
+                            <!-- Drag / Keyboard Hint -->
+                            <div class="stage_swipe_hint">
+                                <i class="fa-solid fa-arrows-left-right"></i>
+                                <span>Swipe, drag or use arrows to spin</span>
+                            </div>
+                        </div>
+
+                        <!-- RIGHT COLUMN: Information Panel with Smooth Text Reveals & Animated Price Counter -->
+                        <div class="showcase_info_col" id="showcaseInfoCol" aria-live="polite">
+                            
+                            <!-- Card 0: Tag Info -->
+                            <div class="info_card active" data-info="0">
+                                <span class="info_badge">Personalized, stylish, safe.</span>
+                                <h3 class="info_title">PawMedal Tag</h3>
+                                <p class="info_desc">Custom engraved smart medal featuring your pet's portrait, vital contact details, and instant NFC profile access.</p>
+                                
+                                <ul class="info_features_list">
+                                    <li><i class="fa-solid fa-check"></i><span>Personalized artwork with custom pet name</span></li>
+                                    <li><i class="fa-solid fa-check"></i><span>Dual NFC chip + high-res QR code scan</span></li>
+                                    <li><i class="fa-solid fa-check"></i><span>Aircraft-grade aluminum, 100% waterproof</span></li>
+                                    <li><i class="fa-solid fa-check"></i><span>Zero monthly subscription fees forever</span></li>
+                                </ul>
+
+                                <div class="info_price_row">
+                                    <div class="price_box">
+                                        <span class="price_curr">€</span>
+                                        <span class="price_val" id="priceDisplay0">49.90</span>
+                                    </div>
+                                    <span class="price_shipping">Free worldwide shipping</span>
+                                </div>
+
+                                <div class="info_cta_wrap">
+                                    <a href="javascript:void(0);" class="choose_btn solid_btn showcase_cta_btn">
+                                        <span>Design My Tag</span>
+                                        <i class="fa-solid fa-arrow-right"></i>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <!-- Card 1: Finder Info -->
+                            <div class="info_card" data-info="1">
+                                <span class="info_badge finder_badge">Track, find, reunite.</span>
+                                <h3 class="info_title">PawMedal Finder</h3>
+                                <p class="info_desc">Harness hundreds of millions of Apple devices worldwide with Apple Find My integration to locate your adventurous pet anywhere.</p>
+                                
+                                <ul class="info_features_list">
+                                    <li><i class="fa-solid fa-check"></i><span>Works natively with Apple Find My app</span></li>
+                                    <li><i class="fa-solid fa-check"></i><span>Precision location tracking & separation alerts</span></li>
+                                    <li><i class="fa-solid fa-check"></i><span>Loud 90dB speaker chime to find nearby</span></li>
+                                    <li><i class="fa-solid fa-check"></i><span>Up to 1 year battery with easy replacement</span></li>
+                                </ul>
+
+                                <div class="info_price_row">
+                                    <div class="price_box">
+                                        <span class="price_curr">€</span>
+                                        <span class="price_val" id="priceDisplay1">79.90</span>
+                                    </div>
+                                    <span class="price_shipping">Free worldwide shipping</span>
+                                </div>
+
+                                <div class="info_cta_wrap">
+                                    <a href="javascript:void(0);" class="choose_btn solid_btn showcase_cta_btn finder_cta">
+                                        <span>Explore Finder</span>
+                                        <i class="fa-solid fa-arrow-right"></i>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <!-- Card 2: Bundle Info -->
+                            <div class="info_card" data-info="2">
+                                <span class="info_badge bundle_badge">Complete Peace of Mind</span>
+                                <h3 class="info_title">PawMedal Bundle</h3>
+                                <p class="info_desc">The ultimate 360° protection package: combines the custom engraved Tag with the high-tech Finder for unparalleled security.</p>
+                                
+                                <ul class="info_features_list">
+                                    <li><i class="fa-solid fa-check"></i><span>Includes both Custom Tag + Finder Device</span></li>
+                                    <li><i class="fa-solid fa-check"></i><span>Dual safety: Physical NFC profile + GPS network</span></li>
+                                    <li><i class="fa-solid fa-check"></i><span>Save 25% compared to individual items</span></li>
+                                    <li><i class="fa-solid fa-check"></i><span>Includes premium silicone collar attachment</span></li>
+                                </ul>
+
+                                <div class="info_price_row">
+                                    <div class="price_box">
+                                        <span class="price_curr">€</span>
+                                        <span class="price_val" id="priceDisplay2">99.90</span>
+                                    </div>
+                                    <span class="price_shipping">Free express shipping & collar mount</span>
+                                </div>
+
+                                <div class="info_cta_wrap">
+                                    <a href="javascript:void(0);" class="choose_btn solid_btn showcase_cta_btn bundle_cta">
+                                        <span>Get the Bundle</span>
+                                        <i class="fa-solid fa-arrow-right"></i>
+                                    </a>
+                                </div>
+                            </div>
+
+                        </div>
+
                     </div>
                 </div>
+            </section>
 
-                <!-- Card 2: PawMedal Finder (Featured) -->
-                <div class="choose_card featured_card" data-card="2">
-                    <div class="card_media">
-                        <span class="card_badge">Track, find, reunite.</span>
-                        <div class="card_img_wrap">
-                            <img src="images/choose_finder.png" alt="PawMedal Finder">
-                        </div>
-                    </div>
-                    <div class="card_body">
-                        <div class="card_info_row">
-                            <div class="card_text">
-                                <h3>PawMedal Finder</h3>
-                                <p>Works with Apple Find My, Up to<br>1 Year battery, Waterproof.</p>
-                            </div>
-                            <div class="card_price">€79.90</div>
-                        </div>
-                        <a href="javascript:void(0);" class="choose_btn solid_btn">
-                            <span>Explore Finder</span>
-                            <i class="fa-solid fa-arrow-right"></i>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Card 3: PawMedal Bundle -->
-                <div class="choose_card" data-card="3">
-                    <div class="card_media">
-                        <div class="card_img_wrap">
-                            <img src="images/choose_bundle.png" alt="PawMedal Bundle">
-                        </div>
-                    </div>
-                    <div class="card_body">
-                        <div class="card_info_row">
-                            <div class="card_text">
-                                <h3>PawMedal Bundle</h3>
-                                <p>Personalized Tag + Finder, Works with<br>Apple Find My. Best value for full protection.</p>
-                            </div>
-                            <div class="card_price">€99.90</div>
-                        </div>
-                        <a href="javascript:void(0);" class="choose_btn outline_btn">
-                            <span>Get the Bundle</span>
-                            <i class="fa-solid fa-arrow-right"></i>
-                        </a>
-                    </div>
-                </div>
-
-            </div>
-
-        </div>
-    </section>
-
-    <!-- More Than A Name Profile Section (Appears from Right on Mouse Scroll) -->
+            <!-- More Than A Name Profile Section (Appears from Right on Mouse Scroll) -->
             <section class="profile_section cmn_pdding" id="profileSection">
                 <div class="container">
                     <div class="profile_row">
@@ -996,6 +1379,136 @@
                 </div>
             </section>
 
+            <!-- Frequently Asked Questions Section (Parallax entrance from bottom after 2s scroll on more_pets section) -->
+            <section class="faq_section" id="faqSection" aria-label="Frequently Asked Questions">
+                <div class="faq_container">
+                    <div class="faq_grid">
+                        <!-- Left Column: Typography, Accordion & CTA -->
+                        <div class="faq_content_col cmn_hdr">
+                            <h2 class="faq_section_title">
+                                Frequently asked <span class="faq_accent_gold">questions</span>
+                            </h2>
+                            <p class="faq_section_desc">
+                                Everything you need to know about PawMedal.
+                            </p>
+
+                            <!-- Interactive FAQ Accordion List -->
+                            <div class="faq_accordion" id="faqAccordion">
+                                <!-- FAQ Item 1 (Active/Expanded) -->
+                                <div class="faq_item active">
+                                    <button type="button" class="faq_question" aria-expanded="true">
+                                        <span class="faq_q_bullet"></span>
+                                        <span class="faq_q_text">Does PawMedal work worldwide?</span>
+                                        <span class="faq_arrow_icon"><i class="fa-solid fa-chevron-up"></i></span>
+                                    </button>
+                                    <div class="faq_answer" style="display: block;">
+                                        <p>Yes, PawMedal Tag works wherever someone can scan the QR code or tap the NFC tag. PawMedal Finder uses Apple's Find My network to help locate your pet wherever the network is available.</p>
+                                    </div>
+                                </div>
+
+                                <!-- FAQ Item 2 -->
+                                <div class="faq_item">
+                                    <button type="button" class="faq_question" aria-expanded="false">
+                                        <span class="faq_q_bullet"></span>
+                                        <span class="faq_q_text">Do I need a subscription?</span>
+                                        <span class="faq_arrow_icon"><i class="fa-solid fa-chevron-down"></i></span>
+                                    </button>
+                                    <div class="faq_answer">
+                                        <p>No subscription required! PawMedal Tag and Finder have zero monthly fees. You get full access to all features forever with a single one-time purchase.</p>
+                                    </div>
+                                </div>
+
+                                <!-- FAQ Item 3 -->
+                                <div class="faq_item">
+                                    <button type="button" class="faq_question" aria-expanded="false">
+                                        <span class="faq_q_bullet"></span>
+                                        <span class="faq_q_text">How long does the battery last?</span>
+                                        <span class="faq_arrow_icon"><i class="fa-solid fa-chevron-down"></i></span>
+                                    </button>
+                                    <div class="faq_answer">
+                                        <p>PawMedal Finder has a user-replaceable standard battery that lasts up to one full year. The PawMedal QR/NFC Tag requires no battery or charging ever.</p>
+                                    </div>
+                                </div>
+
+                                <!-- FAQ Item 4 -->
+                                <div class="faq_item">
+                                    <button type="button" class="faq_question" aria-expanded="false">
+                                        <span class="faq_q_bullet"></span>
+                                        <span class="faq_q_text">Is it waterproof?</span>
+                                        <span class="faq_arrow_icon"><i class="fa-solid fa-chevron-down"></i></span>
+                                    </button>
+                                    <div class="faq_answer">
+                                        <p>Yes! Both the PawMedal Tag and Finder are IP67 waterproof and adventure-tested for swimming, heavy rain, snow, and mud.</p>
+                                    </div>
+                                </div>
+
+                                <!-- FAQ Item 5 -->
+                                <div class="faq_item">
+                                    <button type="button" class="faq_question" aria-expanded="false">
+                                        <span class="faq_q_bullet"></span>
+                                        <span class="faq_q_text">Can I update my pet's information?</span>
+                                        <span class="faq_arrow_icon"><i class="fa-solid fa-chevron-down"></i></span>
+                                    </button>
+                                    <div class="faq_answer">
+                                        <p>Instantly, anytime! You can update contact numbers, medical alerts, home address, and photos in your profile without changing or replacing the physical medal.</p>
+                                    </div>
+                                </div>
+
+                                <!-- FAQ Item 6 -->
+                                <div class="faq_item">
+                                    <button type="button" class="faq_question" aria-expanded="false">
+                                        <span class="faq_q_bullet"></span>
+                                        <span class="faq_q_text">What if someone finds my pet?</span>
+                                        <span class="faq_arrow_icon"><i class="fa-solid fa-chevron-down"></i></span>
+                                    </button>
+                                    <div class="faq_answer">
+                                        <p>When someone finds your pet, they can simply tap the medal with any smartphone or scan the QR code to see your pet profile, emergency contacts, and notify you instantly.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- View All Questions CTA Button -->
+                            <div class="faq_btn_wrap">
+                                <button type="button" class="cmn_btn faq_btn" aria-label="View All Questions">
+                                    <span>View All Questions</span>
+                                    <span class="btn_icn"><img src="./images/btn_icn.png" alt="btn_icn"></span>
+                                    <span class="btn_hvr_icn"><img src="./images/btn_hvr_icn.png" alt="btn_icn"></span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Right Column: Visual Stage (Phone Frame, Half Circle Arc, Medal, Mobile Screen) -->
+                        <div class="faq_visual_col">
+                            <div class="faq_visual_stage" id="faqVisualStage">
+                                <!-- Layer 1: Background Half-Circle Arc (Draws from top to bottom) -->
+                                <div class="faq_arc_wrap" id="faqArcWrap">
+                                    <img src="images/faq_circle.png" alt="" class="faq_arc_img" aria-hidden="true">
+                                </div>
+
+                                <!-- Layer 2: Mobile Phone Frame -->
+                                <div class="faq_phone_wrap" id="faqPhoneWrap">
+                                    <!-- Outer iPhone Bezel & Phone Base -->
+                                    <img src="images/faq_phone_frame.png" alt="iPhone Frame" class="faq_phone_frame_img" aria-hidden="true">
+
+                                    <!-- Screen Display Window: Dog Homepage Screen slowly fades in on the phone -->
+                                    <div class="faq_screen_window">
+                                        <img src="images/faq_mobile_screen.png" alt="Dog Homepage Screen Max" class="faq_screen_img" id="faqScreenImg">
+                                    </div>
+
+                                    <!-- iPhone Dynamic Island Pill -->
+                                    <div class="faq_dynamic_island" aria-hidden="true"></div>
+                                </div>
+
+                                <!-- Layer 3: Beach Medal Tag (Appears after arc finishes drawing) -->
+                                <div class="faq_medal_wrap" id="faqMedalWrap">
+                                    <img src="images/faq_tag.png" alt="PawMedal Beach Tag" class="faq_medal_img">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
 
         </div>
     </div>

@@ -59,8 +59,9 @@
         initDogSectionObserver();
         initDogDesignInteractive();
         initMorePetsObserver();
-        initFaqAccordion();
+        initFaqInteractive();
         initFaqObserver();
+        initFooter();
         initTopBarClose();
         initBackToTop();
     }
@@ -300,8 +301,8 @@
 
             // Sleep when idle to conserve resources
             var delta = Math.abs(state.currBgX - state.targetBgX) +
-                        Math.abs(state.currBgY - state.targetBgY) +
-                        Math.abs(state.currContentX - state.targetContentX);
+                Math.abs(state.currBgY - state.targetBgY) +
+                Math.abs(state.currContentX - state.targetContentX);
 
             if (!state.isHovered && delta < 0.005) {
                 state.isIdle = true;
@@ -473,7 +474,7 @@
             priceRaf = requestAnimationFrame(update);
         }
 
-        // Switch to Product
+        // Switch to Product (Cius Labs Spatial Morph & Staggered Reveal)
         function switchProduct(newIndex, direction) {
             if (newIndex === currentIndex && !isSwitching) return;
             if (isSwitching) return;
@@ -486,7 +487,7 @@
             var oldProduct = products[currentIndex];
             var newProduct = products[newIndex];
 
-            // 1. Smooth Y-Axis Spin
+            // 1. Smooth 3D Y-Axis Spin with Depth Scale
             if (oldProduct) {
                 oldProduct.classList.remove('active');
                 if (direction > 0) {
@@ -503,7 +504,7 @@
                 newProduct.classList.add('active');
             }
 
-            // 2. Giant Outlined Typography
+            // 2. Giant Outlined Typography in Depth
             giantTypes.forEach(function (gt, idx) {
                 gt.classList.toggle('active', idx === newIndex);
             });
@@ -529,9 +530,15 @@
                 dot.classList.toggle('active', idx === newIndex);
             });
 
-            // 6. Right Information Panel & Animated Price Count
+            // 6. Right Information Panel with Cius Labs Cascading Staggered Children
             infoCards.forEach(function (card, idx) {
-                card.classList.toggle('active', idx === newIndex);
+                if (idx === newIndex) {
+                    card.classList.remove('active');
+                    void card.offsetWidth; // Force reflow to re-trigger staggered animations
+                    card.classList.add('active');
+                } else {
+                    card.classList.remove('active');
+                }
             });
 
             var newPriceEl = document.getElementById('priceDisplay' + newIndex);
@@ -605,6 +612,67 @@
                 switchProduct(idx);
             });
         });
+
+        // Cius Labs Mouse-Follow 3D Tilt & Magnetic Specular Interaction on Picker Items
+        if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            pickerItems.forEach(function (item) {
+                var itemRect = null;
+                var tiltX = 0, tiltY = 0, targetTiltX = 0, targetTiltY = 0;
+                var magX = 0, magY = 0, targetMagX = 0, targetMagY = 0;
+                var isItemHovered = false;
+                var animId = null;
+
+                function updateItemMotion() {
+                    var ease = 0.12;
+                    tiltX += (targetTiltX - tiltX) * ease;
+                    tiltY += (targetTiltY - tiltY) * ease;
+                    magX += (targetMagX - magX) * ease;
+                    magY += (targetMagY - magY) * ease;
+
+                    item.style.setProperty('--tilt-x', tiltX.toFixed(2));
+                    item.style.setProperty('--tilt-y', tiltY.toFixed(2));
+                    item.style.setProperty('--mag-x', magX.toFixed(2));
+                    item.style.setProperty('--mag-y', magY.toFixed(2));
+
+                    if (isItemHovered || Math.abs(targetTiltX - tiltX) > 0.05 || Math.abs(magX - targetMagX) > 0.05) {
+                        animId = requestAnimationFrame(updateItemMotion);
+                    } else {
+                        animId = null;
+                    }
+                }
+
+                item.addEventListener('mouseenter', function () {
+                    itemRect = item.getBoundingClientRect();
+                    isItemHovered = true;
+                    if (!animId) animId = requestAnimationFrame(updateItemMotion);
+                });
+
+                item.addEventListener('mousemove', function (e) {
+                    if (!itemRect) itemRect = item.getBoundingClientRect();
+                    var relX = e.clientX - itemRect.left;
+                    var relY = e.clientY - itemRect.top;
+                    item.style.setProperty('--mouse-x', relX + 'px');
+                    item.style.setProperty('--mouse-y', relY + 'px');
+
+                    var normX = (relX / itemRect.width - 0.5) * 2;
+                    var normY = (relY / itemRect.height - 0.5) * 2;
+
+                    targetTiltX = normX * 7;  // Yaw (deg)
+                    targetTiltY = -normY * 7; // Pitch (deg)
+                    targetMagX = normX * 4;  // Magnetic pull (px)
+                    targetMagY = normY * 3;
+                });
+
+                item.addEventListener('mouseleave', function () {
+                    isItemHovered = false;
+                    targetTiltX = 0;
+                    targetTiltY = 0;
+                    targetMagX = 0;
+                    targetMagY = 0;
+                    itemRect = null;
+                });
+            });
+        }
 
         // Chevron Controls
         if (prevBtn) {
@@ -689,7 +757,7 @@
             });
         }
 
-        // Cursor-Responsive 3D Tilt Rig with Inertia
+        // Cursor-Responsive 3D Tilt Rig with Multi-Plane Spatial Depth (Cius Labs Style)
         if (tiltRig && stage && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
             var tiltState = {
                 targetX: 0,
@@ -722,13 +790,53 @@
                 tiltState.currX += (tiltState.targetX - tiltState.currX) * ease;
                 tiltState.currY += (tiltState.targetY - tiltState.currY) * ease;
 
-                tiltRig.style.transform = 'perspective(1200px) rotateX(' + tiltState.currX.toFixed(2) + 'deg) rotateY(' + tiltState.currY.toFixed(2) + 'deg) translateZ(' + (tiltState.isHovered ? '20px' : '0px') + ')';
+                tiltRig.style.transform = 'perspective(1200px) rotateX(' + tiltState.currX.toFixed(2) + 'deg) rotateY(' + tiltState.currY.toFixed(2) + 'deg) translateZ(' + (tiltState.isHovered ? '24px' : '0px') + ')';
+
+                // Multi-plane depth parallax
+                // 1. Giant Outlined Typography moves inversely in depth
+                var activeType = chooseSection.querySelector('.stage_giant_type.active');
+                if (activeType) {
+                    var typeX = -tiltState.currY * 0.45;
+                    var typeY = tiltState.currX * 0.35;
+                    activeType.style.transform = 'translate(-50%, -50%) translate3d(' + typeX.toFixed(2) + 'px, ' + typeY.toFixed(2) + 'px, -60px) scale(' + (tiltState.isHovered ? '1.02' : '1') + ')';
+                }
+
+                // 2. Active Product floats forward with responsive depth
+                var activeProduct = chooseSection.querySelector('.showcase_product.active .product_3d_img');
+                if (activeProduct) {
+                    var prodX = tiltState.currY * 0.35;
+                    var prodY = -tiltState.currX * 0.30;
+                    activeProduct.style.transform = 'translate3d(' + prodX.toFixed(2) + 'px, ' + prodY.toFixed(2) + 'px, 35px) scale(' + (tiltState.isHovered ? '1.045' : '1') + ')';
+                }
+
+                // 3. Contact Shadow moves realistically opposite to product tilt
+                var activeShadow = chooseSection.querySelector('.showcase_product.active .product_contact_shadow');
+                if (activeShadow) {
+                    var shadowShift = -tiltState.currY * 0.45;
+                    var shadowScale = 1 - Math.abs(tiltState.currY) * 0.005;
+                    activeShadow.style.transform = 'translateX(calc(-50% + ' + shadowShift.toFixed(2) + 'px)) scale(' + shadowScale.toFixed(3) + ')';
+                }
+
                 requestAnimationFrame(renderTilt);
             }
             renderTilt();
         }
 
-        // Section entrance trigger
+        // Magnetic Button Interaction on Info CTA Buttons (Cius Labs Style)
+        var ctaButtons = chooseSection.querySelectorAll('.showcase_cta_btn');
+        ctaButtons.forEach(function (btn) {
+            btn.addEventListener('mousemove', function (e) {
+                var rect = btn.getBoundingClientRect();
+                var relX = e.clientX - rect.left - rect.width / 2;
+                var relY = e.clientY - rect.top - rect.height / 2;
+                btn.style.transform = 'translate(' + (relX * 0.22).toFixed(2) + 'px, ' + (relY * 0.22).toFixed(2) + 'px) scale(1.02)';
+            });
+            btn.addEventListener('mouseleave', function () {
+                btn.style.transform = '';
+            });
+        });
+
+        // Section entrance trigger with immediate in-view check
         if ('IntersectionObserver' in window) {
             var obs = new IntersectionObserver(function (entries) {
                 entries.forEach(function (entry) {
@@ -738,6 +846,11 @@
                 });
             }, { threshold: 0.1 });
             obs.observe(chooseSection);
+        }
+
+        var initRect = chooseSection.getBoundingClientRect();
+        if (initRect.top < window.innerHeight && initRect.bottom > 0) {
+            chooseSection.classList.add('in-view');
         }
     }
 
@@ -751,49 +864,399 @@
         var dogSection = document.getElementById('dogDesignSection');
         var morePetsSection = document.getElementById('morePetsSection');
         var faqSection = document.getElementById('faqSection');
+        var footerSection = document.getElementById('footerSection');
         if (!wrapper || !profileSection) return;
 
         var duoCards = productSection ? productSection.querySelectorAll('.duo_card') : [];
         var whySpotlight = document.getElementById('whySpotlight');
+        var whyTitleStage = document.getElementById('whyTitleStage');
+        var whyChooseTitle = document.getElementById('whyChooseTitle');
+        var whyTitleFill = document.getElementById('whyTitleFill');
+        var whyTitleOutline = document.getElementById('whyTitleOutline');
+        var whySectionGlowBeam = document.getElementById('whySectionGlowBeam');
+        var whySubtitle = document.getElementById('whySubtitle');
+        var whySubtitleWords = whySubtitle ? whySubtitle.querySelectorAll('.para_word') : [];
+        var compareTableWrapper = whyChooseSection ? whyChooseSection.querySelector('.compare_table_wrapper') : null;
         var whyColumns = whyChooseSection ? whyChooseSection.querySelectorAll('.compare_table_grid > .compare_col') : [];
+        var compareColHeaders = whyChooseSection ? whyChooseSection.querySelectorAll('.compare_feat_header, .compare_prod_header') : [];
         var whyHeader = whyChooseSection ? whyChooseSection.querySelector('.why_choose_header') : null;
+
+        // Group rows and icons by row index (0 to 9) for row-by-row scroll choreography
+        var compareTableRows = [];
+        var compareRowIcons = [];
+        if (whyChooseSection) {
+            var featRows = whyChooseSection.querySelectorAll('.compare_feat_row');
+            var prodCols = whyChooseSection.querySelectorAll('.compare_col_product');
+            for (var r = 0; r < 10; r++) {
+                var rowElements = [];
+                var rowIcn = [];
+                if (featRows[r]) rowElements.push(featRows[r]);
+                prodCols.forEach(function (col) {
+                    var valRows = col.querySelectorAll('.compare_val_row');
+                    if (valRows[r]) {
+                        rowElements.push(valRows[r]);
+                        var icn = valRows[r].querySelector('.compare_icon');
+                        if (icn) rowIcn.push(icn);
+                    }
+                });
+                compareTableRows.push(rowElements);
+                compareRowIcons.push(rowIcn);
+            }
+        }
+
+        function getWhyHeaderCenterOffset() {
+            var winH = window.innerHeight || 800;
+            return Math.min(240, Math.max(140, Math.round(winH * 0.20)));
+        }
         var whyLightTrack = whyChooseSection ? whyChooseSection.querySelector('.why_travel_light_track') : null;
 
-        var targetProgress = 0; // Range: 0.0 to 10.0
+        function resetWhyChooseElements() {
+            if (whyChooseSection) {
+                whyChooseSection.style.transform = 'translate3d(100%, 0, 0)';
+                whyChooseSection.style.visibility = 'hidden';
+                whyChooseSection.classList.remove('in-view', 'spotlight-active', 'ray-active');
+            }
+            if (whyTitleStage) {
+                var midY = getWhyHeaderCenterOffset();
+                whyTitleStage.style.transform = 'translate3d(0, ' + midY + 'px, 0) scale(2.0)';
+            }
+            if (whyTitleOutline) {
+                whyTitleOutline.style.opacity = '1';
+                whyTitleOutline.style.backgroundPosition = '100% 0%';
+            }
+            if (whyTitleFill) {
+                whyTitleFill.style.clipPath = 'inset(0 100% 0 0)';
+                whyTitleFill.style.webkitClipPath = 'inset(0 100% 0 0)';
+            }
+            if (whySectionGlowBeam) {
+                whySectionGlowBeam.style.opacity = '0';
+                whySectionGlowBeam.style.left = '-30%';
+            }
+            if (whyHeader) {
+                whyHeader.style.transform = 'translate3d(0, 0, 0)';
+                whyHeader.style.opacity = '1';
+            }
+            if (whySubtitle) {
+                whySubtitle.style.opacity = '1';
+                whySubtitle.style.transform = 'none';
+            }
+            whySubtitleWords.forEach(function (w) {
+                w.style.opacity = '0';
+                w.style.transform = 'translate3d(0, 120%, 0) rotate(5deg)';
+                w.style.filter = 'blur(6px)';
+            });
+            if (compareTableWrapper) {
+                compareTableWrapper.style.transform = 'translate3d(0, 24px, 0)';
+                compareTableWrapper.style.opacity = '0';
+                compareTableWrapper.style.pointerEvents = 'none';
+                compareTableWrapper.classList.remove('table-visible');
+            }
+            whyColumns.forEach(function (col) {
+                col.style.transform = 'translate3d(0, 0, 0)';
+                col.style.opacity = '1';
+            });
+            compareColHeaders.forEach(function (hdr) {
+                hdr.style.transform = 'translate3d(0, 0, 0)';
+                hdr.style.opacity = '1';
+            });
+            compareTableRows.forEach(function (rowElements) {
+                rowElements.forEach(function (cell) {
+                    cell.style.transform = 'translate3d(0, 0, 0)';
+                    cell.style.opacity = '1';
+                });
+            });
+            compareRowIcons.forEach(function (rowIcn) {
+                rowIcn.forEach(function (icn) {
+                    icn.style.transform = 'scale(1)';
+                    icn.style.opacity = '1';
+                });
+            });
+            if (whyLightTrack) {
+                whyLightTrack.style.opacity = '';
+            }
+        }
+
+        // Dog Design & Features Animated Cached Elements
+        var dogSectionTitle = document.getElementById('dogSectionTitle');
+        var dogPromptBar = document.getElementById('dogPromptBar');
+        var dogPromptText = document.getElementById('dogPromptText');
+        var dogPromptCursor = document.getElementById('dogPromptCursor');
+        var dogPromptBtn = document.getElementById('dogPromptBtn');
+        var dogTagWrap = document.getElementById('dogTagWrap');
+        var dogTagCard = document.getElementById('dogTagCard');
+        var dogTagSketchLayer = document.getElementById('dogTagSketchLayer');
+        var dogTagColorLayer = document.getElementById('dogTagColorLayer');
+        var dogColorSweepLine = document.getElementById('dogColorSweepLine');
+        var dogSpecularShine = document.getElementById('dogSpecularShine');
+        var dogFlyingArcToken = document.getElementById('dogFlyingArcToken');
+        var dogFeaturesBar = document.getElementById('dogFeaturesBar');
+        var dogFeaturesRail = document.getElementById('dogFeaturesRail');
+        var dogRailActiveLine = document.getElementById('dogRailActiveLine');
+        var dogTravelingToken = document.getElementById('dogTravelingToken');
+        var dogFeatCols = dogFeaturesBar ? dogFeaturesBar.querySelectorAll('.dog_feat_col') : [];
+
+        var dogAnimStarted = false;
+        var dogAnimStep = 0;
+        var dogTypeTimer = null;
+        var dogAutoTimers = [];
+
+        function spawnSparkleBurst(originX, originY) {
+            var container = document.body;
+            var count = 12;
+            for (var i = 0; i < count; i++) {
+                var spark = document.createElement('div');
+                spark.className = 'dog_sparkle_particle';
+                spark.style.position = 'fixed';
+                spark.style.left = originX + 'px';
+                spark.style.top = originY + 'px';
+                spark.style.width = '6px';
+                spark.style.height = '6px';
+                spark.style.borderRadius = '50%';
+                spark.style.pointerEvents = 'none';
+                spark.style.zIndex = '9999';
+                spark.style.background = 'radial-gradient(circle, #FFF0BA 20%, #E5BC64 70%, transparent 100%)';
+                spark.style.boxShadow = '0 0 10px rgba(229, 188, 100, 0.9)';
+
+                var angle = (i / count) * 2 * Math.PI + (Math.random() * 0.4 - 0.2);
+                var dist = 35 + Math.random() * 45;
+                var destX = Math.cos(angle) * dist;
+                var destY = Math.sin(angle) * dist;
+
+                spark.style.transition = 'all 0.65s cubic-bezier(0.15, 0.9, 0.3, 1)';
+                container.appendChild(spark);
+
+                (function (s, dx, dy) {
+                    requestAnimationFrame(function () {
+                        s.style.transform = 'translate3d(' + dx + 'px, ' + dy + 'px, 0) scale(' + (0.3 + Math.random() * 0.7).toFixed(2) + ')';
+                        s.style.opacity = '0';
+                    });
+                    setTimeout(function () {
+                        if (s && s.parentNode) {
+                            s.parentNode.removeChild(s);
+                        }
+                    }, 700);
+                })(spark, destX, destY);
+            }
+        }
+
+        function clearDogTimers() {
+            if (dogTypeTimer) {
+                clearTimeout(dogTypeTimer);
+                dogTypeTimer = null;
+            }
+            dogAutoTimers.forEach(function (t) { clearTimeout(t); });
+            dogAutoTimers = [];
+        }
+
+        function resetDogDesignAnimation() {
+            clearDogTimers();
+            dogAnimStarted = false;
+            dogAnimStep = 0;
+
+            if (dogSection) {
+                dogSection.classList.remove('heading-animated');
+            }
+            if (dogPromptText) {
+                dogPromptText.textContent = '';
+            }
+            if (dogPromptBtn) {
+                dogPromptBtn.classList.remove('btn-active-click');
+            }
+            if (dogTagSketchLayer) {
+                dogTagSketchLayer.style.opacity = '1';
+            }
+            if (dogTagColorLayer) {
+                dogTagColorLayer.classList.remove('color-revealed');
+            }
+            if (dogFlyingArcToken) {
+                dogFlyingArcToken.classList.remove('is-flying');
+                dogFlyingArcToken.style.opacity = '0';
+            }
+            if (dogFeaturesBar) {
+                dogFeaturesBar.classList.remove('bar-visible');
+                dogFeaturesBar.style.opacity = '0';
+                dogFeaturesBar.style.transform = 'translateY(32px)';
+            }
+            if (dogTravelingToken) {
+                dogTravelingToken.classList.remove('token-visible');
+                dogTravelingToken.style.left = '12.5%';
+                dogTravelingToken.style.opacity = '0';
+            }
+            if (dogRailActiveLine) {
+                dogRailActiveLine.setAttribute('x2', '50');
+            }
+            dogFeatCols.forEach(function (col) {
+                col.classList.remove('step-active');
+            });
+        }
+
+        function setRailStepDirect(stepNum, tokenLeft, railX2) {
+            if (dogTravelingToken) {
+                dogTravelingToken.classList.add('token-visible');
+                dogTravelingToken.style.left = tokenLeft;
+            }
+            if (dogRailActiveLine) {
+                dogRailActiveLine.setAttribute('x2', railX2.toString());
+            }
+            for (var s = 1; s <= 4; s++) {
+                var col = document.getElementById('dogFeatCol' + s);
+                if (col) {
+                    if (s <= stepNum) {
+                        col.classList.add('step-active');
+                    } else {
+                        col.classList.remove('step-active');
+                    }
+                }
+            }
+        }
+
+        function startDogDesignSequence() {
+            if (dogAnimStarted) return;
+            dogAnimStarted = true;
+            clearDogTimers();
+
+            // 1. Heading reveals through sweeping gold blocks
+            if (dogSection) {
+                dogSection.classList.add('heading-animated');
+            }
+
+            // 2. Prompt types automatically & clicks "Generate Now"
+            var promptPhrase = "A golden retriever in the mountains at sunset...";
+            var charIdx = 0;
+            if (dogPromptText) {
+                dogPromptText.textContent = '';
+                function typeChar() {
+                    if (charIdx < promptPhrase.length) {
+                        charIdx++;
+                        dogPromptText.textContent = promptPhrase.substring(0, charIdx);
+                        dogTypeTimer = setTimeout(typeChar, 22);
+                    } else {
+                        triggerGenerateClick();
+                    }
+                }
+                dogAutoTimers.push(setTimeout(typeChar, 180));
+            } else {
+                dogAutoTimers.push(setTimeout(triggerGenerateClick, 600));
+            }
+
+            function triggerGenerateClick() {
+                if (dogAnimStep >= 2) return;
+                dogAnimStep = 2;
+
+                if (dogPromptBtn) {
+                    dogPromptBtn.classList.add('btn-active-click');
+                    var rect = dogPromptBtn.getBoundingClientRect();
+                    spawnSparkleBurst(rect.left + rect.width / 2, rect.top + rect.height / 2);
+
+                    dogAutoTimers.push(setTimeout(function () {
+                        dogPromptBtn.classList.remove('btn-active-click');
+                    }, 240));
+                }
+
+                // Dog tag artwork draws as pencil sketch then fills with color
+                if (dogTagColorLayer) {
+                    dogTagColorLayer.classList.add('color-revealed');
+                }
+                if (dogTagSketchLayer) {
+                    dogAutoTimers.push(setTimeout(function () {
+                        dogTagSketchLayer.style.opacity = '0';
+                    }, 350));
+                }
+
+                // Features bar rises into view
+                dogAutoTimers.push(setTimeout(triggerFeaturesBarEntrance, 600));
+            }
+
+            function triggerFeaturesBarEntrance() {
+                if (dogAnimStep >= 3) return;
+                dogAnimStep = 3;
+
+                if (dogFeaturesBar) {
+                    dogFeaturesBar.classList.add('bar-visible');
+                    dogFeaturesBar.style.opacity = '1';
+                    dogFeaturesBar.style.transform = 'translateY(0)';
+                }
+
+                // Finished tag flies down in an arc and transforms into gold paw token
+                if (dogFlyingArcToken) {
+                    dogFlyingArcToken.classList.add('is-flying');
+                }
+
+                // Travels along dashed rail
+                dogAutoTimers.push(setTimeout(triggerRailTravel, 750));
+            }
+
+            function triggerRailTravel() {
+                if (dogAnimStep >= 4) return;
+                dogAnimStep = 4;
+
+                // Step 1
+                setRailStepDirect(1, '12.5%', 160);
+
+                // Step 2
+                dogAutoTimers.push(setTimeout(function () {
+                    setRailStepDirect(2, '37.5%', 380);
+                }, 400));
+
+                // Step 3
+                dogAutoTimers.push(setTimeout(function () {
+                    setRailStepDirect(3, '62.5%', 620);
+                }, 800));
+
+                // Step 4
+                dogAutoTimers.push(setTimeout(function () {
+                    setRailStepDirect(4, '87.5%', 860);
+                    if (dogTravelingToken) {
+                        var rect = dogTravelingToken.getBoundingClientRect();
+                        spawnSparkleBurst(rect.left + rect.width / 2, rect.top + rect.height / 2);
+                    }
+                }, 1200));
+            }
+        }
+
+        var targetProgress = 0; // Range: 0.0 to 13.0
         // 0-1: Profile in from right (3.4s)
-        // 1-2: Product opens from middle (3.4s)
+        // 1-2: Product in from right (3.4s)
         // 2-3: Product dwell (3.0s)
-        // 3-4: Why Choose from bottom (3.6s)
-        // 4-5: Why Choose dwell (2.5s)
-        // 5-6: Why Choose columns part like window -> Dog Section appears from middle (3.4s)
-        // 6-7: Scroll for 2.0s on Dog Section (dwell)
-        // 7-8: More Pets section appears from bottom like a parallax (3.4s)
-        // 8-9: Scroll for 2.0s on More Pets section (dwell)
-        // 9-10: FAQ section appears from bottom like a parallax (3.4s)
+        // 3-7: Why Choose cinematic sequence (slide in -> heading reveal -> move up -> para reveal -> table fade in)
+        // 7-8: Why Choose columns part like window -> Dog Section appears from middle (3.4s)
+        // 8-9: Synchronized Dog Design & Features Showcase (fast, engaging, short scroll)
+        // 9-10: More Pets section appears from bottom like a parallax (3.4s)
+        // 10-11: Scroll for 2.0s on More Pets section (dwell)
+        // 11-12: FAQ section appears from bottom like a parallax (takes 2-3 scrolls)
+        // 12-13: Footer section appears from bottom (takes 2 scrolls)
         var currentProgress = 0;
         var profileRevealed = false;
         var rafId = null;
         var handTimer = null;
         var arrowTimer = null;
+        var stage1IdleTimer = null;
+        var lastStage1ScrollTime = 0;
+        var stage2IdleTimer = null;
+        var lastStage2ScrollTime = 0;
+        var stage3IdleTimer = null;
+        var lastStage3ScrollTime = 0;
+        var lastMorePetsScrollTime = 0;
+        var lastFaqScrollTime = 0;
 
         // Scroll deltas per stage
-        var stage1Delta = 3400;         // Choose -> Profile (3.4s)
-        var stage2Delta = 3400;         // Profile -> Product window opens (3.4s)
+        var stage1Delta = 600;          // Choose -> Profile (Fast, fluid, automatic slide-in)
+        var stage2Delta = 3400;         // Profile -> Product (3.4s)
         var productDwellDelta = 3000;   // Scroll for 3 SECONDS on the Product section!
-        var stage4Delta = 3600;         // Why Choose appears from bottom smoothly (3.6s)
-        var whyChooseDwellDelta = 2500; // Scroll for 2.5 SECONDS on the Why Choose section!
-        var dogSectionDelta = 3400;     // Dog Section appears from middle of comparison columns (3.4s)
-        var dogDwellDelta = 2000;       // Scroll for 2.0 SECONDS on the Dog section!
-        var morePetsDelta = 3400;       // More Pets section appears from bottom like a parallax (3.4s)
-        var morePetsDwellDelta = 2000;  // Scroll for 2.0 SECONDS on More Pets section!
-        var faqDelta = 3400;            // FAQ section appears from bottom like a parallax (3.4s)
+        var whyChooseTotalDelta = 3500; // Why Choose complete sequence (smooth, no scrolling for seconds)
+        var dogSectionDelta = 2000;     // Dog Section appears from middle of comparison columns
+        var dogDwellDelta = 800;        // Fast, smooth, engaging scroll on Dog Section!
+        var morePetsDelta = 900;        // More Pets section appears from bottom like a parallax
+        var morePetsDwellDelta = 300;   // Dwell on More Pets section
+        var faqDelta = 400;             // FAQ section appears from bottom (takes 2-3 scrolls)
 
         function lerp(start, end, factor) {
             return start + (end - start) * factor;
         }
 
         function renderScrollProgress() {
-            currentProgress = lerp(currentProgress, targetProgress, 0.10);
+            var lerpFactor = (targetProgress <= 3.0 || currentProgress <= 3.0) ? 0.055 : 0.10;
+            currentProgress = lerp(currentProgress, targetProgress, lerpFactor);
 
             if (Math.abs(currentProgress - targetProgress) < 0.002) {
                 currentProgress = targetProgress;
@@ -806,9 +1269,14 @@
                 var p1 = Math.min(1, Math.max(0, currentProgress));
 
                 if (chooseSection) {
-                    chooseSection.style.transform = 'translate3d(0, 0, 0)';
-                    chooseSection.style.opacity = '1';
-                    chooseSection.style.visibility = 'visible';
+                    var chooseScale = 1 - (p1 * 0.045);
+                    var chooseOpacity = Math.max(0, 1 - (p1 * 0.40));
+                    var chooseBrightness = 1 - (p1 * 0.16);
+                    var chooseBlur = p1 * 2.5;
+                    chooseSection.style.transform = 'translate3d(0, 0, 0) scale(' + chooseScale.toFixed(4) + ')';
+                    chooseSection.style.opacity = chooseOpacity.toFixed(3);
+                    chooseSection.style.filter = 'brightness(' + chooseBrightness.toFixed(3) + ') blur(' + chooseBlur.toFixed(2) + 'px)';
+                    chooseSection.style.visibility = (p1 < 0.99) ? 'visible' : 'hidden';
                 }
 
                 var translateX = (1 - p1) * 100;
@@ -848,10 +1316,10 @@
                 }
 
                 if (productSection) {
-                    productSection.style.clipPath = 'inset(50% 50% 50% 50% round 32px)';
-                    productSection.style.webkitClipPath = 'inset(50% 50% 50% 50% round 32px)';
-                    productSection.style.transform = 'scale(0.85)';
-                    productSection.style.opacity = '0';
+                    productSection.style.clipPath = 'none';
+                    productSection.style.webkitClipPath = 'none';
+                    productSection.style.transform = 'translate3d(100%, 0, 0)';
+                    productSection.style.opacity = '1';
                     productSection.style.visibility = 'hidden';
                 }
                 duoCards.forEach(function (c) {
@@ -860,22 +1328,7 @@
                     c.style.opacity = '';
                 });
 
-                if (whyChooseSection) {
-                    whyChooseSection.style.transform = 'translate3d(0, 100%, 0)';
-                    whyChooseSection.style.visibility = 'hidden';
-                    whyChooseSection.classList.remove('in-view', 'spotlight-active');
-                }
-                whyColumns.forEach(function (col) {
-                    col.style.transform = '';
-                    col.style.opacity = '';
-                });
-                if (whyHeader) {
-                    whyHeader.style.transform = '';
-                    whyHeader.style.opacity = '';
-                }
-                if (whyLightTrack) {
-                    whyLightTrack.style.opacity = '';
-                }
+                resetWhyChooseElements();
 
                 if (dogSection) {
                     dogSection.style.clipPath = 'inset(0% 50% 0% 50% round 24px)';
@@ -897,11 +1350,16 @@
                     faqSection.style.visibility = 'hidden';
                     faqSection.classList.remove('faq-animated');
                 }
+                if (footerSection) {
+                    footerSection.style.transform = 'translate3d(0, 100%, 0)';
+                    footerSection.style.opacity = '0';
+                    footerSection.style.visibility = 'hidden';
+                }
 
             } else if (currentProgress <= 2.0) {
                 // ========================================== 
-                // STAGE 2: PROFILE -> PRODUCT WINDOW SECTION (1.0 to 2.0)
-                // Appears from middle like a window opens!
+                // STAGE 2: PROFILE -> PRODUCT SECTION (1.0 to 2.0)
+                // Appears smoothly sliding in from the right side!
                 // ========================================== 
                 var p2 = Math.min(1, Math.max(0, currentProgress - 1.0));
 
@@ -921,29 +1379,23 @@
                 profileSection.style.visibility = 'visible';
 
                 if (productSection) {
-                    var insetY = (1 - p2) * 50;
-                    var insetX = (1 - p2) * 50;
-                    var insetRound = (1 - p2) * 32;
-
-                    productSection.style.clipPath = 'inset(' + insetY.toFixed(2) + '% ' + insetX.toFixed(2) + '% ' + insetY.toFixed(2) + '% ' + insetX.toFixed(2) + '% round ' + insetRound.toFixed(1) + 'px)';
-                    productSection.style.webkitClipPath = 'inset(' + insetY.toFixed(2) + '% ' + insetX.toFixed(2) + '% ' + insetY.toFixed(2) + '% ' + insetX.toFixed(2) + '% round ' + insetRound.toFixed(1) + 'px)';
-
-                    var prodScale = 0.85 + (p2 * 0.15);
-                    var prodOpacity = Math.min(1, p2 * 1.8);
-
-                    productSection.style.transform = 'scale(' + prodScale.toFixed(3) + ')';
-                    productSection.style.opacity = prodOpacity.toFixed(3);
+                    var prodX = (1 - p2) * 100;
+                    productSection.style.clipPath = 'none';
+                    productSection.style.webkitClipPath = 'none';
+                    productSection.style.transform = 'translate3d(' + prodX.toFixed(3) + '%, 0, 0)';
+                    productSection.style.opacity = '1';
                     productSection.style.visibility = (p2 > 0.005) ? 'visible' : 'hidden';
                 }
 
                 if (duoCards.length >= 2) {
-                    var cardSpread = (1 - p2) * 45;
+                    var cardOffset1 = (1 - p2) * 20;
+                    var cardOffset2 = (1 - p2) * 45;
                     if (p2 >= 0.99) {
                         duoCards[0].style.transform = '';
                         duoCards[1].style.transform = '';
                     } else {
-                        duoCards[0].style.transform = 'translate3d(' + (-cardSpread).toFixed(1) + 'px, 0, 0)';
-                        duoCards[1].style.transform = 'translate3d(' + cardSpread.toFixed(1) + 'px, 0, 0)';
+                        duoCards[0].style.transform = 'translate3d(' + cardOffset1.toFixed(1) + 'px, 0, 0)';
+                        duoCards[1].style.transform = 'translate3d(' + cardOffset2.toFixed(1) + 'px, 0, 0)';
                     }
 
                     if (p2 > 0.25) {
@@ -955,22 +1407,7 @@
                     }
                 }
 
-                if (whyChooseSection) {
-                    whyChooseSection.style.transform = 'translate3d(0, 100%, 0)';
-                    whyChooseSection.style.visibility = 'hidden';
-                    whyChooseSection.classList.remove('in-view', 'spotlight-active');
-                }
-                whyColumns.forEach(function (col) {
-                    col.style.transform = '';
-                    col.style.opacity = '';
-                });
-                if (whyHeader) {
-                    whyHeader.style.transform = '';
-                    whyHeader.style.opacity = '';
-                }
-                if (whyLightTrack) {
-                    whyLightTrack.style.opacity = '';
-                }
+                resetWhyChooseElements();
 
                 if (dogSection) {
                     dogSection.style.clipPath = 'inset(0% 50% 0% 50% round 24px)';
@@ -995,26 +1432,31 @@
 
             } else if (currentProgress <= 3.0) {
                 // ========================================== 
-                // STAGE 3: SCROLL FOR 3 SECONDS ON PRODUCT SECTION (2.0 to 3.0)
-                // Product section remains completely still, open and interactive!
+                // STAGE 3: PRODUCT DUO -> WHY CHOOSE SLIDE-IN (2.0 to 3.0)
+                // Why Choose slides in slowly & smoothly from the right in 2 scrolls!
                 // ========================================== 
+                var p3 = Math.min(1, Math.max(0, currentProgress - 2.0));
+
                 if (chooseSection) {
                     chooseSection.style.transform = 'translate3d(0, 0, 0)';
                     chooseSection.style.opacity = '1';
-                    chooseSection.style.visibility = 'visible';
                 }
 
                 profileSection.style.transform = 'scale(0.92)';
                 profileSection.style.filter = 'brightness(0.82) blur(2.5px)';
                 profileSection.style.opacity = '0.75';
-                profileSection.style.visibility = 'visible';
 
+                // Duo section dims and scales down slightly as Why Choose slides in
                 if (productSection) {
-                    productSection.style.clipPath = 'inset(0% 0% 0% 0% round 0px)';
-                    productSection.style.webkitClipPath = 'inset(0% 0% 0% 0% round 0px)';
-                    productSection.style.transform = 'scale(1)';
-                    productSection.style.opacity = '1';
-                    productSection.style.visibility = 'visible';
+                    var prodScale = 1.0 - (p3 * 0.06);       // 1.0 -> 0.94
+                    var prodBrightness = 1.0 - (p3 * 0.28);  // 1.0 -> 0.72
+                    var prodOpacity = 1.0 - (p3 * 0.20);     // 1.0 -> 0.80
+                    productSection.style.clipPath = 'none';
+                    productSection.style.webkitClipPath = 'none';
+                    productSection.style.transform = 'scale(' + prodScale.toFixed(3) + ')';
+                    productSection.style.filter = 'brightness(' + prodBrightness.toFixed(3) + ')';
+                    productSection.style.opacity = prodOpacity.toFixed(3);
+                    productSection.style.visibility = (p3 < 0.98) ? 'visible' : 'hidden';
                 }
                 duoCards.forEach(function (c) {
                     c.classList.add('in-view');
@@ -1022,20 +1464,44 @@
                 });
 
                 if (whyChooseSection) {
-                    whyChooseSection.style.transform = 'translate3d(0, 100%, 0)';
-                    whyChooseSection.style.visibility = 'hidden';
+                    var whyX = (1 - p3) * 100;
+                    whyChooseSection.style.transform = 'translate3d(' + whyX.toFixed(3) + '%, 0, 0)';
+                    whyChooseSection.style.opacity = '1';
+                    whyChooseSection.style.visibility = (p3 > 0.005) ? 'visible' : 'hidden';
                     whyChooseSection.classList.remove('in-view', 'spotlight-active');
                 }
-                whyColumns.forEach(function (col) {
-                    col.style.transform = '';
-                    col.style.opacity = '';
-                });
-                if (whyHeader) {
-                    whyHeader.style.transform = '';
-                    whyHeader.style.opacity = '';
+
+                // Heading starts centered, large (2x), outline-only ready for ray sweep
+                if (whyTitleStage) {
+                    var midY = getWhyHeaderCenterOffset();
+                    whyTitleStage.style.transform = 'translate3d(0, ' + midY + 'px, 0) scale(2.0)';
                 }
-                if (whyLightTrack) {
-                    whyLightTrack.style.opacity = '';
+                if (whyTitleOutline) {
+                    whyTitleOutline.style.opacity = '1';
+                    whyTitleOutline.style.backgroundPosition = '100% 0%';
+                }
+                if (whyTitleFill) {
+                    whyTitleFill.style.clipPath = 'inset(0 100% 0 0)';
+                    whyTitleFill.style.webkitClipPath = 'inset(0 100% 0 0)';
+                }
+                if (whySectionGlowBeam) {
+                    whySectionGlowBeam.style.opacity = '0';
+                    whySectionGlowBeam.style.left = '-30%';
+                }
+                if (whySubtitle) {
+                    whySubtitle.style.opacity = '1';
+                    whySubtitle.style.transform = 'none';
+                }
+                whySubtitleWords.forEach(function (w) {
+                    w.style.opacity = '0';
+                    w.style.transform = 'translate3d(0, 120%, 0) rotate(5deg)';
+                    w.style.filter = 'blur(6px)';
+                });
+                if (compareTableWrapper) {
+                    compareTableWrapper.classList.remove('table-visible');
+                    compareTableWrapper.style.opacity = '0';
+                    compareTableWrapper.style.transform = 'translate3d(0, 24px, 0)';
+                    compareTableWrapper.style.pointerEvents = 'none';
                 }
 
                 if (dogSection) {
@@ -1059,71 +1525,214 @@
                     faqSection.classList.remove('faq-animated');
                 }
 
-            } else if (currentProgress <= 4.0) {
+            } else if (currentProgress <= 7.0) {
                 // ========================================== 
-                // STAGE 4: AFTER 3 SECONDS SCROLL ON PRODUCT SECTION,
-                // WHY CHOOSE SECTION APPEARS FROM BOTTOM SMOOTHLY (3.0 to 4.0)
+                // STAGES 4-7: CINEMATIC 5-STAGE WHY CHOOSE SEQUENCE (3.0 to 7.0)
+                // 1. 0-20%: Section slides in slowly from right (translateX 100% -> 0), duo scales down & dims
+                // 2. 24-46%: Heading appears large (2x) in center, outline-only, ray sweeps left to right,
+                //            soft glow beam crosses section, fill layer revealed with clip-path
+                // 3. 52-64%: Heading scales down (2x -> 1x) & moves to normal position, outline layer fades out
+                // 4. 62-76%: Paragraph reveals word by word rising from mask with rotation & clearing blur
+                // 5. 74-96%: Table columns fade up staggered, headers slide up, cells row by row, check/cross icons scale in
                 // ========================================== 
-                var p4 = Math.min(1, Math.max(0, currentProgress - 3.0));
+                var whyProgress = Math.min(1, Math.max(0, (currentProgress - 3.0) / 4.0));
 
                 if (chooseSection) {
                     chooseSection.style.transform = 'translate3d(0, 0, 0)';
                     chooseSection.style.opacity = '1';
-                    chooseSection.style.visibility = 'visible';
                 }
 
                 profileSection.style.transform = 'scale(0.92)';
                 profileSection.style.filter = 'brightness(0.82) blur(2.5px)';
                 profileSection.style.opacity = '0.75';
-                profileSection.style.visibility = 'visible';
 
+                // ------------------------------------------
+                // 1. WHY CHOOSE RESTS CENTERED & DUO HIDDEN
+                // ------------------------------------------
                 if (productSection) {
-                    productSection.style.clipPath = 'inset(0% 0% 0% 0% round 0px)';
-                    productSection.style.webkitClipPath = 'inset(0% 0% 0% 0% round 0px)';
-                    productSection.style.transform = 'scale(1)';
-                    productSection.style.opacity = '1';
-                    productSection.style.visibility = 'visible';
+                    productSection.style.visibility = 'hidden';
                 }
-                duoCards.forEach(function (c) {
-                    c.classList.add('in-view');
-                    c.style.transform = '';
-                });
 
                 if (whyChooseSection) {
-                    var translateY = (1 - p4) * 100;
-                    whyChooseSection.style.transform = 'translate3d(0, ' + translateY.toFixed(3) + '%, 0)';
+                    whyChooseSection.style.transform = 'translate3d(0, 0, 0)';
                     whyChooseSection.style.opacity = '1';
-                    whyChooseSection.style.visibility = (p4 > 0.005) ? 'visible' : 'hidden';
+                    whyChooseSection.style.visibility = 'visible';
 
-                    if (p4 > 0.15) {
-                        whyChooseSection.classList.add('in-view');
+                    if (whyProgress >= 0.76) {
+                        whyChooseSection.classList.add('in-view', 'spotlight-active');
                     } else {
                         whyChooseSection.classList.remove('in-view', 'spotlight-active');
                     }
+                }
 
-                    if (p4 >= 0.80) {
-                        whyChooseSection.classList.add('spotlight-active');
+                // ------------------------------------------
+                // 2 & 3. 24-46% & 52-64%: HEADING (CENTER 2X, RAY SWEEP, CLIP-PATH FILL, SETTLE UP)
+                // ------------------------------------------
+                var midY = getWhyHeaderCenterOffset();
+
+                if (whyTitleStage) {
+                    if (whyProgress < 0.52) {
+                        // Centered and large (2x)
+                        whyTitleStage.style.transform = 'translate3d(0, ' + midY + 'px, 0) scale(2.0)';
+                    } else if (whyProgress <= 0.64) {
+                        // 52-64%: Scales down from 2.0 -> 1.0 and moves from midY -> 0
+                        var p3 = (whyProgress - 0.52) / (0.64 - 0.52);
+                        var eased3 = p3 * (2 - p3);
+                        var curHdrY = (1 - eased3) * midY;
+                        var curScale = 2.0 - (eased3 * 1.0);
+                        whyTitleStage.style.transform = 'translate3d(0, ' + curHdrY.toFixed(2) + 'px, 0) scale(' + curScale.toFixed(3) + ')';
                     } else {
-                        whyChooseSection.classList.remove('spotlight-active');
+                        // Normal settled position
+                        whyTitleStage.style.transform = 'translate3d(0, 0, 0) scale(1)';
                     }
                 }
 
-                whyColumns.forEach(function (col) {
-                    col.style.transform = '';
-                    col.style.opacity = '';
-                });
-                if (whyHeader) {
-                    whyHeader.style.transform = '';
-                    whyHeader.style.opacity = '';
-                }
-                if (whyLightTrack) {
-                    whyLightTrack.style.opacity = '';
+                // Fill layer revealed with clip-path behind ray
+                if (whyTitleFill) {
+                    if (whyProgress < 0.24) {
+                        whyTitleFill.style.clipPath = 'inset(0 100% 0 0)';
+                        whyTitleFill.style.webkitClipPath = 'inset(0 100% 0 0)';
+                    } else if (whyProgress <= 0.46) {
+                        var p2 = (whyProgress - 0.24) / (0.46 - 0.24);
+                        var fillInsetRight = Math.max(0, (1 - p2) * 100);
+                        whyTitleFill.style.clipPath = 'inset(0 ' + fillInsetRight.toFixed(1) + '% 0 0)';
+                        whyTitleFill.style.webkitClipPath = 'inset(0 ' + fillInsetRight.toFixed(1) + '% 0 0)';
+                    } else {
+                        whyTitleFill.style.clipPath = 'inset(0 0% 0 0)';
+                        whyTitleFill.style.webkitClipPath = 'inset(0 0% 0 0)';
+                    }
                 }
 
+                // Outline layer: outline-only, ray sweeps left to right during 24-46%, fades out 52-64%
+                if (whyTitleOutline) {
+                    if (whyProgress < 0.24) {
+                        whyTitleOutline.style.opacity = '1';
+                        whyTitleOutline.style.backgroundPosition = '100% 0%';
+                    } else if (whyProgress <= 0.46) {
+                        var p2Ray = (whyProgress - 0.24) / (0.46 - 0.24);
+                        var rayPos = 100 - (p2Ray * 200); // 100% -> -100%
+                        whyTitleOutline.style.backgroundPosition = rayPos.toFixed(1) + '% 0%';
+                        whyTitleOutline.style.opacity = '1';
+                    } else if (whyProgress < 0.52) {
+                        whyTitleOutline.style.opacity = '1';
+                        whyTitleOutline.style.backgroundPosition = '-100% 0%';
+                    } else if (whyProgress <= 0.64) {
+                        var p3Out = (whyProgress - 0.52) / (0.64 - 0.52);
+                        whyTitleOutline.style.opacity = Math.max(0, 1 - p3Out).toFixed(3);
+                    } else {
+                        whyTitleOutline.style.opacity = '0';
+                    }
+                }
+
+                // Soft glow beam crossing the section during 24-46%
+                if (whySectionGlowBeam) {
+                    if (whyProgress >= 0.24 && whyProgress <= 0.46) {
+                        var p2Beam = (whyProgress - 0.24) / (0.46 - 0.24);
+                        var beamX = -30 + (p2Beam * 140);
+                        var beamOp = Math.sin(p2Beam * Math.PI) * 0.85;
+                        whySectionGlowBeam.style.left = beamX.toFixed(1) + '%';
+                        whySectionGlowBeam.style.opacity = beamOp.toFixed(3);
+                    } else {
+                        whySectionGlowBeam.style.opacity = '0';
+                    }
+                }
+
+                if (whyHeader) {
+                    whyHeader.style.transform = 'translate3d(0, 0, 0)';
+                    whyHeader.style.opacity = '1';
+                }
+
+                // ------------------------------------------
+                // 4. 62-76%: SUBTITLE WORD-BY-WORD REVEAL (RISING, ROTATION, UNBLUR)
+                // ------------------------------------------
+                if (whySubtitle) {
+                    whySubtitle.style.opacity = '1';
+                    whySubtitle.style.transform = 'none';
+                }
+                var totalWords = whySubtitleWords.length;
+                if (whyProgress < 0.62) {
+                    whySubtitleWords.forEach(function (w) {
+                        w.style.opacity = '0';
+                        w.style.transform = 'translate3d(0, 120%, 0) rotate(5deg)';
+                        w.style.filter = 'blur(6px)';
+                    });
+                } else if (whyProgress <= 0.76) {
+                    var p4 = (whyProgress - 0.62) / (0.76 - 0.62);
+                    for (var i = 0; i < totalWords; i++) {
+                        var wordStart = (i / totalWords) * 0.60;
+                        var wordLen = 0.40;
+                        var wP = Math.min(1, Math.max(0, (p4 - wordStart) / wordLen));
+                        var easedW = wP * (2 - wP);
+                        var wY = (1 - easedW) * 120;
+                        var wRot = (1 - easedW) * 5.0;
+                        var wBlur = (1 - easedW) * 6.0;
+                        whySubtitleWords[i].style.transform = 'translate3d(0, ' + wY.toFixed(1) + '%, 0) rotate(' + wRot.toFixed(2) + 'deg)';
+                        whySubtitleWords[i].style.opacity = easedW.toFixed(3);
+                        whySubtitleWords[i].style.filter = (wBlur > 0.08) ? 'blur(' + wBlur.toFixed(1) + 'px)' : 'none';
+                    }
+                } else {
+                    whySubtitleWords.forEach(function (w) {
+                        w.style.opacity = '1';
+                        w.style.transform = 'translate3d(0, 0, 0) rotate(0deg)';
+                        w.style.filter = 'none';
+                    });
+                }
+
+                // ------------------------------------------
+                // 5. COMPARE TABLE WRAPPER FADE ANIMATION (AFTER PARA FULLY APPEARS)
+                // ------------------------------------------
+                if (compareTableWrapper) {
+                    if (whyProgress < 0.76) {
+                        compareTableWrapper.classList.remove('table-visible');
+                        compareTableWrapper.style.opacity = '0';
+                        compareTableWrapper.style.transform = 'translate3d(0, 24px, 0)';
+                        compareTableWrapper.style.pointerEvents = 'none';
+                    } else {
+                        compareTableWrapper.classList.add('table-visible');
+                        compareTableWrapper.style.opacity = '1';
+                        compareTableWrapper.style.transform = 'translate3d(0, 0, 0)';
+                        compareTableWrapper.style.pointerEvents = 'auto';
+                    }
+                }
+
+                // All columns, headers, rows, and icons remain fully ready and visible
+                whyColumns.forEach(function (col) {
+                    col.style.transform = 'translate3d(0, 0, 0)';
+                    col.style.opacity = '1';
+                });
+                compareColHeaders.forEach(function (hdr) {
+                    hdr.style.transform = 'translate3d(0, 0, 0)';
+                    hdr.style.opacity = '1';
+                });
+                compareTableRows.forEach(function (rowElements) {
+                    rowElements.forEach(function (cell) {
+                        cell.style.transform = 'translate3d(0, 0, 0)';
+                        cell.style.opacity = '1';
+                    });
+                });
+                compareRowIcons.forEach(function (rowIcn) {
+                    rowIcn.forEach(function (icn) {
+                        icn.style.transform = 'scale(1)';
+                        icn.style.opacity = '1';
+                    });
+                });
+
+                if (whyLightTrack) {
+                    whyLightTrack.style.opacity = (whyProgress >= 0.76) ? '1' : '0';
+                }
+
+                // Reset following sections (Dog, More Pets, FAQ)
+                if (whyChooseSection) {
+                    whyChooseSection.style.transform = 'translate3d(0, 0, 0)';
+                    whyChooseSection.style.filter = '';
+                    whyChooseSection.style.opacity = '1';
+                    whyChooseSection.style.visibility = 'visible';
+                }
                 if (dogSection) {
-                    dogSection.style.clipPath = 'inset(0% 50% 0% 50% round 24px)';
-                    dogSection.style.webkitClipPath = 'inset(0% 50% 0% 50% round 24px)';
-                    dogSection.style.transform = 'scale(0.88)';
+                    dogSection.style.clipPath = 'none';
+                    dogSection.style.webkitClipPath = 'none';
+                    dogSection.style.zIndex = '50';
+                    dogSection.style.transform = 'translate3d(0, 100%, 0)';
                     dogSection.style.opacity = '0';
                     dogSection.style.visibility = 'hidden';
                     dogSection.classList.remove('in-view', 'dog-animated');
@@ -1140,78 +1749,13 @@
                     faqSection.style.visibility = 'hidden';
                     faqSection.classList.remove('faq-animated');
                 }
-
-            } else if (currentProgress <= 5.0) {
+            } else if (currentProgress <= 8.0) {
                 // ========================================== 
-                // STAGE 5: SCROLL FOR 2.5 SECONDS ON WHY CHOOSE SECTION! (4.0 to 5.0)
-                // Why Choose section remains completely stationary, in-view, spotlight active!
-                // Dog section remains closed in center slit until 2.5s finishes!
+                // STAGE 8: PARALLAX TRANSITION - DOG DESIGN SECTION APPEARS FROM BOTTOM! (7.0 to 8.0)
+                // As user scrolls, Why Choose section smoothly translates up & scales back (parallax background),
+                // while Dog Design section rises up from bottom into full view!
                 // ========================================== 
-                if (chooseSection) {
-                    chooseSection.style.transform = 'translate3d(0, 0, 0)';
-                    chooseSection.style.opacity = '1';
-                }
-
-                profileSection.style.transform = 'scale(0.92)';
-                profileSection.style.filter = 'brightness(0.82) blur(2.5px)';
-                profileSection.style.opacity = '0.75';
-
-                if (productSection) {
-                    productSection.style.clipPath = 'inset(0% 0% 0% 0% round 0px)';
-                    productSection.style.webkitClipPath = 'inset(0% 0% 0% 0% round 0px)';
-                    productSection.style.transform = 'scale(1)';
-                    productSection.style.opacity = '1';
-                }
-
-                if (whyChooseSection) {
-                    whyChooseSection.style.transform = 'translate3d(0, 0, 0)';
-                    whyChooseSection.style.opacity = '1';
-                    whyChooseSection.style.visibility = 'visible';
-                    whyChooseSection.classList.add('in-view', 'spotlight-active');
-                }
-
-                // Comparison columns remain intact and in position
-                whyColumns.forEach(function (col) {
-                    col.style.transform = '';
-                    col.style.opacity = '';
-                });
-                if (whyHeader) {
-                    whyHeader.style.transform = '';
-                    whyHeader.style.opacity = '';
-                }
-                if (whyLightTrack) {
-                    whyLightTrack.style.opacity = '';
-                }
-
-                // Dog section remains closed and hidden
-                if (dogSection) {
-                    dogSection.style.clipPath = 'inset(0% 50% 0% 50% round 24px)';
-                    dogSection.style.webkitClipPath = 'inset(0% 50% 0% 50% round 24px)';
-                    dogSection.style.transform = 'scale(0.88)';
-                    dogSection.style.opacity = '0';
-                    dogSection.style.visibility = 'hidden';
-                    dogSection.classList.remove('in-view', 'dog-animated');
-                }
-                if (morePetsSection) {
-                    morePetsSection.style.transform = 'translate3d(0, 100%, 0)';
-                    morePetsSection.style.opacity = '0';
-                    morePetsSection.style.visibility = 'hidden';
-                    morePetsSection.classList.remove('pets-animated');
-                }
-                if (faqSection) {
-                    faqSection.style.transform = 'translate3d(0, 100%, 0)';
-                    faqSection.style.opacity = '0';
-                    faqSection.style.visibility = 'hidden';
-                    faqSection.classList.remove('faq-animated');
-                }
-
-            } else if (currentProgress <= 6.0) {
-                // ========================================== 
-                // STAGE 6: AFTER 2.5s SCROLL ON WHY CHOOSE,
-                // WHY CHOOSE COLUMNS PART LIKE TWO SIDES OF A WINDOW OPENING,
-                // AND DOG SECTION APPEARS FROM THE MIDDLE! (5.0 to 6.0)
-                // ========================================== 
-                var p5 = Math.min(1, Math.max(0, currentProgress - 5.0));
+                var p8 = Math.min(1, Math.max(0, currentProgress - 7.0));
 
                 if (chooseSection) {
                     chooseSection.style.transform = 'translate3d(0, 0, 0)';
@@ -1221,71 +1765,41 @@
                 profileSection.style.transform = 'scale(0.92)';
                 profileSection.style.opacity = '0.75';
 
+                // Previous Section: Why Choose Section smoothly parallaxes upward and recedes
                 if (whyChooseSection) {
-                    whyChooseSection.style.transform = 'translate3d(0, 0, 0)';
-                    whyChooseSection.style.opacity = '1';
-                    whyChooseSection.style.visibility = 'visible';
+                    var whyParallaxY = -p8 * 25;
+                    var whyParallaxScale = 1 - (p8 * 0.05);
+                    var whyParallaxOpacity = Math.max(0, 1 - (p8 * 0.6));
+                    whyChooseSection.style.transform = 'translate3d(0, ' + whyParallaxY.toFixed(2) + '%, 0) scale(' + whyParallaxScale.toFixed(3) + ')';
+                    whyChooseSection.style.filter = '';
+                    whyChooseSection.style.opacity = whyParallaxOpacity.toFixed(3);
+                    whyChooseSection.style.visibility = (p8 < 0.99) ? 'visible' : 'hidden';
+                    whyChooseSection.style.zIndex = '35';
                 }
 
-                // Window Parting Effect on Comparison Columns:
-                var colShiftLeft = p5 * 115;
-                if (whyColumns[0]) {
-                    whyColumns[0].style.transform = 'translate3d(' + (-colShiftLeft).toFixed(2) + '%, 0, 0)';
-                }
-                if (whyColumns[1]) {
-                    whyColumns[1].style.transform = 'translate3d(' + (-colShiftLeft).toFixed(2) + '%, 0, 0)';
-                }
-
-                var colShiftRight = p5 * 115;
-                if (whyColumns[2]) {
-                    whyColumns[2].style.transform = 'translate3d(' + colShiftRight.toFixed(2) + '%, 0, 0)';
-                }
-                if (whyColumns[3]) {
-                    whyColumns[3].style.transform = 'translate3d(' + colShiftRight.toFixed(2) + '%, 0, 0)';
-                }
-
-                var colOpacity = Math.max(0, 1 - (p5 * 0.75));
-                whyColumns.forEach(function (col) {
-                    col.style.opacity = colOpacity.toFixed(3);
-                });
-
-                var headY = -p5 * 50;
-                var headOpacity = Math.max(0, 1 - (p5 * 1.3));
-                if (whyHeader) {
-                    whyHeader.style.transform = 'translate3d(0, ' + headY.toFixed(1) + 'px, 0)';
-                    whyHeader.style.opacity = headOpacity.toFixed(3);
-                }
-                if (whyLightTrack) {
-                    whyLightTrack.style.opacity = Math.max(0, 1 - (p5 * 1.5)).toFixed(3);
-                }
-
-                // Dog Section appears from the middle between the parting columns:
+                // Incoming Section: Dog Design Section appears from bottom like a parallax!
                 if (dogSection) {
-                    var dogInsetX = (1 - p5) * 50;
-                    var dogInsetRound = (1 - p5) * 24;
+                    dogSection.style.clipPath = 'none';
+                    dogSection.style.webkitClipPath = 'none';
+                    dogSection.style.zIndex = '50';
 
-                    dogSection.style.clipPath = 'inset(0% ' + dogInsetX.toFixed(2) + '% 0% ' + dogInsetX.toFixed(2) + '% round ' + dogInsetRound.toFixed(1) + 'px)';
-                    dogSection.style.webkitClipPath = 'inset(0% ' + dogInsetX.toFixed(2) + '% 0% ' + dogInsetX.toFixed(2) + '% round ' + dogInsetRound.toFixed(1) + 'px)';
+                    var dogY = (1 - p8) * 100;
+                    dogSection.style.transform = 'translate3d(0, ' + dogY.toFixed(2) + '%, 0)';
+                    dogSection.style.opacity = Math.min(1, p8 * 1.6).toFixed(3);
+                    dogSection.style.filter = '';
+                    dogSection.style.visibility = (p8 > 0.005) ? 'visible' : 'hidden';
 
-                    var dogScale = 0.88 + (p5 * 0.12);
-                    var dogOpacity = Math.min(1, p5 * 1.6);
-
-                    dogSection.style.transform = 'scale(' + dogScale.toFixed(3) + ')';
-                    dogSection.style.opacity = dogOpacity.toFixed(3);
-                    dogSection.style.visibility = (p5 > 0.005) ? 'visible' : 'hidden';
-
-                    if (p5 >= 0.85) {
+                    if (p8 >= 0.80) {
                         if (!dogSection.classList.contains('dog-animated')) {
                             dogSection.classList.add('dog-animated');
                         }
-                    } else if (p5 < 0.60) {
+                    } else if (p8 < 0.60) {
                         dogSection.classList.remove('dog-animated');
+                        resetDogDesignAnimation();
                     }
 
-                    if (p5 >= 0.99) {
-                        dogSection.style.clipPath = 'inset(0% 0% 0% 0% round 0px)';
-                        dogSection.style.webkitClipPath = 'inset(0% 0% 0% 0% round 0px)';
-                        dogSection.style.transform = 'scale(1)';
+                    if (p8 >= 0.99) {
+                        dogSection.style.transform = 'translate3d(0, 0%, 0)';
                         dogSection.style.opacity = '1';
                     }
                 }
@@ -1303,25 +1817,49 @@
                     faqSection.classList.remove('faq-animated');
                 }
 
-            } else if (currentProgress <= 7.0) {
+            } else if (currentProgress <= 9.0) {
                 // ========================================== 
-                // STAGE 7: SCROLL FOR 2 SECONDS ON DOG SECTION (6.0 to 7.0)
-                // Dog section remains completely open, stationary, fully visible, interactive!
-                // More Pets section waits hidden below until 2s dwell finishes.
+                // STAGE 9: SYNCHRONIZED DOG DESIGN & FEATURES SEQUENCE (8.0 to 9.0)
+                // - Sweeping gold blocks reveal heading
+                // - Prompt types automatically & clicks "Generate Now"
+                // - Dog tag artwork draws as pencil sketch then fills with color
+                // - Features bar rises into view
+                // - Finished tag flies down in an arc, transforms into gold paw token
+                // - Travels along dashed rail across steps 1 -> 2 -> 3 -> 4
                 // ========================================== 
+                var p9 = Math.min(1, Math.max(0, currentProgress - 8.0));
+
                 if (whyChooseSection) {
                     whyChooseSection.style.opacity = '0';
                     whyChooseSection.style.visibility = 'hidden';
                 }
-
                 if (dogSection) {
-                    dogSection.style.clipPath = 'inset(0% 0% 0% 0% round 0px)';
-                    dogSection.style.webkitClipPath = 'inset(0% 0% 0% 0% round 0px)';
-                    dogSection.style.transform = 'scale(1)';
+                    dogSection.style.clipPath = 'none';
+                    dogSection.style.webkitClipPath = 'none';
+                    dogSection.style.zIndex = '50';
+                    dogSection.style.transform = 'translate3d(0, 0%, 0)';
                     dogSection.style.opacity = '1';
                     dogSection.style.visibility = 'visible';
                     if (!dogSection.classList.contains('dog-animated')) {
                         dogSection.classList.add('dog-animated');
+                    }
+                }
+
+                // Trigger sequence immediately on stage entry
+                if (p9 >= 0.05) {
+                    startDogDesignSequence();
+                }
+
+                // If user scrolls forward, synchronize rail step directly with scroll progression
+                if (dogAnimStep >= 3) {
+                    if (p9 >= 0.82) {
+                        setRailStepDirect(4, '87.5%', 860);
+                    } else if (p9 >= 0.60) {
+                        setRailStepDirect(3, '62.5%', 620);
+                    } else if (p9 >= 0.38) {
+                        setRailStepDirect(2, '37.5%', 380);
+                    } else if (p9 >= 0.16) {
+                        setRailStepDirect(1, '12.5%', 160);
                     }
                 }
 
@@ -1338,12 +1876,12 @@
                     faqSection.classList.remove('faq-animated');
                 }
 
-            } else if (currentProgress <= 8.0) {
+            } else if (currentProgress <= 10.0) {
                 // ========================================== 
-                // STAGE 8: AFTER 2s SCROLL ON DOG SECTION,
-                // MORE PETS SECTION APPEARS FROM BOTTOM LIKE A PARALLAX! (7.0 to 8.0)
+                // STAGE 10: AFTER SCROLL ON DOG SECTION,
+                // MORE PETS SECTION APPEARS FROM BOTTOM LIKE A PARALLAX! (9.0 to 10.0)
                 // ========================================== 
-                var p7 = Math.min(1, Math.max(0, currentProgress - 7.0));
+                var p10 = Math.min(1, Math.max(0, currentProgress - 9.0));
 
                 if (whyChooseSection) {
                     whyChooseSection.style.opacity = '0';
@@ -1351,29 +1889,38 @@
                 }
 
                 if (dogSection) {
-                    var dogParallaxY = -p7 * 28;
-                    var dogParallaxScale = 1 - (p7 * 0.05);
-                    var dogParallaxOpacity = Math.max(0, 1 - (p7 * 0.5));
+                    var dogParallaxY = -p10 * 28;
+                    var dogParallaxScale = 1 - (p10 * 0.05);
+                    var dogParallaxOpacity = Math.max(0, 1 - (p10 * 0.5));
                     dogSection.style.transform = 'translate3d(0, ' + dogParallaxY.toFixed(2) + '%, 0) scale(' + dogParallaxScale.toFixed(3) + ')';
                     dogSection.style.opacity = dogParallaxOpacity.toFixed(3);
-                    dogSection.style.visibility = (p7 < 0.99) ? 'visible' : 'hidden';
+                    dogSection.style.visibility = (p10 < 0.99) ? 'visible' : 'hidden';
+
+                    dogSection.classList.add('dog-animated', 'heading-animated');
+                    if (dogTagColorLayer) dogTagColorLayer.classList.add('color-revealed');
+                    if (dogFeaturesBar) {
+                        dogFeaturesBar.classList.add('bar-visible');
+                        dogFeaturesBar.style.opacity = '1';
+                        dogFeaturesBar.style.transform = 'translateY(0)';
+                    }
+                    setRailStepDirect(4, '87.5%', 860);
                 }
 
                 if (morePetsSection) {
-                    var morePetsY = (1 - p7) * 100;
+                    var morePetsY = (1 - p10) * 100;
                     morePetsSection.style.transform = 'translate3d(0, ' + morePetsY.toFixed(2) + '%, 0)';
-                    morePetsSection.style.opacity = Math.min(1, p7 * 1.6).toFixed(3);
-                    morePetsSection.style.visibility = (p7 > 0.005) ? 'visible' : 'hidden';
+                    morePetsSection.style.opacity = Math.min(1, p10 * 1.6).toFixed(3);
+                    morePetsSection.style.visibility = (p10 > 0.005) ? 'visible' : 'hidden';
 
-                    if (p7 >= 0.85) {
+                    if (p10 >= 0.85) {
                         if (!morePetsSection.classList.contains('pets-animated')) {
                             morePetsSection.classList.add('pets-animated');
                         }
-                    } else if (p7 < 0.60) {
+                    } else if (p10 < 0.60) {
                         morePetsSection.classList.remove('pets-animated');
                     }
 
-                    if (p7 >= 0.99) {
+                    if (p10 >= 0.99) {
                         morePetsSection.style.transform = 'translate3d(0, 0%, 0)';
                         morePetsSection.style.opacity = '1';
                     }
@@ -1386,9 +1933,9 @@
                     faqSection.classList.remove('faq-animated');
                 }
 
-            } else if (currentProgress <= 9.0) {
+            } else if (currentProgress <= 11.0) {
                 // ========================================== 
-                // STAGE 9: SCROLL FOR 2.0 SECONDS ON MORE PETS SECTION! (8.0 to 9.0)
+                // STAGE 11: SCROLL FOR 2.0 SECONDS ON MORE PETS SECTION! (10.0 to 11.0)
                 // ========================================== 
                 if (whyChooseSection) {
                     whyChooseSection.style.opacity = '0';
@@ -1412,12 +1959,17 @@
                     faqSection.style.visibility = 'hidden';
                     faqSection.classList.remove('faq-animated');
                 }
+                if (footerSection) {
+                    footerSection.style.transform = 'translate3d(0, 100%, 0)';
+                    footerSection.style.opacity = '0';
+                    footerSection.style.visibility = 'hidden';
+                }
 
-            } else {
+            } else if (currentProgress <= 12.0) {
                 // ========================================== 
-                // STAGE 10: FAQ SECTION APPEARS FROM BOTTOM LIKE A PARALLAX! (9.0 to 10.0)
+                // STAGE 12: FAQ SECTION APPEARS FROM BOTTOM LIKE A PARALLAX! (11.0 to 12.0)
                 // ========================================== 
-                var p9 = Math.min(1, Math.max(0, currentProgress - 9.0));
+                var p12 = Math.min(1, Math.max(0, currentProgress - 11.0));
 
                 if (whyChooseSection) {
                     whyChooseSection.style.opacity = '0';
@@ -1429,38 +1981,76 @@
                 }
 
                 if (morePetsSection) {
-                    // Parallax on more pets section: moves upward slightly as FAQ rises
-                    var morePetsParallaxY = -p9 * 25;
-                    var morePetsParallaxScale = 1 - (p9 * 0.04);
-                    var morePetsParallaxOpacity = Math.max(0, 1 - (p9 * 0.5));
+                    var morePetsParallaxY = -p12 * 25;
+                    var morePetsParallaxScale = 1 - (p12 * 0.04);
+                    var morePetsParallaxOpacity = Math.max(0, 1 - (p12 * 0.5));
                     morePetsSection.style.transform = 'translate3d(0, ' + morePetsParallaxY.toFixed(2) + '%, 0) scale(' + morePetsParallaxScale.toFixed(3) + ')';
                     morePetsSection.style.opacity = morePetsParallaxOpacity.toFixed(3);
-                    morePetsSection.style.visibility = (p9 < 0.99) ? 'visible' : 'hidden';
+                    morePetsSection.style.visibility = (p12 < 0.99) ? 'visible' : 'hidden';
                 }
 
                 if (faqSection) {
-                    // Parallax entrance from bottom:
-                    var faqY = (1 - p9) * 100;
+                    var faqY = (1 - p12) * 100;
                     faqSection.style.transform = 'translate3d(0, ' + faqY.toFixed(2) + '%, 0)';
-                    faqSection.style.opacity = Math.min(1, p9 * 1.6).toFixed(3);
-                    faqSection.style.visibility = (p9 > 0.005) ? 'visible' : 'hidden';
+                    faqSection.style.opacity = Math.min(1, p12 * 1.6).toFixed(3);
+                    faqSection.style.visibility = (p12 > 0.005) ? 'visible' : 'hidden';
 
-                    // Trigger the 4-step visual stage sequence when in view:
-                    // 1. Mobile phone appears
-                    // 2. Arc draws top to bottom
-                    // 3. Medal shows
-                    // 4. Dog homepage appears in mobile screen
-                    if (p9 >= 0.85) {
-                        if (!faqSection.classList.contains('faq-animated')) {
-                            faqSection.classList.add('faq-animated');
+                    if (p12 >= 0.30) {
+                        if (!faqEntrancePlayed) {
+                            faqEntrancePlayed = true;
+                            faqSection.classList.add('faq-entered');
                         }
-                    } else if (p9 < 0.60) {
-                        faqSection.classList.remove('faq-animated');
+                    } else if (p12 < 0.15) {
+                        faqSection.classList.remove('faq-entered');
+                        faqEntrancePlayed = false;
+                        resetFaqAnimation();
                     }
 
-                    if (p9 >= 0.99) {
+                    if (p12 >= 0.99) {
                         faqSection.style.transform = 'translate3d(0, 0%, 0)';
                         faqSection.style.opacity = '1';
+                    }
+
+                    if (typeof onFaqScrollOrUpdate === 'function') {
+                        onFaqScrollOrUpdate();
+                    }
+                }
+
+                if (footerSection) {
+                    footerSection.style.transform = 'translate3d(0, 100%, 0)';
+                    footerSection.style.opacity = '0';
+                    footerSection.style.visibility = 'hidden';
+                }
+
+            } else {
+                // ========================================== 
+                // STAGE 13: FOOTER SECTION APPEARS FROM BOTTOM (12.0 to 13.0)
+                // ========================================== 
+                var p13 = Math.min(1, Math.max(0, currentProgress - 12.0));
+
+                if (morePetsSection) {
+                    morePetsSection.style.opacity = '0';
+                    morePetsSection.style.visibility = 'hidden';
+                }
+
+                if (faqSection) {
+                    var faqParallaxY = -p13 * 25;
+                    var faqParallaxScale = 1 - (p13 * 0.04);
+                    var faqParallaxOpacity = Math.max(0, 1 - (p13 * 0.5));
+                    faqSection.style.transform = 'translate3d(0, ' + faqParallaxY.toFixed(2) + '%, 0) scale(' + faqParallaxScale.toFixed(3) + ')';
+                    faqSection.style.opacity = faqParallaxOpacity.toFixed(3);
+                    faqSection.style.visibility = (p13 < 0.99) ? 'visible' : 'hidden';
+                }
+
+                if (footerSection) {
+                    var footerY = (1 - p13) * 100;
+                    footerSection.style.transform = 'translate3d(0, ' + footerY.toFixed(2) + '%, 0)';
+                    footerSection.style.opacity = Math.min(1, p13 * 1.6).toFixed(3);
+                    footerSection.style.visibility = (p13 > 0.005) ? 'visible' : 'hidden';
+
+                    if (p13 >= 0.99) {
+                        footerSection.style.transform = 'translate3d(0, 0%, 0)';
+                        footerSection.style.opacity = '1';
                     }
                 }
             }
@@ -1490,6 +2080,18 @@
                 clearTimeout(arrowTimer);
                 arrowTimer = null;
             }
+            if (stage1IdleTimer) {
+                clearTimeout(stage1IdleTimer);
+                stage1IdleTimer = null;
+            }
+            if (stage2IdleTimer) {
+                clearTimeout(stage2IdleTimer);
+                stage2IdleTimer = null;
+            }
+            if (stage3IdleTimer) {
+                clearTimeout(stage3IdleTimer);
+                stage3IdleTimer = null;
+            }
             profileSection.classList.remove('slide-in', 'hand-revealed', 'arrow-drawn', 'in-view');
             profileSection.style.transform = 'translate3d(100%, 0, 0)';
             profileSection.style.opacity = '1';
@@ -1498,13 +2100,15 @@
             if (chooseSection) {
                 chooseSection.style.transform = 'translate3d(0, 0, 0)';
                 chooseSection.style.opacity = '1';
+                chooseSection.style.filter = '';
                 chooseSection.style.visibility = 'visible';
+                chooseSection.classList.add('in-view');
             }
             if (productSection) {
-                productSection.style.clipPath = 'inset(50% 50% 50% 50% round 32px)';
-                productSection.style.webkitClipPath = 'inset(50% 50% 50% 50% round 32px)';
-                productSection.style.transform = 'scale(0.85)';
-                productSection.style.opacity = '0';
+                productSection.style.clipPath = 'none';
+                productSection.style.webkitClipPath = 'none';
+                productSection.style.transform = 'translate3d(100%, 0, 0)';
+                productSection.style.opacity = '1';
                 productSection.style.visibility = 'hidden';
             }
             duoCards.forEach(function (c) {
@@ -1512,31 +2116,17 @@
                 c.style.transform = '';
                 c.style.opacity = '';
             });
-            if (whyChooseSection) {
-                whyChooseSection.style.transform = 'translate3d(0, 100%, 0)';
-                whyChooseSection.style.opacity = '1';
-                whyChooseSection.style.visibility = 'hidden';
-                whyChooseSection.classList.remove('in-view', 'spotlight-active');
-            }
-            whyColumns.forEach(function (col) {
-                col.style.transform = '';
-                col.style.opacity = '';
-            });
-            if (whyHeader) {
-                whyHeader.style.transform = '';
-                whyHeader.style.opacity = '';
-            }
-            if (whyLightTrack) {
-                whyLightTrack.style.opacity = '';
-            }
+            resetWhyChooseElements();
 
             if (dogSection) {
-                dogSection.style.clipPath = 'inset(0% 50% 0% 50% round 24px)';
-                dogSection.style.webkitClipPath = 'inset(0% 50% 0% 50% round 24px)';
-                dogSection.style.transform = 'scale(0.88)';
+                dogSection.style.clipPath = 'none';
+                dogSection.style.webkitClipPath = 'none';
+                dogSection.style.zIndex = '50';
+                dogSection.style.transform = 'translate3d(0, 100%, 0)';
                 dogSection.style.opacity = '0';
                 dogSection.style.visibility = 'hidden';
                 dogSection.classList.remove('dog-animated');
+                resetDogDesignAnimation();
             }
             if (morePetsSection) {
                 morePetsSection.style.transform = 'translate3d(0, 100%, 0)';
@@ -1560,6 +2150,7 @@
         resetAll();
 
         // Active mouse wheel scroll handler (bidirectional 6-stage navigation)
+        // Active mouse wheel scroll handler (bidirectional 12-stage navigation)
         window.addEventListener('wheel', function (e) {
             if (window.innerWidth <= 991) return;
 
@@ -1571,123 +2162,262 @@
             if (e.deltaY > 0) {
                 // User scrolling DOWN:
                 if (targetProgress < 1.0) {
-                    // Stage 1: Choose -> Profile (3.4s scroll)
-                    targetProgress = Math.min(1.0, targetProgress + (e.deltaY / stage1Delta));
-                    wakeRender();
-                } else if (targetProgress >= 1.0 && targetProgress < 2.0) {
-                    // Stage 2: Profile -> Product window opens (3.4s scroll)
-                    if (currentProgress >= 0.96) {
-                        targetProgress = Math.min(2.0, targetProgress + (e.deltaY / stage2Delta));
+                    // Stage 1: Choose -> Profile (Takes 2 scrolls to bring Profile section into view, slowly & smoothly)
+                    var now = Date.now();
+                    if (stage1IdleTimer) clearTimeout(stage1IdleTimer);
+
+                    if (targetProgress < 0.45) {
+                        // Scroll 1: Start sliding in halfway (slowly & smoothly)
+                        targetProgress = 0.50;
+                        lastStage1ScrollTime = now;
                         wakeRender();
+                        stage1IdleTimer = setTimeout(function () {
+                            if (targetProgress === 0.50) {
+                                targetProgress = 0.0;
+                                wakeRender();
+                            }
+                        }, 2500);
+                    } else if (now - lastStage1ScrollTime > 160) {
+                        // Scroll 2: Distinct second scroll completes the slide-in to center
+                        targetProgress = 1.0;
+                        wakeRender();
+                    }
+                } else if (targetProgress >= 1.0 && targetProgress < 2.0) {
+                    // Stage 2: Profile -> Product Duo (Takes 2 scrolls on Profile section to bring Product section in, slowly & smoothly)
+                    if (currentProgress >= 0.94) {
+                        var nowStage2 = Date.now();
+                        if (stage2IdleTimer) clearTimeout(stage2IdleTimer);
+
+                        if (targetProgress < 1.45) {
+                            // Scroll 1: Start sliding in halfway from right (slowly & smoothly)
+                            targetProgress = 1.50;
+                            lastStage2ScrollTime = nowStage2;
+                            wakeRender();
+                            stage2IdleTimer = setTimeout(function () {
+                                if (targetProgress === 1.50) {
+                                    targetProgress = 1.0;
+                                    wakeRender();
+                                }
+                            }, 2500);
+                        } else if (nowStage2 - lastStage2ScrollTime > 160) {
+                            // Scroll 2: Distinct second scroll completes the slide-in to center
+                            targetProgress = 2.0;
+                            wakeRender();
+                        }
                     }
                 } else if (targetProgress >= 2.0 && targetProgress < 3.0) {
-                    // Stage 3: Scroll for 3 SECONDS on the Product section!
-                    if (currentProgress >= 1.96) {
-                        targetProgress = Math.min(3.0, targetProgress + (e.deltaY / productDwellDelta));
-                        wakeRender();
+                    // Stage 3: Product Duo -> Why Choose (Takes 2 scrolls on Product section to bring Why Choose section in, slowly & smoothly)
+                    if (currentProgress >= 1.94) {
+                        var nowStage3 = Date.now();
+                        if (stage3IdleTimer) clearTimeout(stage3IdleTimer);
+
+                        if (targetProgress < 2.45) {
+                            // Scroll 1: Start sliding in halfway from right (slowly & smoothly)
+                            targetProgress = 2.50;
+                            lastStage3ScrollTime = nowStage3;
+                            wakeRender();
+                            stage3IdleTimer = setTimeout(function () {
+                                if (targetProgress === 2.50) {
+                                    targetProgress = 2.0;
+                                    wakeRender();
+                                }
+                            }, 2500);
+                        } else if (nowStage3 - lastStage3ScrollTime > 160) {
+                            // Scroll 2: Distinct second scroll completes the slide-in to center
+                            targetProgress = 3.0;
+                            wakeRender();
+                        }
                     }
-                } else if (targetProgress >= 3.0 && targetProgress < 4.0) {
-                    // Stage 4: Why Choose appears from bottom smoothly (3.6s scroll)
+                } else if (targetProgress >= 3.0 && targetProgress < 7.0) {
+                    // Stages 4-7: Why Choose cinematic 5-stage scroll sequence (3.0 to 7.0)
                     if (currentProgress >= 2.96) {
-                        targetProgress = Math.min(4.0, targetProgress + (e.deltaY / stage4Delta));
-                        wakeRender();
-                    }
-                } else if (targetProgress >= 4.0 && targetProgress < 5.0) {
-                    // Stage 5: Scroll for 2.5 SECONDS on the Why Choose section!
-                    if (currentProgress >= 3.96) {
-                        targetProgress = Math.min(5.0, targetProgress + (e.deltaY / whyChooseDwellDelta));
-                        wakeRender();
-                    }
-                } else if (targetProgress >= 5.0 && targetProgress < 6.0) {
-                    // Stage 6: Why Choose columns part like window -> Dog Section appears from middle!
-                    if (currentProgress >= 4.96) {
-                        targetProgress = Math.min(6.0, targetProgress + (e.deltaY / dogSectionDelta));
-                        wakeRender();
-                    }
-                } else if (targetProgress >= 6.0 && targetProgress < 7.0) {
-                    // Stage 7: Scroll for 2.0 SECONDS on the Dog section!
-                    if (currentProgress >= 5.96) {
-                        targetProgress = Math.min(7.0, targetProgress + (e.deltaY / dogDwellDelta));
+                        targetProgress = Math.min(7.0, targetProgress + (e.deltaY / whyChooseTotalDelta) * 4.0);
                         wakeRender();
                     }
                 } else if (targetProgress >= 7.0 && targetProgress < 8.0) {
-                    // Stage 8: More Pets section appears from bottom like a parallax! (3.4s scroll)
+                    // Stage 8: Dog Section appears from bottom like a parallax!
                     if (currentProgress >= 6.96) {
-                        targetProgress = Math.min(8.0, targetProgress + (e.deltaY / morePetsDelta));
+                        targetProgress = Math.min(8.0, targetProgress + (e.deltaY / dogSectionDelta));
                         wakeRender();
                     }
                 } else if (targetProgress >= 8.0 && targetProgress < 9.0) {
-                    // Stage 9: Scroll for 2.0 SECONDS on More Pets section! (dwell)
+                    // Stage 9: Scroll for 2.0 SECONDS on the Dog section!
                     if (currentProgress >= 7.96) {
-                        targetProgress = Math.min(9.0, targetProgress + (e.deltaY / morePetsDwellDelta));
+                        targetProgress = Math.min(9.0, targetProgress + (e.deltaY / dogDwellDelta));
                         wakeRender();
                     }
                 } else if (targetProgress >= 9.0 && targetProgress < 10.0) {
-                    // Stage 10: FAQ section appears from bottom like a parallax! (3.4s scroll)
+                    // Stage 10: More Pets section appears from bottom like a parallax! (3.4s scroll)
                     if (currentProgress >= 8.96) {
-                        targetProgress = Math.min(10.0, targetProgress + (e.deltaY / faqDelta));
+                        targetProgress = Math.min(10.0, targetProgress + (e.deltaY / morePetsDelta));
                         wakeRender();
+                    }
+                } else if (targetProgress >= 10.0 && targetProgress < 12.0) {
+                    // Stage 11 & 12: More Pets -> FAQ section (Takes 2-3 scrolls on More Pets section to bring FAQ in)
+                    if (currentProgress >= 9.92) {
+                        var nowMorePets = Date.now();
+                        var timeSinceLastMorePets = nowMorePets - lastMorePetsScrollTime;
+
+                        if (targetProgress < 11.35) {
+                            // Scroll 1: Start bringing FAQ section in (~45% in from bottom)
+                            if (currentProgress < 10.95) currentProgress = 10.95;
+                            targetProgress = 11.45;
+                            lastMorePetsScrollTime = nowMorePets;
+                            wakeRender();
+                        } else if (targetProgress < 11.80 && timeSinceLastMorePets > 130) {
+                            // Scroll 2: Advance FAQ section (~80% in)
+                            targetProgress = 11.80;
+                            lastMorePetsScrollTime = nowMorePets;
+                            wakeRender();
+                        } else if (timeSinceLastMorePets > 130) {
+                            // Scroll 3: Distinct scroll locks FAQ section in at 100%
+                            targetProgress = 12.0;
+                            lastMorePetsScrollTime = nowMorePets;
+                            wakeRender();
+                        } else {
+                            // Continuous / trackpad scroll
+                            targetProgress = Math.min(12.0, targetProgress + (Math.abs(e.deltaY) / 350));
+                            wakeRender();
+                        }
+                    }
+                } else if (targetProgress >= 12.0 && targetProgress < 13.0) {
+                    // Stage 13: FAQ section -> Footer (Takes 2 scrolls on FAQ section to bring Footer in)
+                    if (currentProgress >= 11.92) {
+                        var nowFaq = Date.now();
+                        var timeSinceLastFaq = nowFaq - lastFaqScrollTime;
+
+                        if (targetProgress < 12.45) {
+                            // Scroll 1: Start bringing Footer in (~50% in from bottom)
+                            if (currentProgress < 11.95) currentProgress = 12.0;
+                            targetProgress = 12.50;
+                            lastFaqScrollTime = nowFaq;
+                            wakeRender();
+                        } else if (timeSinceLastFaq > 130) {
+                            // Scroll 2: Distinct scroll locks Footer section at 100%
+                            targetProgress = 13.0;
+                            lastFaqScrollTime = nowFaq;
+                            wakeRender();
+                        } else {
+                            targetProgress = Math.min(13.0, targetProgress + (Math.abs(e.deltaY) / 350));
+                            wakeRender();
+                        }
                     }
                 }
             } else if (e.deltaY < 0) {
                 // User scrolling UP:
-                if (targetProgress > 9.0) {
-                    // Stage 10 Reverse: FAQ section slides back down to bottom
-                    targetProgress = Math.max(9.0, targetProgress - (Math.abs(e.deltaY) / faqDelta));
-                    wakeRender();
+                if (targetProgress > 12.0) {
+                    // Footer -> FAQ: Reverse back up to FAQ
+                    var nowFaqUp = Date.now();
+                    var timeSinceLastFaqUp = nowFaqUp - lastFaqScrollTime;
+
+                    if (targetProgress > 12.60 && timeSinceLastFaqUp > 130) {
+                        // Scroll 1 UP: Footer begins sliding back down
+                        targetProgress = 12.50;
+                        lastFaqScrollTime = nowFaqUp;
+                        wakeRender();
+                    } else if (targetProgress > 12.0 && timeSinceLastFaqUp > 130) {
+                        // Scroll 2 UP: Footer slides away, locks at FAQ 100%
+                        if (currentProgress > 12.05) currentProgress = 12.05;
+                        targetProgress = 12.0;
+                        lastFaqScrollTime = nowFaqUp;
+                        wakeRender();
+                    } else {
+                        targetProgress = Math.max(12.0, targetProgress - (Math.abs(e.deltaY) / 350));
+                        wakeRender();
+                    }
+                } else if (targetProgress > 10.0 && targetProgress <= 12.0) {
+                    var nowMorePetsUp = Date.now();
+                    var timeSinceLastMorePetsUp = nowMorePetsUp - lastMorePetsScrollTime;
+
+                    if (targetProgress > 11.60 && timeSinceLastMorePetsUp > 130) {
+                        // Scroll 1 UP: FAQ begins sliding back down
+                        targetProgress = 11.45;
+                        lastMorePetsScrollTime = nowMorePetsUp;
+                        wakeRender();
+                    } else if (targetProgress > 10.0 && timeSinceLastMorePetsUp > 130) {
+                        // Scroll 2 UP: FAQ slides completely away, back to More Pets
+                        if (currentProgress > 11.05) currentProgress = 11.05;
+                        targetProgress = 10.0;
+                        lastMorePetsScrollTime = nowMorePetsUp;
+                        wakeRender();
+                    } else {
+                        targetProgress = Math.max(10.0, targetProgress - (Math.abs(e.deltaY) / 350));
+                        wakeRender();
+                    }
+                } else if (targetProgress <= 10.0 && targetProgress > 9.0) {
+                    // Stage 10 Reverse: More Pets section slides back down to bottom
+                    if (currentProgress <= 10.04) {
+                        targetProgress = Math.max(9.0, targetProgress - (Math.abs(e.deltaY) / morePetsDelta));
+                        wakeRender();
+                    }
                 } else if (targetProgress <= 9.0 && targetProgress > 8.0) {
-                    // Stage 9 Reverse: Scroll back up on More Pets section (2.0s dwell)
+                    // Stage 9 Reverse: Scroll back up on Dog section (2.0s dwell)
                     if (currentProgress <= 9.04) {
-                        targetProgress = Math.max(8.0, targetProgress - (Math.abs(e.deltaY) / morePetsDwellDelta));
+                        targetProgress = Math.max(8.0, targetProgress - (Math.abs(e.deltaY) / dogDwellDelta));
                         wakeRender();
                     }
                 } else if (targetProgress <= 8.0 && targetProgress > 7.0) {
-                    // Stage 8 Reverse: More Pets section slides back down to bottom
+                    // Stage 8 Reverse: Dog Section slides back down to bottom
                     if (currentProgress <= 8.04) {
-                        targetProgress = Math.max(7.0, targetProgress - (Math.abs(e.deltaY) / morePetsDelta));
+                        targetProgress = Math.max(7.0, targetProgress - (Math.abs(e.deltaY) / dogSectionDelta));
                         wakeRender();
                     }
-                } else if (targetProgress <= 7.0 && targetProgress > 6.0) {
-                    // Stage 7 Reverse: Scroll back up on Dog section (2.0s dwell)
+                } else if (targetProgress <= 7.0 && targetProgress > 3.0) {
+                    // Stages 4-7 Reverse: Smooth scroll back up through Why Choose sequence
                     if (currentProgress <= 7.04) {
-                        targetProgress = Math.max(6.0, targetProgress - (Math.abs(e.deltaY) / dogDwellDelta));
-                        wakeRender();
-                    }
-                } else if (targetProgress <= 6.0 && targetProgress > 5.0) {
-                    // Stage 6 Reverse: Dog Section window closes back, columns slide back together
-                    if (currentProgress <= 6.04) {
-                        targetProgress = Math.max(5.0, targetProgress - (Math.abs(e.deltaY) / dogSectionDelta));
-                        wakeRender();
-                    }
-                } else if (targetProgress <= 5.0 && targetProgress > 4.0) {
-                    // Stage 5 Reverse: Scroll back up on Why Choose section (2.5s dwell)
-                    if (currentProgress <= 5.04) {
-                        targetProgress = Math.max(4.0, targetProgress - (Math.abs(e.deltaY) / whyChooseDwellDelta));
-                        wakeRender();
-                    }
-                } else if (targetProgress <= 4.0 && targetProgress > 3.0) {
-                    // Stage 4 Reverse: Why choose section slides back down to bottom smoothly
-                    if (currentProgress <= 4.04) {
-                        targetProgress = Math.max(3.0, targetProgress - (Math.abs(e.deltaY) / stage4Delta));
+                        targetProgress = Math.max(3.0, targetProgress - (Math.abs(e.deltaY) / whyChooseTotalDelta) * 4.0);
                         wakeRender();
                     }
                 } else if (targetProgress <= 3.0 && targetProgress > 2.0) {
-                    // Stage 3 Reverse: Scroll back up on Product section (3s dwell)
+                    // Stage 3 Reverse: Why Choose slides back out to right in 2 scrolls (slowly & smoothly)
                     if (currentProgress <= 3.04) {
-                        targetProgress = Math.max(2.0, targetProgress - (Math.abs(e.deltaY) / productDwellDelta));
-                        wakeRender();
+                        var nowStage3Up = Date.now();
+                        if (stage3IdleTimer) clearTimeout(stage3IdleTimer);
+
+                        if (targetProgress > 2.55) {
+                            // Scroll 1 UP: Slide halfway back out to right
+                            targetProgress = 2.50;
+                            lastStage3ScrollTime = nowStage3Up;
+                            wakeRender();
+                        } else if (nowStage3Up - lastStage3ScrollTime > 160) {
+                            // Scroll 2 UP: Slide fully out to right, returning to Product Duo
+                            targetProgress = 2.0;
+                            wakeRender();
+                        }
                     }
                 } else if (targetProgress <= 2.0 && targetProgress > 1.0) {
-                    // Stage 2 Reverse: Product window closes back only after user finishes Product section
+                    // Stage 2 Reverse: Product slides back out to right in 2 scrolls (slowly & smoothly)
                     if (currentProgress <= 2.04) {
-                        targetProgress = Math.max(1.0, targetProgress - (Math.abs(e.deltaY) / stage2Delta));
-                        wakeRender();
+                        var nowStage2Up = Date.now();
+                        if (stage2IdleTimer) clearTimeout(stage2IdleTimer);
+
+                        if (targetProgress > 1.55) {
+                            // Scroll 1 UP: Slide halfway back out to right
+                            targetProgress = 1.50;
+                            lastStage2ScrollTime = nowStage2Up;
+                            wakeRender();
+                        } else if (nowStage2Up - lastStage2ScrollTime > 160) {
+                            // Scroll 2 UP: Slide fully out to right, returning to Profile
+                            targetProgress = 1.0;
+                            wakeRender();
+                        }
                     }
                 } else if (targetProgress <= 1.0 && targetProgress > 0.0) {
-                    // Stage 1 Reverse: Profile slides back out to right only after Product window has closed!
+                    // Stage 1 Reverse: Profile slides back out to right in 2 scrolls (slowly & smoothly)
                     if (currentProgress <= 1.04) {
-                        targetProgress = Math.max(0.0, targetProgress - (Math.abs(e.deltaY) / stage1Delta));
-                        wakeRender();
+                        var nowUp = Date.now();
+                        if (stage1IdleTimer) clearTimeout(stage1IdleTimer);
+
+                        if (targetProgress > 0.55) {
+                            // Scroll 1 UP: Slide halfway back
+                            targetProgress = 0.50;
+                            lastStage1ScrollTime = nowUp;
+                            wakeRender();
+                        } else if (nowUp - lastStage1ScrollTime > 160) {
+                            // Scroll 2 UP: Slide fully out to right
+                            targetProgress = 0.0;
+                            wakeRender();
+                        }
                     }
                 }
             }
@@ -1776,14 +2506,58 @@
                     whyChooseSection.style.opacity = '1';
                     whyChooseSection.style.visibility = 'visible';
                 }
+                if (whyTitleStage) {
+                    whyTitleStage.style.transform = '';
+                }
+                if (whyTitleFill) {
+                    whyTitleFill.style.clipPath = '';
+                    whyTitleFill.style.webkitClipPath = '';
+                }
+                if (whyTitleOutline) {
+                    whyTitleOutline.style.opacity = '';
+                    whyTitleOutline.style.backgroundPosition = '';
+                }
+                if (whySectionGlowBeam) {
+                    whySectionGlowBeam.style.opacity = '';
+                }
+                if (whyHeader) {
+                    whyHeader.style.transform = '';
+                    whyHeader.style.opacity = '1';
+                }
+                if (whySubtitle) {
+                    whySubtitle.style.transform = '';
+                    whySubtitle.style.opacity = '1';
+                }
+                whySubtitleWords.forEach(function (w) {
+                    w.style.opacity = '';
+                    w.style.transform = '';
+                    w.style.filter = '';
+                });
+                if (compareTableWrapper) {
+                    compareTableWrapper.style.transform = '';
+                    compareTableWrapper.style.opacity = '1';
+                    compareTableWrapper.style.pointerEvents = '';
+                }
                 whyColumns.forEach(function (col) {
                     col.style.transform = '';
                     col.style.opacity = '';
                 });
-                if (whyHeader) {
-                    whyHeader.style.transform = '';
-                    whyHeader.style.opacity = '';
-                }
+                compareColHeaders.forEach(function (hdr) {
+                    hdr.style.transform = '';
+                    hdr.style.opacity = '';
+                });
+                compareTableRows.forEach(function (row) {
+                    row.forEach(function (cell) {
+                        cell.style.transform = '';
+                        cell.style.opacity = '';
+                    });
+                });
+                compareRowIcons.forEach(function (rowIcn) {
+                    rowIcn.forEach(function (icn) {
+                        icn.style.transform = '';
+                        icn.style.opacity = '';
+                    });
+                });
                 if (whyLightTrack) {
                     whyLightTrack.style.opacity = '';
                 }
@@ -1794,6 +2568,7 @@
                     dogSection.style.transform = '';
                     dogSection.style.opacity = '1';
                     dogSection.style.visibility = 'visible';
+                    resetDogDesignAnimation();
                 }
                 if (faqSection) {
                     faqSection.style.transform = '';
@@ -1835,7 +2610,8 @@
     function initDogDesignInteractive() {
         var dogSection = document.getElementById('dogDesignSection');
         var promptBtn = document.getElementById('dogPromptBtn');
-        var promptPlaceholder = dogSection ? dogSection.querySelector('.dog_prompt_placeholder') : null;
+        var promptTextEl = document.getElementById('dogPromptText') || (dogSection ? dogSection.querySelector('.dog_prompt_placeholder') : null);
+        var tagColorLayer = document.getElementById('dogTagColorLayer');
 
         // Interactive AI Prompt Generator button click feedback
         if (promptBtn) {
@@ -1850,24 +2626,71 @@
 
             promptBtn.addEventListener('click', function () {
                 promptBtn.style.transform = 'scale(0.92)';
+                promptBtn.classList.add('btn-active-click');
                 setTimeout(function () {
                     promptBtn.style.transform = '';
-                }, 180);
+                    promptBtn.classList.remove('btn-active-click');
+                }, 220);
 
-                if (promptPlaceholder) {
-                    promptPlaceholder.style.opacity = '0';
-                    promptPlaceholder.style.transform = 'translateY(-6px)';
-                    promptPlaceholder.style.transition = 'all 0.25s ease';
+                // Spawn sparkles around button
+                var btnRect = promptBtn.getBoundingClientRect();
+                var originX = btnRect.left + btnRect.width / 2;
+                var originY = btnRect.top + btnRect.height / 2;
+                var count = 12;
+                for (var i = 0; i < count; i++) {
+                    (function (idx) {
+                        var spark = document.createElement('div');
+                        spark.className = 'dog_sparkle_particle';
+                        spark.style.position = 'fixed';
+                        spark.style.left = originX + 'px';
+                        spark.style.top = originY + 'px';
+                        spark.style.width = '6px';
+                        spark.style.height = '6px';
+                        spark.style.borderRadius = '50%';
+                        spark.style.pointerEvents = 'none';
+                        spark.style.zIndex = '9999';
+                        spark.style.background = 'radial-gradient(circle, #FFF0BA 20%, #E5BC64 70%, transparent 100%)';
+                        spark.style.boxShadow = '0 0 10px rgba(229, 188, 100, 0.9)';
+
+                        var angle = (idx / count) * 2 * Math.PI + (Math.random() * 0.4 - 0.2);
+                        var dist = 32 + Math.random() * 45;
+                        var destX = Math.cos(angle) * dist;
+                        var destY = Math.sin(angle) * dist;
+
+                        spark.style.transition = 'all 0.65s cubic-bezier(0.16, 1, 0.3, 1)';
+                        document.body.appendChild(spark);
+
+                        requestAnimationFrame(function () {
+                            spark.style.transform = 'translate(' + destX + 'px, ' + destY + 'px) scale(0)';
+                            spark.style.opacity = '0';
+                        });
+
+                        setTimeout(function () {
+                            if (spark.parentNode) {
+                                spark.parentNode.removeChild(spark);
+                            }
+                        }, 700);
+                    })(i);
+                }
+
+                if (promptTextEl) {
+                    promptTextEl.style.opacity = '0';
+                    promptTextEl.style.transform = 'translateY(-6px)';
+                    promptTextEl.style.transition = 'all 0.25s ease';
 
                     setTimeout(function () {
                         promptIdx = (promptIdx + 1) % prompts.length;
-                        promptPlaceholder.textContent = prompts[promptIdx];
-                        promptPlaceholder.style.transform = 'translateY(6px)';
+                        promptTextEl.textContent = prompts[promptIdx];
+                        promptTextEl.style.transform = 'translateY(6px)';
                         setTimeout(function () {
-                            promptPlaceholder.style.opacity = '1';
-                            promptPlaceholder.style.transform = 'translateY(0)';
+                            promptTextEl.style.opacity = '1';
+                            promptTextEl.style.transform = 'translateY(0)';
                         }, 50);
                     }, 250);
+                }
+
+                if (tagColorLayer && !tagColorLayer.classList.contains('color-revealed')) {
+                    tagColorLayer.classList.add('color-revealed');
                 }
             });
         }
@@ -1972,7 +2795,6 @@
             });
         }
     }
-})();
 
     // ========================================================
     // 5d. More Pets Section Intersection Observer (Mobile)
@@ -2000,80 +2822,377 @@
 
 
     // ========================================================
-    // 5e. Frequently Asked Questions (FAQ) Accordion
     // ========================================================
-    function initFaqAccordion() {
+    // 5e. FAQ Hanusek-Style Interactive Wireframe & Chat Engine
+    // - 21-shape inline SVG phone wireframe drawn as user scrolls
+    // - Scroll progress p = clamp((viewportHeight * 0.9 - sectionTop) / (viewportHeight * 0.75)), smoothed with 0.12 lerp
+    // - Entrance: label line draws to 46px, words rise blur-to-sharp, gold underline draws
+    // - Accordion rows slide in staggered ~90ms, divider lines draw left to right
+    // - After ~1.3s first question opens automatically
+    // - Accordion as chat: 0fr -> 1fr grid, 3 bouncing dots for 650ms, letter-by-letter typing with blinking cursor
+    // - Result card pops up at bottom after 650ms with spring scale/rise
+    // - Phone screen light sweep & medal pulse rings
+    // - 3D mouse tilt (up to 10 deg) with medal opposite offset
+    // - 7s auto-cycle with 9s inactivity pause
+    // - prefers-reduced-motion: final state with no typing or drawing
+    // ========================================================
+
+    var FAQ_DATA = [
+        {
+            id: 1,
+            num: "01",
+            question: "Does PawMedal work worldwide?",
+            answer: "Yes, PawMedal Tag works wherever someone can scan the QR code or tap the NFC tag. PawMedal Finder uses Apple's Find My network to help locate your pet wherever the network is available."
+        },
+        {
+            id: 2,
+            num: "02",
+            question: "Do I need a subscription?",
+            answer: "No subscription required! PawMedal Tag and Finder have zero monthly fees. You get full access to all features forever with a single one-time purchase."
+        },
+        {
+            id: 3,
+            num: "03",
+            question: "How long does the battery last?",
+            answer: "PawMedal Finder has a user-replaceable standard battery that lasts up to one full year. The PawMedal QR/NFC Tag requires no battery or charging ever."
+        },
+        {
+            id: 4,
+            num: "04",
+            question: "Is it waterproof?",
+            answer: "Yes! Both the PawMedal Tag and Finder are IP67 waterproof and adventure-tested for swimming, heavy rain, snow, and mud."
+        },
+        {
+            id: 5,
+            num: "05",
+            question: "Can I update my pet's information?",
+            answer: "Instantly, anytime! You can update contact numbers, medical alerts, home address, and photos in your profile without changing or replacing the physical medal."
+        },
+        {
+            id: 6,
+            num: "06",
+            question: "What if someone finds my pet?",
+            answer: "When someone finds your pet, they can simply tap the medal with any smartphone or scan the QR code to see your pet profile, emergency contacts, and notify you instantly."
+        }
+    ];
+
+    var faqCurrentIndex = 0;
+    var faqEntrancePlayed = false;
+
+    var currentP = 0;
+    var targetP = 0;
+    var rafProgressId = null;
+
+    var currentTiltX = 0, currentTiltY = 0;
+    var targetTiltX = 0, targetTiltY = 0;
+    var relX = 0, relY = 0;
+    var isHovering = false;
+    var currentBasePhoneY = 50;
+    var currentBaseMedalX = 160;
+    var currentBaseMedalRot = -140;
+
+    function toggleFaqItem(index) {
+        if (index < 0 || index >= FAQ_DATA.length) return;
         var accordion = document.getElementById('faqAccordion');
         if (!accordion) return;
-
         var items = accordion.querySelectorAll('.faq_item');
-        items.forEach(function (item) {
-            var btn = item.querySelector('.faq_question');
-            var answer = item.querySelector('.faq_answer');
-            if (!btn || !answer) return;
+        var targetItem = items[index];
+        if (!targetItem) return;
 
-            btn.addEventListener('click', function () {
-                var isOpen = item.classList.contains('active');
+        var isAlreadyActive = targetItem.classList.contains('active');
 
-                // Close all items
-                items.forEach(function (otherItem) {
-                    otherItem.classList.remove('active');
-                    var otherBtn = otherItem.querySelector('.faq_question');
-                    var otherAns = otherItem.querySelector('.faq_answer');
-                    var otherIcon = otherItem.querySelector('.faq_arrow_icon i');
-                    if (otherBtn) otherBtn.setAttribute('aria-expanded', 'false');
-                    if (otherAns) {
-                        if (window.jQuery) {
-                            $(otherAns).slideUp(220);
-                        } else {
-                            otherAns.style.display = 'none';
-                        }
-                    }
-                    if (otherIcon) {
-                        otherIcon.classList.remove('fa-chevron-up');
-                        otherIcon.classList.add('fa-chevron-down');
-                    }
-                });
+        // Only one item is open at a time, and clicking the open item closes it
+        if (isAlreadyActive) {
+            targetItem.classList.remove('active');
+            var btn = targetItem.querySelector('.faq_question');
+            if (btn) btn.setAttribute('aria-expanded', 'false');
 
-                // If this item was closed, open it
-                if (!isOpen) {
-                    item.classList.add('active');
-                    btn.setAttribute('aria-expanded', 'true');
-                    if (window.jQuery) {
-                        $(answer).slideDown(220);
-                    } else {
-                        answer.style.display = 'block';
-                    }
-                    var icon = item.querySelector('.faq_arrow_icon i');
-                    if (icon) {
-                        icon.classList.remove('fa-chevron-down');
-                        icon.classList.add('fa-chevron-up');
-                    }
-                }
+            var cards = document.querySelectorAll('.faq_result_card');
+            cards.forEach(function (card) {
+                card.classList.remove('active');
             });
+            return;
+        }
+
+        faqCurrentIndex = index;
+        var data = FAQ_DATA[index];
+
+        items.forEach(function (item, idx) {
+            var btn = item.querySelector('.faq_question');
+            if (idx === index) {
+                item.classList.add('active');
+                if (btn) btn.setAttribute('aria-expanded', 'true');
+            } else {
+                item.classList.remove('active');
+                if (btn) btn.setAttribute('aria-expanded', 'false');
+            }
+        });
+
+        // Medal sends out two expanding gold rings
+        var medalPulse = document.getElementById('faqMedalPulse');
+        if (medalPulse) {
+            medalPulse.classList.remove('pulse-active');
+            void medalPulse.offsetWidth;
+            medalPulse.classList.add('pulse-active');
+        }
+
+        // Soft light sweep moves down phone screen
+        var sweep = document.getElementById('faqScreenSweep');
+        if (sweep) {
+            sweep.classList.remove('sweep-firing');
+            void sweep.offsetWidth;
+            sweep.classList.add('sweep-firing');
+        }
+
+        // Pop up the matching result card at the bottom of the phone screen
+        var cards = document.querySelectorAll('.faq_result_card');
+        cards.forEach(function (card) {
+            var cid = parseInt(card.getAttribute('data-card-id'), 10);
+            card.classList.toggle('active', cid === data.id);
         });
     }
 
-    // ========================================================
-    // 5f. FAQ Section Intersection Observer (Mobile)
-    // ========================================================
+    function resetFaqAnimation() {
+        var accordion = document.getElementById('faqAccordion');
+        if (accordion) {
+            var items = accordion.querySelectorAll('.faq_item');
+            items.forEach(function (item) {
+                item.classList.remove('active');
+                var btn = item.querySelector('.faq_question');
+                if (btn) btn.setAttribute('aria-expanded', 'false');
+            });
+        }
+        var cards = document.querySelectorAll('.faq_result_card');
+        cards.forEach(function (card) {
+            card.classList.remove('active');
+        });
+        faqCurrentIndex = 0;
+    }
+
+    function calcScrollProgress() {
+        var faqSection = document.getElementById('faqSection');
+        if (!faqSection) return 0;
+        var rect = faqSection.getBoundingClientRect();
+        var vh = window.innerHeight || 800;
+        // Scroll progress p = clamp((viewportHeight * 0.9 - sectionTop) / (viewportHeight * 0.75))
+        var p = (vh * 0.9 - rect.top) / (vh * 0.75);
+        return Math.max(0, Math.min(1, p));
+    }
+
+    function updatePhoneWireframe(p) {
+        var phoneSvg = document.getElementById('faqPhoneSvg');
+        var shapes = phoneSvg ? phoneSvg.querySelectorAll('.wf_shape') : [];
+        var dogAvatar = document.getElementById('wfAvatarGroup') || document.getElementById('wfDogAvatar');
+        var ringBg = document.getElementById('faqRingBg');
+        var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        if (reducedMotion) {
+            p = 1;
+        }
+
+        var numShapes = shapes.length;
+        for (var i = 0; i < numShapes; i++) {
+            var shape = shapes[i];
+            var startF = (i / numShapes) * 0.55;
+            var endF = startF + 0.25;
+            var sp = Math.max(0, Math.min(1, (p - startF) / (endF - startF)));
+            shape.style.strokeDashoffset = (1 - sp).toFixed(4);
+
+            if (p >= 0.65 || reducedMotion) {
+                var fp = reducedMotion ? 1 : Math.max(0, Math.min(1, (p - 0.65) / 0.35));
+                var targetFillOpacity = parseFloat(shape.getAttribute('data-target-fill-opacity') || '1');
+                shape.style.fillOpacity = (fp * targetFillOpacity).toFixed(3);
+                shape.style.strokeOpacity = (1 - fp * 0.75).toFixed(3); // stroke fades to 25%
+            } else {
+                shape.style.fillOpacity = '0';
+                shape.style.strokeOpacity = '1';
+            }
+        }
+
+        if (dogAvatar) {
+            if (p >= 0.8 || reducedMotion) {
+                dogAvatar.style.opacity = reducedMotion ? '1' : Math.min(1, (p - 0.8) / 0.2).toFixed(3);
+            } else {
+                dogAvatar.style.opacity = '0';
+            }
+        }
+
+        // Phone rises about 50px into place
+        currentBasePhoneY = (1 - p) * 50;
+        // Medal spins in from right (translateX 160px to 0, rotate 140deg to 0)
+        currentBaseMedalX = (1 - p) * 160;
+        currentBaseMedalRot = (1 - p) * -140;
+
+        // Beige ring rotates slowly and scales up
+        if (ringBg) {
+            var ringScale = 0.8 + 0.2 * p;
+            var ringRot = p * 25;
+            ringBg.style.transform = 'translate(-42%, -50%) scale(' + ringScale.toFixed(3) + ') rotate(' + ringRot.toFixed(1) + 'deg)';
+        }
+
+        applyStageTransforms();
+    }
+
+    function applyStageTransforms() {
+        var phoneStage = document.getElementById('faqPhoneStage');
+        var medalStage = document.getElementById('faqMedalStage');
+
+        currentTiltX += (targetTiltX - currentTiltX) * 0.12;
+        currentTiltY += (targetTiltY - currentTiltY) * 0.12;
+
+        if (phoneStage) {
+            phoneStage.style.transform = 'translateY(' + currentBasePhoneY.toFixed(1) + 'px) perspective(900px) rotateX(' + currentTiltX.toFixed(2) + 'deg) rotateY(' + currentTiltY.toFixed(2) + 'deg)';
+        }
+
+        if (medalStage) {
+            // Medal moves slightly the opposite way
+            var medalTiltX = -currentTiltX * 0.6;
+            var medalTiltY = -currentTiltY * 0.6;
+            var oppX = relX * -18;
+            var oppY = relY * -14;
+            medalStage.style.transform = 'translate(' + (currentBaseMedalX + oppX).toFixed(1) + 'px, calc(-50% + ' + oppY.toFixed(1) + 'px)) rotate(' + currentBaseMedalRot.toFixed(1) + 'deg) perspective(900px) rotateX(' + medalTiltX.toFixed(2) + 'deg) rotateY(' + medalTiltY.toFixed(2) + 'deg)';
+        }
+    }
+
+    function tickFaqScrollProgress() {
+        targetP = calcScrollProgress();
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            targetP = 1;
+            currentP = 1;
+        } else {
+            currentP += (targetP - currentP) * 0.12;
+        }
+
+        updatePhoneWireframe(currentP);
+
+        // Entrance plays once when section is 30% visible
+        if (!faqEntrancePlayed && (currentP >= 0.3 || targetP >= 0.3)) {
+            faqEntrancePlayed = true;
+            var faqSection = document.getElementById('faqSection');
+            if (faqSection) faqSection.classList.add('faq-entered');
+        }
+
+        if (Math.abs(targetP - currentP) > 0.002 || isHovering || Math.abs(targetTiltX - currentTiltX) > 0.02 || Math.abs(targetTiltY - currentTiltY) > 0.02) {
+            rafProgressId = requestAnimationFrame(tickFaqScrollProgress);
+        } else {
+            rafProgressId = null;
+        }
+    }
+
+    function onFaqScrollOrUpdate() {
+        if (!rafProgressId) {
+            rafProgressId = requestAnimationFrame(tickFaqScrollProgress);
+        }
+    }
+
+    function initFaqInteractive() {
+        var accordion = document.getElementById('faqAccordion');
+        var stage = document.getElementById('faqVisualStage');
+        var medalStage = document.getElementById('faqMedalStage');
+
+        // Accordion question click listeners
+        if (accordion) {
+            var items = accordion.querySelectorAll('.faq_item');
+            items.forEach(function (item, idx) {
+                var btn = item.querySelector('.faq_question');
+                if (btn) {
+                    btn.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        toggleFaqItem(idx);
+                    });
+                }
+            });
+        }
+
+        // Medal click listener: advances question
+        if (medalStage) {
+            medalStage.addEventListener('click', function () {
+                var nextIndex = (faqCurrentIndex + 1) % FAQ_DATA.length;
+                toggleFaqItem(nextIndex);
+            });
+        }
+
+        // 3D Mouse-Follow Tilt (up to 10 degrees)
+        if (stage) {
+            stage.addEventListener('mousemove', function (e) {
+                var rect = stage.getBoundingClientRect();
+                relX = (e.clientX - rect.left) / rect.width - 0.5;
+                relY = (e.clientY - rect.top) / rect.height - 0.5;
+                targetTiltY = relX * 10;
+                targetTiltX = -relY * 10;
+                isHovering = true;
+                onFaqScrollOrUpdate();
+            });
+
+            stage.addEventListener('mouseleave', function () {
+                targetTiltX = 0;
+                targetTiltY = 0;
+                relX = 0;
+                relY = 0;
+                isHovering = false;
+                onFaqScrollOrUpdate();
+            });
+        }
+
+        window.addEventListener('scroll', onFaqScrollOrUpdate, { passive: true });
+        window.addEventListener('resize', onFaqScrollOrUpdate, { passive: true });
+
+        // Initial tick
+        onFaqScrollOrUpdate();
+    }
+
     function initFaqObserver() {
         var faqSection = document.getElementById('faqSection');
         if (!faqSection) return;
 
-        if (window.innerWidth <= 991 && 'IntersectionObserver' in window) {
+        if ('IntersectionObserver' in window) {
             var faqObserver = new IntersectionObserver(function (entries) {
                 entries.forEach(function (entry) {
-                    if (entry.isIntersecting && !faqSection.classList.contains('faq-animated')) {
-                        faqSection.classList.add('faq-animated');
-                        faqObserver.unobserve(faqSection);
+                    if (entry.isIntersecting) {
+                        onFaqScrollOrUpdate();
+                        if (entry.intersectionRatio >= 0.3 && !faqEntrancePlayed) {
+                            faqEntrancePlayed = true;
+                            faqSection.classList.add('faq-entered');
+                        }
                     }
                 });
             }, {
-                threshold: 0.15,
+                threshold: [0.1, 0.3, 0.6, 0.9],
                 rootMargin: '0px 0px -40px 0px'
             });
 
             faqObserver.observe(faqSection);
         }
     }
+
+
+    function initFooter() {
+        var form = document.getElementById('footerNewsletterForm');
+        var input = document.getElementById('footerEmailInput');
+        var feedback = document.getElementById('footerFormFeedback');
+        var yearEl = document.getElementById('footerYear');
+        if (yearEl) {
+            yearEl.textContent = new Date().getFullYear();
+        }
+
+        if (form && input && feedback) {
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                var email = input.value.trim();
+                var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!email || !emailRegex.test(email)) {
+                    feedback.textContent = 'Please enter a valid email address.';
+                    feedback.className = 'footer_form_feedback error show';
+                    return;
+                }
+                feedback.textContent = '✓ Thank you for subscribing! Check your inbox soon.';
+                feedback.className = 'footer_form_feedback show';
+                input.value = '';
+                setTimeout(function () {
+                    feedback.className = 'footer_form_feedback';
+                }, 4500);
+            });
+        }
+    }
+
+})();

@@ -1049,21 +1049,51 @@
                 </div>
                 <div class="container">
                     <div class="why_choose_header cmn_hdr">
-                        <h2 class="why_choose_title">Why choose <span>PawMedal?</span></h2>
-                        <p class="why_choose_subtitle">See how PawMedal compares to traditional tags and other trackers. More safety.<br>More features. A smarter way to keep them close.</p>
+                        <div class="why_title_stage" id="whyTitleStage">
+                            <h2 class="why_choose_title" id="whyChooseTitle">
+                                <!-- Fill Layer: Linear gradient revealed with clip-path behind ray -->
+                                <span class="why_title_layer why_title_fill" id="whyTitleFill" aria-hidden="true">
+                                    <span class="title_dark">Why choose </span><span class="title_gold">PawMedal?</span>
+                                </span>
+
+                                <!-- Outline Layer: Outline-only with ray as background-clip:text gradient -->
+                                <span class="why_title_layer why_title_outline" id="whyTitleOutline">
+                                    <span class="title_dark">Why choose </span><span class="title_gold">PawMedal?</span>
+                                </span>
+                            </h2>
+                        </div>
+
+                        <!-- Soft glow beam crossing the section -->
+                        <div class="why_section_glow_beam" id="whySectionGlowBeam" aria-hidden="true"></div>
+
+                        <!-- Word-by-word paragraph with overflow masks -->
+                        <p class="why_choose_subtitle" id="whySubtitle">
+                            <span class="para_mask"><span class="para_word">See</span></span>
+                            <span class="para_mask"><span class="para_word">how</span></span>
+                            <span class="para_mask"><span class="para_word">PawMedal</span></span>
+                            <span class="para_mask"><span class="para_word">compares</span></span>
+                            <span class="para_mask"><span class="para_word">to</span></span>
+                            <span class="para_mask"><span class="para_word">traditional</span></span>
+                            <span class="para_mask"><span class="para_word">tags</span></span>
+                            <span class="para_mask"><span class="para_word">and</span></span>
+                            <span class="para_mask"><span class="para_word">other</span></span>
+                            <span class="para_mask"><span class="para_word">trackers.</span></span>
+                            <br class="para_break">
+                            <span class="para_mask"><span class="para_word">More</span></span>
+                            <span class="para_mask"><span class="para_word">safety.</span></span>
+                            <span class="para_mask"><span class="para_word">More</span></span>
+                            <span class="para_mask"><span class="para_word">features.</span></span>
+                            <span class="para_mask"><span class="para_word">A</span></span>
+                            <span class="para_mask"><span class="para_word">smarter</span></span>
+                            <span class="para_mask"><span class="para_word">way</span></span>
+                            <span class="para_mask"><span class="para_word">to</span></span>
+                            <span class="para_mask"><span class="para_word">keep</span></span>
+                            <span class="para_mask"><span class="para_word">them</span></span>
+                            <span class="para_mask"><span class="para_word">close.</span></span>
+                        </p>
                     </div>
 
                     <div class="compare_table_wrapper">
-                        <!-- Soft Golden Light Traveling Across Comparison Columns -->
-                        <div class="why_travel_light_track" aria-hidden="true">
-                            <div class="why_travel_light"></div>
-                        </div>
-                        <!-- Golden Liquid Wave Animation (left to right) -->
-                        <div class="golden_liquid_wave_wrap" aria-hidden="true">
-                            <div class="golden_liquid_wave"></div>
-                        </div>
-                        <!-- 2. Feature Scanning Animation (Row-by-row animated comparison) -->
-                        <div class="why_scan_line" aria-hidden="true"></div>
                         <div class="compare_table_grid">
                             <!-- Column 1: Features -->
                             <div class="compare_col compare_col_features">
@@ -1182,27 +1212,34 @@
                     <div class="dog_hero_grid">
                         <!-- Left Column: Typography & AI Prompt Generator -->
                         <div class="dog_content_col cmn_hdr">
-                            <h2 class="dog_section_title">
-                                Choose from designs created by our <span class="dog_accent_gold">artists</span> or <span class="dog_accent_gold">design</span> your own!
+                            <h2 class="dog_section_title" id="dogSectionTitle" aria-label="Choose from designs created by our artists or design your own!">
+                                <span class="gold_block_line">
+                                    <span class="gold_block_text">Choose from designs created by</span>
+                                    <span class="gold_sweep_block" aria-hidden="true"></span>
+                                </span>
+                                <span class="gold_block_line">
+                                    <span class="gold_block_text">our <span class="dog_accent_gold">artists</span> or <span class="dog_accent_gold">design</span> your own!</span>
+                                    <span class="gold_sweep_block" aria-hidden="true"></span>
+                                </span>
                             </h2>
                             <p class="dog_section_desc">
                                 This works well as a common heading because it covers both the Finder's tracking capability and the Tag's durability/design.
                             </p>
 
                             <!-- Interactive AI Prompt Generator Pill -->
-                            <div class="dog_prompt_bar">
+                            <div class="dog_prompt_bar" id="dogPromptBar">
                                 <div class="dog_prompt_input_wrap">
-                                    <span class="dog_prompt_placeholder">A golden retriever in the mountains at sunset...</span>
+                                    <span class="dog_prompt_text" id="dogPromptText">A golden retriever in the mountains at sunset...</span><span class="dog_prompt_cursor" id="dogPromptCursor" aria-hidden="true">|</span>
                                 </div>
                                 <button type="button" class="cmn_btn" id="dogPromptBtn" aria-label="Generate Now">
                                     <span>Generate Now</span>
-                                  <span class="btn_icn"><img src="./images/btn_icn.png" alt="btn_icn"></span>
-					<span class="btn_hvr_icn"><img src="./images/btn_hvr_icn.png" alt="btn_icn"></span>
+                                    <span class="btn_icn"><img src="./images/btn_icn.png" alt="btn_icn"></span>
+                                    <span class="btn_hvr_icn"><img src="./images/btn_hvr_icn.png" alt="btn_icn"></span>
                                 </button>
                             </div>
                         </div>
 
-                        <!-- Right Column: Visual Stage with Arc, Dashed Circle & Dog Tag -->
+                        <!-- Right Column: Visual Stage with Arc, Dashed Circle & Dog Tag (Pencil Sketch -> Color) -->
                         <div class="dog_visual_col">
                             <div class="dog_visual_stage" id="dogVisualStage">
                                 <!-- Layer 1: Background Warm Outer Arc (reveals from bottom to top) -->
@@ -1221,10 +1258,58 @@
                                     </svg>
                                 </div>
 
-                                <!-- Layer 3: Central Golden Retriever PawMedal Tag (appears last with hover effect) -->
+                                <!-- Layer 3: Central Golden Retriever PawMedal Tag (Pencil sketch -> Vibrant color) -->
                                 <div class="dog_tag_wrap" id="dogTagWrap">
-                                    <div class="dog_tag_inner" id="dogTagInner">
-                                        <img src="images/dog_design_tag.png" alt="Custom PawMedal Tag with Golden Retriever" class="dog_tag_img">
+                                    <div class="dog_tag_card" id="dogTagCard">
+                                        <!-- 1. Pencil Sketch Layer (draws first as pencil sketch) -->
+                                        <div class="dog_tag_sketch_layer" id="dogTagSketchLayer" aria-hidden="true">
+                                            <img src="images/dog_design_tag.png" alt="" class="dog_tag_img dog_sketch_img">
+                                            <!-- Animated SVG Pencil Sketch Lines Overlay -->
+                                            <svg class="dog_sketch_lines_svg" viewBox="0 0 360 450" fill="none">
+                                                <path class="sketch_line sketch_line_1" d="M 60 120 C 120 70 240 70 300 120" stroke="rgba(80,70,60,0.55)" stroke-width="2" stroke-dasharray="8 6"/>
+                                                <path class="sketch_line sketch_line_2" d="M 70 210 C 130 180 230 180 290 210" stroke="rgba(80,70,60,0.6)" stroke-width="1.8" stroke-dasharray="10 6"/>
+                                                <path class="sketch_line sketch_line_3" d="M 90 290 C 150 320 210 320 270 290" stroke="rgba(80,70,60,0.55)" stroke-width="2" stroke-dasharray="6 4"/>
+                                                <path class="sketch_line sketch_line_4" d="M 120 360 C 155 385 205 385 240 360" stroke="rgba(80,70,60,0.65)" stroke-width="1.8" stroke-dasharray="5 5"/>
+                                            </svg>
+                                            <div class="sketch_pencil_indicator" id="sketchPencilIndicator" aria-hidden="true">
+                                                <svg viewBox="0 0 24 24" width="22" height="22" fill="#8C7A65">
+                                                    <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                                                </svg>
+                                            </div>
+                                        </div>
+
+                                        <!-- 2. Vibrant Full-Color Layer (fills in with color after Generate Now) -->
+                                        <div class="dog_tag_color_layer" id="dogTagColorLayer">
+                                            <img src="images/dog_design_tag.png" alt="Custom PawMedal Tag with Golden Retriever" class="dog_tag_img dog_color_img">
+                                            <!-- Radiant Color Sweep Edge Glow Line -->
+                                            <div class="dog_color_sweep_line" id="dogColorSweepLine" aria-hidden="true"></div>
+                                            <!-- Specular Gloss Sheen -->
+                                            <div class="dog_specular_shine" id="dogSpecularShine" aria-hidden="true"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Flying Arc Token that swoops from the tag down to the features rail -->
+                                <div class="dog_flying_arc_token" id="dogFlyingArcToken" aria-hidden="true">
+                                    <div class="flying_token_inner">
+                                        <img src="images/dog_design_tag.png" alt="" class="flying_token_tag_img">
+                                        <div class="flying_token_paw_disc">
+                                            <svg viewBox="0 0 100 100" fill="none">
+                                                <circle cx="50" cy="50" r="46" fill="url(#arcTokenGold)" stroke="#FFE8A3" stroke-width="3"/>
+                                                <path d="M 50 63 C 43 63 37 68 36 74 C 35 80 40 86 50 86 C 60 86 65 80 64 74 C 63 68 57 63 50 63 Z" fill="#FFFFFF"/>
+                                                <ellipse cx="28" cy="50" rx="7" ry="10" transform="rotate(-22 28 50)" fill="#FFFFFF"/>
+                                                <ellipse cx="42" cy="40" rx="7" ry="10" transform="rotate(-8 42 40)" fill="#FFFFFF"/>
+                                                <ellipse cx="58" cy="40" rx="7" ry="10" transform="rotate(8 58 40)" fill="#FFFFFF"/>
+                                                <ellipse cx="72" cy="50" rx="7" ry="10" transform="rotate(22 72 50)" fill="#FFFFFF"/>
+                                                <defs>
+                                                    <radialGradient id="arcTokenGold" cx="35%" cy="35%" r="65%">
+                                                        <stop offset="0%" stop-color="#FFF3C4"/>
+                                                        <stop offset="45%" stop-color="#DCA84A"/>
+                                                        <stop offset="100%" stop-color="#9E6E24"/>
+                                                    </radialGradient>
+                                                </defs>
+                                            </svg>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -1232,65 +1317,107 @@
                     </div>
                 </div>
 
-                <!-- Bottom 4 Feature Columns Bar with Vertical Dividers -->
-                <div class="dog_features_bar">
-                        <!-- Feature 1 -->
-                        <div class="dog_feat_col">
-                            <div class="dog_feat_icon_wrap">
-                                <svg class="dog_feat_svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                                    <circle cx="12" cy="8" r="4"></circle>
-                                    <path d="M6 20v-1a6 6 0 0 1 12 0v1"></path>
-                                    <path d="M12 4v2m-2-1h4"></path>
-                                </svg>
-                            </div>
-                            <h4 class="dog_feat_title">Personalized by real artists</h4>
-                            <p class="dog_feat_subtitle">or your own imagination</p>
-                        </div>
+                <!-- Bottom 4 Feature Columns Bar with Dashed Rail & Step Numbers -->
+                <div class="dog_features_bar" id="dogFeaturesBar">
+                    <!-- Dashed Travel Rail running behind the 4 features -->
+                    <div class="dog_features_rail" id="dogFeaturesRail" aria-hidden="true">
+                        <svg class="dog_rail_svg" viewBox="0 0 1000 30" preserveAspectRatio="none">
+                            <line class="rail_bg_line" x1="50" y1="15" x2="950" y2="15" stroke="rgba(200, 156, 80, 0.35)" stroke-width="2.5" stroke-dasharray="6 8"></line>
+                            <line class="rail_active_line" id="dogRailActiveLine" x1="50" y1="15" x2="50" y2="15" stroke="url(#railGoldGrad)" stroke-width="3.5" stroke-linecap="round"></line>
+                            <defs>
+                                <linearGradient id="railGoldGrad" x1="0" y1="0" x2="1" y2="0">
+                                    <stop offset="0%" stop-color="#C89C50" stop-opacity="0.3"/>
+                                    <stop offset="80%" stop-color="#FFDF85"/>
+                                    <stop offset="100%" stop-color="#FFFFFF"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
 
-                        <!-- Feature 2 -->
-                        <div class="dog_feat_col">
-                            <div class="dog_feat_icon_wrap">
-                                <svg class="dog_feat_svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                                    <line x1="4" y1="21" x2="4" y2="14"></line>
-                                    <line x1="4" y1="10" x2="4" y2="3"></line>
-                                    <line x1="12" y1="21" x2="12" y2="12"></line>
-                                    <line x1="12" y1="8" x2="12" y2="3"></line>
-                                    <line x1="20" y1="21" x2="20" y2="16"></line>
-                                    <line x1="20" y1="12" x2="20" y2="3"></line>
-                                    <line x1="1" y1="14" x2="7" y2="14"></line>
-                                    <line x1="9" y1="8" x2="15" y2="8"></line>
-                                    <line x1="17" y1="16" x2="23" y2="16"></line>
+                        <!-- The Traveling Gold Paw Token -->
+                        <div class="dog_traveling_token" id="dogTravelingToken" aria-hidden="true">
+                            <div class="gold_paw_token_disc">
+                                <svg class="gold_paw_token_svg" viewBox="0 0 100 100" fill="none">
+                                    <circle cx="50" cy="50" r="46" fill="url(#tokenGoldDisc)" stroke="#FFE8A3" stroke-width="3"/>
+                                    <circle cx="50" cy="50" r="40" stroke="rgba(255,255,255,0.4)" stroke-dasharray="3 4" stroke-width="1.5"/>
+                                    <path d="M 50 63 C 43 63 37 68 36 74 C 35 80 40 86 50 86 C 60 86 65 80 64 74 C 63 68 57 63 50 63 Z" fill="#FFFFFF"/>
+                                    <ellipse cx="28" cy="50" rx="7" ry="10" transform="rotate(-22 28 50)" fill="#FFFFFF"/>
+                                    <ellipse cx="42" cy="40" rx="7" ry="10" transform="rotate(-8 42 40)" fill="#FFFFFF"/>
+                                    <ellipse cx="58" cy="40" rx="7" ry="10" transform="rotate(8 58 40)" fill="#FFFFFF"/>
+                                    <ellipse cx="72" cy="50" rx="7" ry="10" transform="rotate(22 72 50)" fill="#FFFFFF"/>
+                                    <defs>
+                                        <radialGradient id="tokenGoldDisc" cx="35%" cy="35%" r="65%">
+                                            <stop offset="0%" stop-color="#FFF3C4"/>
+                                            <stop offset="45%" stop-color="#DCA84A"/>
+                                            <stop offset="100%" stop-color="#9E6E24"/>
+                                        </radialGradient>
+                                    </defs>
                                 </svg>
+                                <div class="token_aura_glow"></div>
                             </div>
-                            <h4 class="dog_feat_title">Choose from 100 designs</h4>
-                        </div>
-
-                        <!-- Feature 3 -->
-                        <div class="dog_feat_col">
-                            <div class="dog_feat_icon_wrap">
-                                <svg class="dog_feat_svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M12 19l7-7 3 3-7 7-3-3z"></path>
-                                    <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path>
-                                    <path d="M2 2l7.586 7.586"></path>
-                                    <circle cx="11" cy="11" r="2"></circle>
-                                </svg>
-                            </div>
-                            <h4 class="dog_feat_title">Fast and easy customization</h4>
-                        </div>
-
-                        <!-- Feature 4 -->
-                        <div class="dog_feat_col">
-                            <div class="dog_feat_icon_wrap">
-                                <svg class="dog_feat_svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                                    <rect x="3" y="3" width="18" height="14" rx="2"></rect>
-                                    <path d="M8 21h8m-4-4v4"></path>
-                                    <path d="M7 10l3 3 5-5"></path>
-                                </svg>
-                            </div>
-                            <h4 class="dog_feat_title">Preview result</h4>
-                            <p class="dog_feat_subtitle">before ordering</p>
                         </div>
                     </div>
+
+                    <!-- Feature 1 -->
+                    <div class="dog_feat_col" id="dogFeatCol1" data-step="1">
+                        <span class="dog_feat_step">01</span>
+                        <div class="dog_feat_icon_wrap">
+                            <svg class="dog_feat_svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="8" r="4"></circle>
+                                <path d="M6 20v-1a6 6 0 0 1 12 0v1"></path>
+                                <path d="M12 4v2m-2-1h4"></path>
+                            </svg>
+                        </div>
+                        <h4 class="dog_feat_title">Personalized by real artists</h4>
+                        <p class="dog_feat_subtitle">or your own imagination</p>
+                    </div>
+
+                    <!-- Feature 2 -->
+                    <div class="dog_feat_col" id="dogFeatCol2" data-step="2">
+                        <span class="dog_feat_step">02</span>
+                        <div class="dog_feat_icon_wrap">
+                            <svg class="dog_feat_svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="4" y1="21" x2="4" y2="14"></line>
+                                <line x1="4" y1="10" x2="4" y2="3"></line>
+                                <line x1="12" y1="21" x2="12" y2="12"></line>
+                                <line x1="12" y1="8" x2="12" y2="3"></line>
+                                <line x1="20" y1="21" x2="20" y2="16"></line>
+                                <line x1="20" y1="12" x2="20" y2="3"></line>
+                                <line x1="1" y1="14" x2="7" y2="14"></line>
+                                <line x1="9" y1="8" x2="15" y2="8"></line>
+                                <line x1="17" y1="16" x2="23" y2="16"></line>
+                            </svg>
+                        </div>
+                        <h4 class="dog_feat_title">Choose from 100 designs</h4>
+                    </div>
+
+                    <!-- Feature 3 -->
+                    <div class="dog_feat_col" id="dogFeatCol3" data-step="3">
+                        <span class="dog_feat_step">03</span>
+                        <div class="dog_feat_icon_wrap">
+                            <svg class="dog_feat_svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 19l7-7 3 3-7 7-3-3z"></path>
+                                <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path>
+                                <path d="M2 2l7.586 7.586"></path>
+                                <circle cx="11" cy="11" r="2"></circle>
+                            </svg>
+                        </div>
+                        <h4 class="dog_feat_title">Fast and easy customization</h4>
+                    </div>
+
+                    <!-- Feature 4 -->
+                    <div class="dog_feat_col" id="dogFeatCol4" data-step="4">
+                        <span class="dog_feat_step">04</span>
+                        <div class="dog_feat_icon_wrap">
+                            <svg class="dog_feat_svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="3" width="18" height="14" rx="2"></rect>
+                                <path d="M8 21h8m-4-4v4"></path>
+                                <path d="M7 10l3 3 5-5"></path>
+                            </svg>
+                        </div>
+                        <h4 class="dog_feat_title">Preview result</h4>
+                        <p class="dog_feat_subtitle">before ordering</p>
+                    </div>
+                </div>
             </section>
 
             <!-- More Than Just Pets Section (Parallax entrance from bottom after 2s scroll on dog section) -->
@@ -1383,86 +1510,117 @@
             <section class="faq_section" id="faqSection" aria-label="Frequently Asked Questions">
                 <div class="faq_container">
                     <div class="faq_grid">
-                        <!-- Left Column: Typography, Accordion & CTA -->
+                        <!-- Left Column: Typography, Auto Status, Accordion & CTA -->
                         <div class="faq_content_col cmn_hdr">
+                            <!-- Section Label with animated line -->
+                            <div class="faq_label">
+                                <span class="faq_label_line"></span>
+                                <span class="faq_label_text">S.06 · FAQ</span>
+                            </div>
+
                             <h2 class="faq_section_title">
-                                Frequently asked <span class="faq_accent_gold">questions</span>
+                                <span class="faq_word">Frequently</span>
+                                <span class="faq_word">asked</span>
+                                <span class="faq_word faq_title_gold">
+                                    questions
+                                    <svg class="faq_gold_underline" viewBox="0 0 160 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M 4 11 Q 45 4, 85 8 T 156 7" stroke="#c8963e" stroke-width="3" stroke-linecap="round" fill="none" pathLength="1"/>
+                                    </svg>
+                                </span>
                             </h2>
                             <p class="faq_section_desc">
                                 Everything you need to know about PawMedal.
                             </p>
 
+                            <!-- Hidden Auto indicator for state binding -->
+                            <div class="faq_auto_indicator" id="faqAutoIndicator" style="display:none;" aria-hidden="true">
+                                <span class="auto_label" id="faqAutoStatusLabel">Auto-Cycle: Active (7s)</span>
+                                <span class="faq_auto_bar"><span class="faq_auto_fill" id="faqProgressFill"></span></span>
+                            </div>
+
                             <!-- Interactive FAQ Accordion List -->
                             <div class="faq_accordion" id="faqAccordion">
-                                <!-- FAQ Item 1 (Active/Expanded) -->
-                                <div class="faq_item active">
-                                    <button type="button" class="faq_question" aria-expanded="true">
+                                <!-- FAQ Item 1 -->
+                                <div class="faq_item" data-faq-id="1">
+                                    <button type="button" class="faq_question" aria-expanded="false">
                                         <span class="faq_q_bullet"></span>
                                         <span class="faq_q_text">Does PawMedal work worldwide?</span>
-                                        <span class="faq_arrow_icon"><i class="fa-solid fa-chevron-up"></i></span>
+                                        <span class="faq_arrow_icon"><i class="fa-solid fa-chevron-down"></i></span>
                                     </button>
-                                    <div class="faq_answer" style="display: block;">
-                                        <p>Yes, PawMedal Tag works wherever someone can scan the QR code or tap the NFC tag. PawMedal Finder uses Apple's Find My network to help locate your pet wherever the network is available.</p>
+                                    <div class="faq_answer">
+                                        <div class="faq_answer_inner">
+                                            <p class="faq_answer_text">Yes, PawMedal Tag works wherever someone can scan the QR code or tap the NFC tag. PawMedal Finder uses Apple's Find My network to help locate your pet wherever the network is available.</p>
+                                        </div>
                                     </div>
                                 </div>
 
                                 <!-- FAQ Item 2 -->
-                                <div class="faq_item">
+                                <div class="faq_item" data-faq-id="2">
                                     <button type="button" class="faq_question" aria-expanded="false">
                                         <span class="faq_q_bullet"></span>
                                         <span class="faq_q_text">Do I need a subscription?</span>
                                         <span class="faq_arrow_icon"><i class="fa-solid fa-chevron-down"></i></span>
                                     </button>
                                     <div class="faq_answer">
-                                        <p>No subscription required! PawMedal Tag and Finder have zero monthly fees. You get full access to all features forever with a single one-time purchase.</p>
+                                        <div class="faq_answer_inner">
+                                            <p class="faq_answer_text">No subscription required! PawMedal Tag and Finder have zero monthly fees. You get full access to all features forever with a single one-time purchase.</p>
+                                        </div>
                                     </div>
                                 </div>
 
                                 <!-- FAQ Item 3 -->
-                                <div class="faq_item">
+                                <div class="faq_item" data-faq-id="3">
                                     <button type="button" class="faq_question" aria-expanded="false">
                                         <span class="faq_q_bullet"></span>
                                         <span class="faq_q_text">How long does the battery last?</span>
                                         <span class="faq_arrow_icon"><i class="fa-solid fa-chevron-down"></i></span>
                                     </button>
                                     <div class="faq_answer">
-                                        <p>PawMedal Finder has a user-replaceable standard battery that lasts up to one full year. The PawMedal QR/NFC Tag requires no battery or charging ever.</p>
+                                        <div class="faq_answer_inner">
+                                            <p class="faq_answer_text">PawMedal Finder has a user-replaceable standard battery that lasts up to one full year. The PawMedal QR/NFC Tag requires no battery or charging ever.</p>
+                                        </div>
                                     </div>
                                 </div>
 
                                 <!-- FAQ Item 4 -->
-                                <div class="faq_item">
+                                <div class="faq_item" data-faq-id="4">
                                     <button type="button" class="faq_question" aria-expanded="false">
                                         <span class="faq_q_bullet"></span>
                                         <span class="faq_q_text">Is it waterproof?</span>
                                         <span class="faq_arrow_icon"><i class="fa-solid fa-chevron-down"></i></span>
                                     </button>
                                     <div class="faq_answer">
-                                        <p>Yes! Both the PawMedal Tag and Finder are IP67 waterproof and adventure-tested for swimming, heavy rain, snow, and mud.</p>
+                                        <div class="faq_answer_inner">
+                                            <p class="faq_answer_text">Yes! Both the PawMedal Tag and Finder are IP67 waterproof and adventure-tested for swimming, heavy rain, snow, and mud.</p>
+                                        </div>
                                     </div>
                                 </div>
 
                                 <!-- FAQ Item 5 -->
-                                <div class="faq_item">
+                                <div class="faq_item" data-faq-id="5">
                                     <button type="button" class="faq_question" aria-expanded="false">
                                         <span class="faq_q_bullet"></span>
                                         <span class="faq_q_text">Can I update my pet's information?</span>
                                         <span class="faq_arrow_icon"><i class="fa-solid fa-chevron-down"></i></span>
                                     </button>
                                     <div class="faq_answer">
-                                        <p>Instantly, anytime! You can update contact numbers, medical alerts, home address, and photos in your profile without changing or replacing the physical medal.</p>
+                                        <div class="faq_answer_inner">
+                                            <p class="faq_answer_text">Instantly, anytime! You can update contact numbers, medical alerts, home address, and photos in your profile without changing or replacing the physical medal.</p>
+                                        </div>
                                     </div>
                                 </div>
 
                                 <!-- FAQ Item 6 -->
-                                <div class="faq_item">
+                                <div class="faq_item" data-faq-id="6">
                                     <button type="button" class="faq_question" aria-expanded="false">
                                         <span class="faq_q_bullet"></span>
                                         <span class="faq_q_text">What if someone finds my pet?</span>
                                         <span class="faq_arrow_icon"><i class="fa-solid fa-chevron-down"></i></span>
                                     </button>
                                     <div class="faq_answer">
-                                        <p>When someone finds your pet, they can simply tap the medal with any smartphone or scan the QR code to see your pet profile, emergency contacts, and notify you instantly.</p>
+                                        <div class="faq_answer_inner">
+                                            <p class="faq_answer_text">When someone finds your pet, they can simply tap the medal with any smartphone or scan the QR code to see your pet profile, emergency contacts, and notify you instantly.</p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -1477,31 +1635,181 @@
                             </div>
                         </div>
 
-                        <!-- Right Column: Visual Stage (Phone Frame, Half Circle Arc, Medal, Mobile Screen) -->
+                        <!-- Right Column: Visual Stage (Pale Beige Ring, Wireframe Phone, Result Cards, Medal) -->
                         <div class="faq_visual_col">
-                            <div class="faq_visual_stage" id="faqVisualStage">
-                                <!-- Layer 1: Background Half-Circle Arc (Draws from top to bottom) -->
-                                <div class="faq_arc_wrap" id="faqArcWrap">
-                                    <img src="images/faq_circle.png" alt="" class="faq_arc_img" aria-hidden="true">
+                            <div class="faq_visual_stage" id="faqVisualStage" title="Hover to inspect in 3D">
+                                <!-- Layer 1: Large Pale Beige Ring behind both -->
+                                <div class="faq_ring_bg" id="faqRingBg" aria-hidden="true">
+                                    <svg viewBox="0 0 460 460" class="faq_ring_svg">
+                                        <circle cx="230" cy="230" r="200" fill="none" stroke="#ece3d3" stroke-width="48" opacity="0.9" />
+                                    </svg>
                                 </div>
 
-                                <!-- Layer 2: Mobile Phone Frame -->
-                                <div class="faq_phone_wrap" id="faqPhoneWrap">
-                                    <!-- Outer iPhone Bezel & Phone Base -->
-                                    <img src="images/faq_phone_frame.png" alt="iPhone Frame" class="faq_phone_frame_img" aria-hidden="true">
+                                <!-- Layer 2: Scroll-Drawn Wireframe Phone Mockup (viewBox 0 0 260 520) -->
+                                <div class="faq_phone_stage" id="faqPhoneStage">
+                                    <svg class="faq_phone_svg" id="faqPhoneSvg" viewBox="0 0 260 520" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <defs>
+                                            <!-- Ocean to beach sand gradient -->
+                                            <linearGradient id="faqBeachGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                                <stop offset="0%" stop-color="#2497a7" />
+                                                <stop offset="28%" stop-color="#3baec0" />
+                                                <stop offset="40%" stop-color="#72c6d2" />
+                                                <stop offset="47%" stop-color="#ffffff" stop-opacity="0.9" />
+                                                <stop offset="54%" stop-color="#faeedd" />
+                                                <stop offset="100%" stop-color="#f2dec5" />
+                                            </linearGradient>
+                                            <!-- Circular clip path for the pet avatar -->
+                                            <clipPath id="faqDogAvatarClip">
+                                                <circle cx="130" cy="112" r="28" />
+                                            </clipPath>
+                                        </defs>
 
-                                    <!-- Screen Display Window: Dog Homepage Screen slowly fades in on the phone -->
-                                    <div class="faq_screen_window">
-                                        <img src="images/faq_mobile_screen.png" alt="Dog Homepage Screen Max" class="faq_screen_img" id="faqScreenImg">
+                                        <!-- 21 shapes with pathLength="1" -->
+                                        <!-- 1. Body -->
+                                        <rect class="wf_shape wf_body" data-target-fill-opacity="1" x="10" y="8" width="240" height="504" rx="36" stroke="#c8963e" stroke-width="2" fill="#1b1816" pathLength="1" />
+                                        <!-- 2. Screen (Ocean beach gradient) -->
+                                        <rect class="wf_shape wf_screen" data-target-fill-opacity="1" x="18" y="16" width="224" height="488" rx="28" stroke="#c8963e" stroke-width="1.4" fill="url(#faqBeachGrad)" pathLength="1" />
+                                        <!-- 3. Notch -->
+                                        <rect class="wf_shape wf_notch" data-target-fill-opacity="1" x="95" y="24" width="70" height="18" rx="9" stroke="#c8963e" stroke-width="1.2" fill="#111111" pathLength="1" />
+                                        <!-- 4. Header line -->
+                                        <line class="wf_shape wf_header_line" data-target-fill-opacity="0" x1="36" y1="54" x2="224" y2="54" stroke="#c8963e" stroke-width="1" stroke-dasharray="3 3" pathLength="1" />
+                                        <!-- 5. Avatar outer ring -->
+                                        <circle class="wf_shape wf_avatar_outer" data-target-fill-opacity="0.25" cx="130" cy="112" r="46" stroke="#c8963e" stroke-width="1.2" fill="#ffffff" pathLength="1" />
+
+                                        <!-- Avatar Assembly: Golden Retriever + Cyan Ring + 4 Badges (Matches Figma Design) -->
+                                        <g id="wfAvatarGroup" class="wf_dog_avatar">
+                                            <image id="wfDogAvatar" href="images/faq_avatar_badge.png" x="84" y="66" width="92" height="92" preserveAspectRatio="xMidYMid meet" />
+                                        </g>
+
+                                        <!-- 6. Avatar inner ring (Wireframe gold stroke) -->
+                                        <circle class="wf_shape wf_avatar_inner" data-target-fill-opacity="0" cx="130" cy="112" r="28" stroke="#c8963e" stroke-width="1.5" fill="none" pathLength="1" />
+                                        <!-- 7. Name squiggle -->
+                                        <path class="wf_shape wf_squiggle" data-target-fill-opacity="0" d="M 98 158 Q 114 150 130 158 T 162 158" stroke="#c8963e" stroke-width="2.2" stroke-linecap="round" fill="none" pathLength="1" />
+                                        <!-- 8. Button 1 (tab left) -->
+                                        <rect class="wf_shape wf_btn_1" data-target-fill-opacity="1" x="36" y="172" width="88" height="20" rx="10" stroke="#c8963e" stroke-width="1.2" fill="#326c76" pathLength="1" />
+                                        <!-- 9. Button 2 (tab right) -->
+                                        <rect class="wf_shape wf_btn_2" data-target-fill-opacity="0.8" x="136" y="172" width="88" height="20" rx="10" stroke="#c8963e" stroke-width="1.2" fill="#ffffff" pathLength="1" />
+                                        <!-- 10. Status card -->
+                                        <rect class="wf_shape wf_status_card" data-target-fill-opacity="0.9" x="36" y="202" width="188" height="30" rx="9" stroke="#c8963e" stroke-width="1.2" fill="#ffffff" pathLength="1" />
+                                        <!-- 11. Status circle 1 -->
+                                        <circle class="wf_shape wf_status_c1" data-target-fill-opacity="1" cx="68" cy="217" r="6" stroke="#c8963e" stroke-width="1" fill="#8fc0ca" pathLength="1" />
+                                        <!-- 12. Status circle 2 -->
+                                        <circle class="wf_shape wf_status_c2" data-target-fill-opacity="1" cx="130" cy="217" r="6" stroke="#c8963e" stroke-width="1" fill="#8fc0ca" pathLength="1" />
+                                        <!-- 13. Status circle 3 -->
+                                        <circle class="wf_shape wf_status_c3" data-target-fill-opacity="1" cx="192" cy="217" r="6" stroke="#c8963e" stroke-width="1" fill="#8fc0ca" pathLength="1" />
+                                        <!-- 14. Owner card -->
+                                        <rect class="wf_shape wf_owner_card" data-target-fill-opacity="0.95" x="36" y="242" width="188" height="48" rx="10" stroke="#c8963e" stroke-width="1.2" fill="#ffffff" pathLength="1" />
+                                        <!-- 15. Owner avatar -->
+                                        <circle class="wf_shape wf_owner_av" data-target-fill-opacity="1" cx="58" cy="266" r="12" stroke="#c8963e" stroke-width="1" fill="#d4a373" pathLength="1" />
+                                        <!-- 16. Owner line 1 -->
+                                        <line class="wf_shape wf_owner_l1" data-target-fill-opacity="0" x1="80" y1="261" x2="194" y2="261" stroke="#c8963e" stroke-width="2" stroke-linecap="round" pathLength="1" />
+                                        <!-- 17. Owner line 2 -->
+                                        <line class="wf_shape wf_owner_l2" data-target-fill-opacity="0" x1="80" y1="272" x2="145" y2="272" stroke="#c8963e" stroke-width="2" stroke-linecap="round" pathLength="1" />
+                                        <!-- 18. Profile card -->
+                                        <rect class="wf_shape wf_profile_card" data-target-fill-opacity="0.95" x="36" y="300" width="188" height="74" rx="10" stroke="#c8963e" stroke-width="1.2" fill="#ffffff" pathLength="1" />
+                                        <!-- 19. Profile line 1 -->
+                                        <line class="wf_shape wf_profile_l1" data-target-fill-opacity="0" x1="54" y1="318" x2="170" y2="318" stroke="#c8963e" stroke-width="2" stroke-linecap="round" pathLength="1" />
+                                        <!-- 20. Profile line 2 -->
+                                        <line class="wf_shape wf_profile_l2" data-target-fill-opacity="0" x1="54" y1="334" x2="194" y2="334" stroke="#c8963e" stroke-width="2" stroke-linecap="round" pathLength="1" />
+                                        <!-- 21. Profile line 3 -->
+                                        <line class="wf_shape wf_profile_l3" data-target-fill-opacity="0" x1="54" y1="350" x2="125" y2="350" stroke="#c8963e" stroke-width="2" stroke-linecap="round" pathLength="1" />
+                                    </svg>
+
+                                    <!-- Soft light sweep effect -->
+                                    <div class="faq_screen_sweep" id="faqScreenSweep" aria-hidden="true"></div>
+
+                                    <!-- Dynamic Result Card Stage at Bottom of Phone -->
+                                    <div class="faq_result_cards" id="faqResultCards">
+                                        <!-- Card 1: Worldwide -->
+                                        <div class="faq_result_card card_1" data-card-id="1">
+                                            <div class="res_icon_wrap icon_globe">
+                                                <span class="globe_ping"></span>
+                                                <span class="res_emoji">🌍</span>
+                                            </div>
+                                            <div class="res_info">
+                                                <div class="res_title">Works everywhere</div>
+                                                <div class="res_sub">Worldwide · Find My™</div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Card 2: Subscription -->
+                                        <div class="faq_result_card card_2" data-card-id="2">
+                                            <div class="res_icon_wrap icon_price">
+                                                <span class="res_strike">$9</span>
+                                                <span class="res_arrow">➔</span>
+                                                <span class="res_free">$0</span>
+                                            </div>
+                                            <div class="res_info">
+                                                <div class="res_title">No subscription</div>
+                                                <div class="res_sub">$0 / per month</div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Card 3: Battery -->
+                                        <div class="faq_result_card card_3" data-card-id="3">
+                                            <div class="res_icon_wrap icon_batt">
+                                                <div class="res_battery_bar"><span class="batt_fill"></span></div>
+                                                <span class="batt_bolt">⚡</span>
+                                            </div>
+                                            <div class="res_info">
+                                                <div class="res_title">1 Year battery life</div>
+                                                <div class="res_sub">Replaceable · 0-power tag</div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Card 4: Waterproof -->
+                                        <div class="faq_result_card card_4" data-card-id="4">
+                                            <div class="res_icon_wrap icon_water">
+                                                <span class="water_paw">🐾</span>
+                                                <span class="drop drop_1">💧</span>
+                                                <span class="drop drop_2">💧</span>
+                                            </div>
+                                            <div class="res_info">
+                                                <div class="res_title">Waterproof</div>
+                                                <div class="res_sub">&amp; durable</div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Card 5: Update Info -->
+                                        <div class="faq_result_card card_5" data-card-id="5">
+                                            <div class="res_info_flex">
+                                                <div class="res_details">
+                                                    <span class="pet_name">Name: <strong>Max</strong></span>
+                                                    <span class="pet_weight">Weight: <strong>21 kg</strong></span>
+                                                </div>
+                                                <div class="res_badge_check">
+                                                    <span class="check_icon">✓</span>
+                                                    <span class="check_text">Saved</span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Card 6: Found Pet -->
+                                        <div class="faq_result_card card_6" data-card-id="6">
+                                            <div class="res_icon_wrap icon_bell">
+                                                <span class="bell_ring">🔔</span>
+                                                <span class="bell_wave wave_1"></span>
+                                                <span class="bell_wave wave_2"></span>
+                                            </div>
+                                            <div class="res_info">
+                                                <div class="res_title">Max was found!</div>
+                                                <div class="res_sub">📍 0.2 km away</div>
+                                            </div>
+                                        </div>
                                     </div>
-
-                                    <!-- iPhone Dynamic Island Pill -->
-                                    <div class="faq_dynamic_island" aria-hidden="true"></div>
                                 </div>
 
-                                <!-- Layer 3: Beach Medal Tag (Appears after arc finishes drawing) -->
-                                <div class="faq_medal_wrap" id="faqMedalWrap">
-                                    <img src="images/faq_tag.png" alt="PawMedal Beach Tag" class="faq_medal_img">
+                                <div class="faq_fig_caption" aria-hidden="true">FIG. 1 — THE PROFILE, DRAWN AS YOU SCROLL</div>
+
+                                <!-- Medal Stage (Spins in from right, pulse rings on click/change) -->
+                                <div class="faq_medal_stage" id="faqMedalStage">
+                                    <!-- Two expanding gold rings -->
+                                    <div class="faq_medal_pulse" id="faqMedalPulse" aria-hidden="true">
+                                        <span class="pulse_ring p_ring_1"></span>
+                                        <span class="pulse_ring p_ring_2"></span>
+                                    </div>
+                                    <!-- Rotating Physical Medal Image -->
+                                    <img src="images/faq_tag.png" alt="PawMedal Beach Tag" class="faq_medal_img" id="faqMedalImg">
                                 </div>
                             </div>
                         </div>
@@ -1509,6 +1817,134 @@
                 </div>
 
             </section>
+
+            <!-- Site Footer Section (Matches Figma Design) -->
+            <footer class="footer_section" id="footerSection" aria-label="PawMedal Footer">
+                <div class="footer_container">
+                    
+                    <!-- Top Golden CTA Banner Card -->
+                    <div class="footer_cta_banner" id="footerCtaBanner">
+                        <div class="footer_cta_inner">
+                            <div class="footer_cta_content">
+                                <h2 class="footer_cta_title">Keep Them Close. Keep Them Safe.</h2>
+                                <p class="footer_cta_desc">Smart identification and tracking designed to give you peace of mind wherever your pet goes.</p>
+                            </div>
+                            <div class="footer_cta_actions">
+                                <a href="javascript:void(0);" class="cmn_btn footer_btn_primary" aria-label="Shop PawMedal">
+                                    <span>Shop PawMedal</span>
+                                    <span class="btn_icn"><img src="./images/btn_icn.png" alt="btn_icn"></span>
+                                    <span class="btn_hvr_icn"><img src="./images/btn_hvr_icn.png" alt="btn_icn"></span>
+                                </a>
+                                <a href="javascript:void(0);" class="cmn_btn footer_btn_secondary" aria-label="Explore Finder">
+                                    <span>Explore Finder</span>
+                                    <span class="btn_icn"><img src="./images/btn_icn.png" alt="btn_icn"></span>
+                                    <span class="btn_hvr_icn"><img src="./images/btn_hvr_icn.png" alt="btn_icn"></span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Main Footer 5-Column Navigation Grid -->
+                    <div class="footer_main_grid">
+                        
+                        <!-- Column 1: Brand Info & Socials -->
+                        <div class="footer_col footer_brand_col">
+                            <div class="footer_logo_wrap">
+                                <a href="#" class="footer_logo_link" aria-label="PawMedal Home">
+                                    <img src="images/paw_logo.png" alt="PawMedal - Always Find Home" class="footer_logo_img">
+                                </a>
+                            </div>
+                            <p class="footer_brand_desc">
+                                Smart identification and tracking designed to give you peace of mind wherever your pet goes.
+                            </p>
+                            <div class="footer_socials">
+                                <a href="javascript:void(0);" class="footer_social_icon" aria-label="Facebook" title="Facebook">
+                                    <i class="fa-brands fa-facebook-f"></i>
+                                </a>
+                                <a href="javascript:void(0);" class="footer_social_icon" aria-label="Instagram" title="Instagram">
+                                    <i class="fa-brands fa-instagram"></i>
+                                </a>
+                                <a href="javascript:void(0);" class="footer_social_icon" aria-label="X Twitter" title="X Twitter">
+                                    <i class="fa-brands fa-x-twitter"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Column 2: Shop -->
+                        <div class="footer_col">
+                            <h4 class="footer_col_title">Shop</h4>
+                            <ul class="footer_nav_list">
+                                <li><a href="javascript:void(0);">PawMedal Tag</a></li>
+                                <li><a href="javascript:void(0);">PawMedal Finder</a></li>
+                                <li><a href="javascript:void(0);">PawMedal Bundle</a></li>
+                                <li><a href="javascript:void(0);">Design Your Tag</a></li>
+                                <li><a href="javascript:void(0);">All Products</a></li>
+                            </ul>
+                        </div>
+
+                        <!-- Column 3: Shop (Features & Company) -->
+                        <div class="footer_col">
+                            <h4 class="footer_col_title">Shop</h4>
+                            <ul class="footer_nav_list">
+                                <li><a href="javascript:void(0);">How It Works</a></li>
+                                <li><a href="javascript:void(0);">Why PawMedal</a></li>
+                                <li><a href="javascript:void(0);">PawMedal AI</a></li>
+                                <li><a href="javascript:void(0);">Our Story</a></li>
+                                <li><a href="javascript:void(0);">FAQs</a></li>
+                            </ul>
+                        </div>
+
+                        <!-- Column 4: Support -->
+                        <div class="footer_col">
+                            <h4 class="footer_col_title">Support</h4>
+                            <ul class="footer_nav_list">
+                                <li><a href="javascript:void(0);">Contact Us</a></li>
+                                <li><a href="javascript:void(0);">Help Center</a></li>
+                                <li><a href="javascript:void(0);">Track My Order</a></li>
+                                <li><a href="javascript:void(0);">Shipping &amp; Returns</a></li>
+                                <li><a href="javascript:void(0);">Privacy &amp; Security</a></li>
+                            </ul>
+                        </div>
+
+                        <!-- Column 5: Stay Connected & Newsletter -->
+                        <div class="footer_col footer_newsletter_col">
+                            <h4 class="footer_col_title">Stay Connected</h4>
+                            <p class="footer_newsletter_desc">
+                                Get pet safety tips, product updates, and special offers delivered to your inbox.
+                            </p>
+                            <form class="footer_newsletter_form" id="footerNewsletterForm" novalidate>
+                                <div class="footer_input_wrap">
+                                    <input type="email" class="footer_newsletter_input" id="footerEmailInput" placeholder="Enter your email" required aria-label="Enter your email">
+                                </div>
+                                <button type="submit" class="footer_newsletter_btn" id="footerSubscribeBtn" aria-label="Subscribe Now">
+                                    <span>Subscribe Now</span>
+                                    <span class="btn_icn"><img src="./images/btn_icn.png" alt="icon"></span>
+                                    <span class="btn_hvr_icn"><img src="./images/btn_hvr_icn.png" alt="icon"></span>
+                                </button>
+                                <div class="footer_form_feedback" id="footerFormFeedback" aria-live="polite"></div>
+                            </form>
+                        </div>
+
+                    </div>
+
+                    <!-- Bottom Copyright & Legal Links -->
+                    <div class="footer_bottom_bar">
+                        <div class="footer_copyright">
+                            &copy; <span id="footerYear">2026</span> PawMedal. All rights reserved.
+                        </div>
+                        <div class="footer_legal_links">
+                            <a href="javascript:void(0);">Privacy Policy</a>
+                            <span class="legal_sep">&middot;</span>
+                            <a href="javascript:void(0);">Terms &amp; Conditions</a>
+                            <span class="legal_sep">&middot;</span>
+                            <a href="javascript:void(0);">Shipping &amp; Returns</a>
+                            <span class="legal_sep">&middot;</span>
+                            <a href="javascript:void(0);">Cookie Policy</a>
+                        </div>
+                    </div>
+
+                </div>
+            </footer>
 
         </div>
     </div>

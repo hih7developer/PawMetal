@@ -1,0 +1,86 @@
+Created At: 2026-11-17T14:05:57+05:30
+Completed At: 2026-11-17T14:05:57+05:30
+Created At: 2026-11-17T14:05:57+05:30
+Completed At: 2026-11-17T14:05:57+05:30
+Showing lines 1740-1820 of 1879
+1740:                                     <div class="faq_screen_sweep" id="faqScreenSweep" aria-hidden="true"></div>
+1741: 
+1742:                                     <!-- Dynamic Result Card Stage at Bottom of Phone -->
+1743:                                     <div class="faq_result_cards" id="faqResultCards">
+1744:                                         <!-- Card 1: Worldwide -->
+1745:                                         <div class="faq_result_card card_1" data-card-id="1">
+1746:                                             <div class="res_icon_wrap icon_globe">
+1747:                                                 <span class="globe_ping"></span>
+1748:                                                 <span class="res_emoji">🌍</span>
+1749:                                             </div>
+1750:                                             <div class="res_info">
+1751:                                                 <div class="res_title">Works everywhere</div>
+1752:                                                 <div class="res_sub">Worldwide · Find My™</div>
+1753:                                             </div>
+1754:                                         </div>
+1755: 
+1756:                                         <!-- Card 2: Subscription -->
+1757:                                         <div class="faq_result_card card_2" data-card-id="2">
+1758:                                             <div class="res_icon_wrap icon_price">
+1759:                                                 <span class="res_strike">$9</span>
+1760:                                                 <span class="res_arrow">➔</span>
+1761:                                                 <span class="res_free">$0</span>
+1762:                                             </div>
+1763:                                             <div class="res_info">
+1764:                                                 <div class="res_title">No subscription</div>
+1765:                                                 <div class="res_sub">$0 / per month</div>
+1766:                                             </div>
+1767:                                         </div>
+1768: 
+1769:                                         <!-- Card 3: Battery -->
+1770:                                         <div class="faq_result_card card_3" data-card-id="3">
+1771:                                             <div class="res_icon_wrap icon_batt">
+1772:                                                 <div class="res_battery_bar"><span class="batt_fill"></span></div>
+1773:                                                 <span class="batt_bolt">⚡</span>
+1774:                                             </div>
+1775:                                             <div class="res_info">
+1776:                                                 <div class="res_title">1 Year battery life</div>
+1777:                                                 <div class="res_sub">Replaceable · 0-power tag</div>
+1778:                                             </div>
+1779:                                         </div>
+1780: 
+1781:                                         <!-- Card 4: Waterproof -->
+1782:                                         <div class="faq_result_card card_4" data-card-id="4">
+1783:                                             <div class="res_icon_wrap icon_water">
+1784:                                                 <span class="water_paw">🐾</span>
+1785:                                                 <span class="drop drop_1">💧</span>
+1786:                                                 <span class="drop drop_2">💧</span>
+1787:                                             </div>
+1788:                                             <div class="res_info">
+1789:                                                 <div class="res_title">Waterproof</div>
+1790:                                                 <div class="res_sub">&amp; durable</div>
+1791:                                             </div>
+1792:                                         </div>
+1793: 
+1794:                                         <!-- Card 5: Update Info -->
+1795:                                         <div class="faq_result_card card_5" data-card-id="5">
+1796:                                             <div class="res_info_flex">
+1797:                                                 <div class="res_details">
+1798:                                                     <span class="pet_name">Name: <strong>Max</strong></span>
+1799:                                                     <span class="pet_weight">Weight: <strong>21 kg</strong></span>
+1800:                                                 </div>
+1801:                                                 <div class="res_badge_check">
+1802:                                                     <span class="check_icon">✓</span>
+1803:                                                     <span class="check_text">Saved</span>
+1804:                                                 </div>
+1805:                                             </div>
+1806:                                         </div>
+1807: 
+1808:                                         <!-- Card 6: Found Pet -->
+1809:                                         <div class="faq_result_card card_6" data-card-id="6">
+1810:                                             <div class="res_icon_wrap icon_bell">
+1811:                                                 <span class="bell_ring">🔔</span>
+1812:                                                 <span class="bell_wave wave_1"></span>
+1813:                                                 <span class="bell_wave wave_2"></span>
+1814:                                             </div>
+1815:                                             <div class="res_info">
+1816:                                                 <div class="res_title">Max was found!</div>
+1817:                                                 <div class="res_sub">📍 0.2 km away</div>
+1818:                                             </div>
+1819:                                         </div>
+1820:                                     </div>

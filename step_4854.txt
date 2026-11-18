@@ -1,0 +1,216 @@
+Created At: 2026-11-17T14:05:47+05:30
+Completed At: 2026-11-17T14:05:47+05:30
+Created At: 2026-11-17T14:05:47+05:30
+Completed At: 2026-11-17T14:05:47+05:30
+Showing lines 1540-1750 of 1879
+1540: 
+1541:                             <!-- Interactive FAQ Accordion List -->
+1542:                             <div class="faq_accordion" id="faqAccordion">
+1543:                                 <!-- FAQ Item 1 -->
+1544:                                 <div class="faq_item" data-faq-id="1">
+1545:                                     <button type="button" class="faq_question" aria-expanded="false">
+1546:                                         <span class="faq_q_bullet"></span>
+1547:                                         <span class="faq_q_text">Does PawMedal work worldwide?</span>
+1548:                                         <span class="faq_arrow_icon"><i class="fa-solid fa-chevron-down"></i></span>
+1549:                                     </button>
+1550:                                     <div class="faq_answer">
+1551:                                         <div class="faq_answer_inner">
+1552:                                             <p class="faq_answer_text">Yes, PawMedal Tag works wherever someone can scan the QR code or tap the NFC tag. PawMedal Finder uses Apple's Find My network to help locate your pet wherever the network is available.</p>
+1553:                                         </div>
+1554:                                     </div>
+1555:                                 </div>
+1556: 
+1557:                                 <!-- FAQ Item 2 -->
+1558:                                 <div class="faq_item" data-faq-id="2">
+1559:                                     <button type="button" class="faq_question" aria-expanded="false">
+1560:                                         <span class="faq_q_bullet"></span>
+1561:                                         <span class="faq_q_text">Do I need a subscription?</span>
+1562:                                         <span class="faq_arrow_icon"><i class="fa-solid fa-chevron-down"></i></span>
+1563:                                     </button>
+1564:                                     <div class="faq_answer">
+1565:                                         <div class="faq_answer_inner">
+1566:                                             <p class="faq_answer_text">No subscription required! PawMedal Tag and Finder have zero monthly fees. You get full access to all features forever with a single one-time purchase.</p>
+1567:                                         </div>
+1568:                                     </div>
+1569:                                 </div>
+1570: 
+1571:                                 <!-- FAQ Item 3 -->
+1572:                                 <div class="faq_item" data-faq-id="3">
+1573:                                     <button type="button" class="faq_question" aria-expanded="false">
+1574:                                         <span class="faq_q_bullet"></span>
+1575:                                         <span class="faq_q_text">How long does the battery last?</span>
+1576:                                         <span class="faq_arrow_icon"><i class="fa-solid fa-chevron-down"></i></span>
+1577:                                     </button>
+1578:                                     <div class="faq_answer">
+1579:                                         <div class="faq_answer_inner">
+1580:                                             <p class="faq_answer_text">PawMedal Finder has a user-replaceable standard battery that lasts up to one full year. The PawMedal QR/NFC Tag requires no battery or charging ever.</p>
+1581:                                         </div>
+1582:                                     </div>
+1583:                                 </div>
+1584: 
+1585:                                 <!-- FAQ Item 4 -->
+1586:                                 <div class="faq_item" data-faq-id="4">
+1587:                                     <button type="button" class="faq_question" aria-expanded="false">
+1588:                                         <span class="faq_q_bullet"></span>
+1589:                                         <span class="faq_q_text">Is it waterproof?</span>
+1590:                                         <span class="faq_arrow_icon"><i class="fa-solid fa-chevron-down"></i></span>
+1591:                                     </button>
+1592:                                     <div class="faq_answer">
+1593:                                         <div class="faq_answer_inner">
+1594:                                             <p class="faq_answer_text">Yes! Both the PawMedal Tag and Finder are IP67 waterproof and adventure-tested for swimming, heavy rain, snow, and mud.</p>
+1595:                                         </div>
+1596:                                     </div>
+1597:                                 </div>
+1598: 
+1599:                                 <!-- FAQ Item 5 -->
+1600:                                 <div class="faq_item" data-faq-id="5">
+1601:                                     <button type="button" class="faq_question" aria-expanded="false">
+1602:                                         <span class="faq_q_bullet"></span>
+1603:                                         <span class="faq_q_text">Can I update my pet's information?</span>
+1604:                                         <span class="faq_arrow_icon"><i class="fa-solid fa-chevron-down"></i></span>
+1605:                                     </button>
+1606:                                     <div class="faq_answer">
+1607:                                         <div class="faq_answer_inner">
+1608:                                             <p class="faq_answer_text">Instantly, anytime! You can update contact numbers, medical alerts, home address, and photos in your profile without changing or replacing the physical medal.</p>
+1609:                                         </div>
+1610:                                     </div>
+1611:                                 </div>
+1612: 
+1613:                                 <!-- FAQ Item 6 -->
+1614:                                 <div class="faq_item" data-faq-id="6">
+1615:                                     <button type="button" class="faq_question" aria-expanded="false">
+1616:                                         <span class="faq_q_bullet"></span>
+1617:                                         <span class="faq_q_text">What if someone finds my pet?</span>
+1618:                                         <span class="faq_arrow_icon"><i class="fa-solid fa-chevron-down"></i></span>
+1619:                                     </button>
+1620:                                     <div class="faq_answer">
+1621:                                         <div class="faq_answer_inner">
+1622:                                             <p class="faq_answer_text">When someone finds your pet, they can simply tap the medal with any smartphone or scan the QR code to see your pet profile, emergency contacts, and notify you instantly.</p>
+1623:                                         </div>
+1624:                                     </div>
+1625:                                 </div>
+1626:                             </div>
+1627: 
+1628:                             <!-- View All Questions CTA Button -->
+1629:                             <div class="faq_btn_wrap">
+1630:                                 <button type="button" class="cmn_btn faq_btn" aria-label="View All Questions">
+1631:                                     <span>View All Questions</span>
+1632:                                     <span class="btn_icn"><img src="./images/btn_icn.png" alt="btn_icn"></span>
+1633:                                     <span class="btn_hvr_icn"><img src="./images/btn_hvr_icn.png" alt="btn_icn"></span>
+1634:                                 </button>
+1635:                             </div>
+1636:                         </div>
+1637: 
+1638:                         <!-- Right Column: Visual Stage (Pale Beige Ring, Wireframe Phone, Result Cards, Medal) -->
+1639:                         <div class="faq_visual_col">
+1640:                             <div class="faq_visual_stage" id="faqVisualStage" title="Hover to inspect in 3D">
+1641:                                 <!-- Layer 1: Large Pale Beige Ring behind both -->
+1642:                                 <div class="faq_ring_bg" id="faqRingBg" aria-hidden="true">
+1643:                                     <svg viewBox="0 0 460 460" class="faq_ring_svg">
+1644:                                         <circle cx="230" cy="230" r="200" fill="none" stroke="#ece3d3" stroke-width="48" opacity="0.9" />
+1645:                                     </svg>
+1646:                                 </div>
+1647: 
+1648:                                 <!-- Layer 2: Scroll-Drawn Wireframe Phone Mockup (viewBox 0 0 260 520) -->
+1649:                                 <div class="faq_phone_stage" id="faqPhoneStage">
+1650:                                     <svg class="faq_phone_svg" id="faqPhoneSvg" viewBox="0 0 260 520" fill="none" xmlns="http://www.w3.org/2000/svg">
+1651:                                         <defs>
+1652:                                             <!-- Ocean to beach sand gradient -->
+1653:                                             <linearGradient id="faqBeachGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+1654:                                                 <stop offset="0%" stop-color="#2497a7" />
+1655:                                                 <stop offset="28%" stop-color="#3baec0" />
+1656:                                                 <stop offset="40%" stop-color="#72c6d2" />
+1657:                                                 <stop offset="47%" stop-color="#ffffff" stop-opacity="0.9" />
+1658:                                                 <stop offset="54%" stop-color="#faeedd" />
+1659:                                                 <stop offset="100%" stop-color="#f2dec5" />
+1660:                                             </linearGradient>
+1661:                                             <!-- Circular clip path for the pet avatar -->
+1662:                                             <clipPath id="faqDogAvatarClip">
+1663:                                                 <circle cx="130" cy="112" r="28" />
+1664:                                             </clipPath>
+1665:                                         </defs>
+1666: 
+1667:                                         <!-- 21 shapes with pathLength="1" -->
+1668:                                         <!-- 1. Body -->
+1669:                                         <rect class="wf_shape wf_body" data-target-fill-opacity="1" x="10" y="8" width="240" height="504" rx="36" stroke="#c8963e" stroke-width="2" fill="#1b1816" pathLength="1" />
+1670:                                         <!-- 2. Screen (Ocean beach gradient) -->
+1671:                                         <rect class="wf_shape wf_screen" data-target-fill-opacity="1" x="18" y="16" width="224" height="488" rx="28" stroke="#c8963e" stroke-width="1.4" fill="url(#faqBeachGrad)" pathLength="1" />
+1672:                                         <!-- 3. Notch -->
+1673:                                         <rect class="wf_shape wf_notch" data-target-fill-opacity="1" x="95" y="24" width="70" height="18" rx="9" stroke="#c8963e" stroke-width="1.2" fill="#111111" pathLength="1" />
+1674:                                         <!-- 4. Header line -->
+1675:                                         <line class="wf_shape wf_header_line" data-target-fill-opacity="0" x1="36" y1="54" x2="224" y2="54" stroke="#c8963e" stroke-width="1" stroke-dasharray="3 3" pathLength="1" />
+1676:                                         <!-- 5. Avatar outer ring -->
+1677:                                         <circle class="wf_shape wf_avatar_outer" data-target-fill-opacity="0.25" cx="130" cy="112" r="46" stroke="#c8963e" stroke-width="1.2" fill="#ffffff" pathLength="1" />
+1678: 
+1679:                                         <!-- Avatar Assembly: Dog Photo + Teal Ring + 4 Badges (Matches Figma Design) -->
+1680:                                         <g id="wfAvatarGroup" class="wf_dog_avatar">
+1681:                                             <!-- Dog Photo in circle -->
+1682:                                             <image id="wfDogAvatar" href="images/phone_screen.png" x="73.8" y="34.6" width="146.6" height="305.8" clip-path="url(#faqDogAvatarClip)" preserveAspectRatio="none" />
+1683:                                             <!-- Inner white border around dog -->
+1684:                                             <circle cx="130" cy="112" r="28" stroke="#ffffff" stroke-width="2" fill="none" />
+1685:                                             <!-- Cyan/teal circular ring -->
+1686:                                             <circle cx="130" cy="112" r="38" stroke="#3ba5b3" stroke-width="1.8" fill="none" />
+1687:                                             <!-- Top Badge: Shield -->
+1688:                                             <circle cx="130" cy="74" r="6" fill="#3097a4" stroke="#ffffff" stroke-width="1.2" />
+1689:                                             <path d="M 128 72 L 132 72 L 132 74 Q 132 76.5 130 77.5 Q 128 76.5 128 74 Z" fill="#ffffff" />
+1690:                                             <!-- Left Badge: Heart -->
+1691:                                             <circle cx="92" cy="112" r="6" fill="#3097a4" stroke="#ffffff" stroke-width="1.2" />
+1692:                                             <path d="M 92 114.5 Q 89.5 112.5 89.5 110.5 A 1.8 1.8 0 0 1 92 109.8 A 1.8 1.8 0 0 1 94.5 110.5 Q 94.5 112.5 92 114.5 Z" fill="#ffffff" />
+1693:                                             <!-- Right Badge: Location Pin -->
+1694:                                             <circle cx="168" cy="112" r="6" fill="#3097a4" stroke="#ffffff" stroke-width="1.2" />
+1695:                                             <path d="M 168 115.5 L 166 112 A 2.2 2.2 0 1 1 170 112 Z" fill="#ffffff" />
+1696:                                             <circle cx="168" cy="111" r="0.8" fill="#3097a4" />
+1697:                                             <!-- Bottom Badge: Paw -->
+1698:                                             <circle cx="130" cy="150" r="6" fill="#3097a4" stroke="#ffffff" stroke-width="1.2" />
+1699:                                             <circle cx="128.2" cy="148" r="0.8" fill="#ffffff" />
+1700:                                             <circle cx="130" cy="147.2" r="0.8" fill="#ffffff" />
+1701:                                             <circle cx="131.8" cy="148" r="0.8" fill="#ffffff" />
+1702:                                             <ellipse cx="130" cy="151.2" rx="1.8" ry="1.3" fill="#ffffff" />
+1703:                                         </g>
+1704: 
+1705:                                         <!-- 6. Avatar inner ring (Wireframe gold stroke) -->
+1706:                                         <circle class="wf_shape wf_avatar_inner" data-target-fill-opacity="0" cx="130" cy="112" r="28" stroke="#c8963e" stroke-width="1.5" fill="none" pathLength="1" />
+1707:                                         <!-- 7. Name squiggle -->
+1708:                                         <path class="wf_shape wf_squiggle" data-target-fill-opacity="0" d="M 98 158 Q 114 150 130 158 T 162 158" stroke="#c8963e" stroke-width="2.2" stroke-linecap="round" fill="none" pathLength="1" />
+1709:                                         <!-- 8. Button 1 (tab left) -->
+1710:                                         <rect class="wf_shape wf_btn_1" data-target-fill-opacity="1" x="36" y="172" width="88" height="20" rx="10" stroke="#c8963e" stroke-width="1.2" fill="#326c76" pathLength="1" />
+1711:                                         <!-- 9. Button 2 (tab right) -->
+1712:                                         <rect class="wf_shape wf_btn_2" data-target-fill-opacity="0.8" x="136" y="172" width="88" height="20" rx="10" stroke="#c8963e" stroke-width="1.2" fill="#ffffff" pathLength="1" />
+1713:                                         <!-- 10. Status card -->
+1714:                                         <rect class="wf_shape wf_status_card" data-target-fill-opacity="0.9" x="36" y="202" width="188" height="30" rx="9" stroke="#c8963e" stroke-width="1.2" fill="#ffffff" pathLength="1" />
+1715:                                         <!-- 11. Status circle 1 -->
+1716:                                         <circle class="wf_shape wf_status_c1" data-target-fill-opacity="1" cx="68" cy="217" r="6" stroke="#c8963e" stroke-width="1" fill="#8fc0ca" pathLength="1" />
+1717:                                         <!-- 12. Status circle 2 -->
+1718:                                         <circle class="wf_shape wf_status_c2" data-target-fill-opacity="1" cx="130" cy="217" r="6" stroke="#c8963e" stroke-width="1" fill="#8fc0ca" pathLength="1" />
+1719:                                         <!-- 13. Status circle 3 -->
+1720:                                         <circle class="wf_shape wf_status_c3" data-target-fill-opacity="1" cx="192" cy="217" r="6" stroke="#c8963e" stroke-width="1" fill="#8fc0ca" pathLength="1" />
+1721:                                         <!-- 14. Owner card -->
+1722:                                         <rect class="wf_shape wf_owner_card" data-target-fill-opacity="0.95" x="36" y="242" width="188" height="48" rx="10" stroke="#c8963e" stroke-width="1.2" fill="#ffffff" pathLength="1" />
+1723:                                         <!-- 15. Owner avatar -->
+1724:                                         <circle class="wf_shape wf_owner_av" data-target-fill-opacity="1" cx="58" cy="266" r="12" stroke="#c8963e" stroke-width="1" fill="#d4a373" pathLength="1" />
+1725:                                         <!-- 16. Owner line 1 -->
+1726:                                         <line class="wf_shape wf_owner_l1" data-target-fill-opacity="0" x1="80" y1="261" x2="194" y2="261" stroke="#c8963e" stroke-width="2" stroke-linecap="round" pathLength="1" />
+1727:                                         <!-- 17. Owner line 2 -->
+1728:                                         <line class="wf_shape wf_owner_l2" data-target-fill-opacity="0" x1="80" y1="272" x2="145" y2="272" stroke="#c8963e" stroke-width="2" stroke-linecap="round" pathLength="1" />
+1729:                                         <!-- 18. Profile card -->
+1730:                                         <rect class="wf_shape wf_profile_card" data-target-fill-opacity="0.95" x="36" y="300" width="188" height="74" rx="10" stroke="#c8963e" stroke-width="1.2" fill="#ffffff" pathLength="1" />
+1731:                                         <!-- 19. Profile line 1 -->
+1732:                                         <line class="wf_shape wf_profile_l1" data-target-fill-opacity="0" x1="54" y1="318" x2="170" y2="318" stroke="#c8963e" stroke-width="2" stroke-linecap="round" pathLength="1" />
+1733:                                         <!-- 20. Profile line 2 -->
+1734:                                         <line class="wf_shape wf_profile_l2" data-target-fill-opacity="0" x1="54" y1="334" x2="194" y2="334" stroke="#c8963e" stroke-width="2" stroke-linecap="round" pathLength="1" />
+1735:                                         <!-- 21. Profile line 3 -->
+1736:                                         <line class="wf_shape wf_profile_l3" data-target-fill-opacity="0" x1="54" y1="350" x2="125" y2="350" stroke="#c8963e" stroke-width="2" stroke-linecap="round" pathLength="1" />
+1737:                                     </svg>
+1738: 
+1739:                                     <!-- Soft light sweep effect -->
+1740:                                     <div class="faq_screen_sweep" id="faqScreenSweep" aria-hidden="true"></div>
+1741: 
+1742:                                     <!-- Dynamic Result Card Stage at Bottom of Phone -->
+1743:                                     <div class="faq_result_cards" id="faqResultCards">
+1744:                                         <!-- Card 1: Worldwide -->
+1745:                                         <div class="faq_result_card card_1" data-card-id="1">
+1746:                                             <div class="res_icon_wrap icon_globe">
+1747:                                                 <span class="globe_ping"></span>
+1748:                                                 <span class="res_emoji">🌍</span>
+1749:                                             </div>
+1750:                                             <div class="res_info">

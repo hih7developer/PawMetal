@@ -1,0 +1,292 @@
+
+                            <!-- Interactive FAQ Accordion List -->
+                            <div class="faq_accordion" id="faqAccordion">
+                                <!-- FAQ Item 1 -->
+                                <div class="faq_item" data-faq-id="1">
+                                    <button type="button" class="faq_question" aria-expanded="false">
+                                        <span class="faq_q_bullet"></span>
+                                        <span class="faq_q_text">Does PawMedal work worldwide?</span>
+                                        <span class="faq_arrow_icon"><i class="fa-solid fa-chevron-down"></i></span>
+                                    </button>
+                                    <div class="faq_answer">
+                                        <div class="faq_answer_inner">
+                                            <p class="faq_answer_text">Yes, PawMedal Tag works wherever someone can scan the QR code or tap the NFC tag. PawMedal Finder uses Apple's Find My network to help locate your pet wherever the network is available.</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- FAQ Item 2 -->
+                                <div class="faq_item" data-faq-id="2">
+                                    <button type="button" class="faq_question" aria-expanded="false">
+                                        <span class="faq_q_bullet"></span>
+                                        <span class="faq_q_text">Do I need a subscription?</span>
+                                        <span class="faq_arrow_icon"><i class="fa-solid fa-chevron-down"></i></span>
+                                    </button>
+                                    <div class="faq_answer">
+                                        <div class="faq_answer_inner">
+                                            <p class="faq_answer_text">No subscription required! PawMedal Tag and Finder have zero monthly fees. You get full access to all features forever with a single one-time purchase.</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- FAQ Item 3 -->
+                                <div class="faq_item" data-faq-id="3">
+                                    <button type="button" class="faq_question" aria-expanded="false">
+                                        <span class="faq_q_bullet"></span>
+                                        <span class="faq_q_text">How long does the battery last?</span>
+                                        <span class="faq_arrow_icon"><i class="fa-solid fa-chevron-down"></i></span>
+                                    </button>
+                                    <div class="faq_answer">
+                                        <div class="faq_answer_inner">
+                                            <p class="faq_answer_text">PawMedal Finder has a user-replaceable standard battery that lasts up to one full year. The PawMedal QR/NFC Tag requires no battery or charging ever.</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- FAQ Item 4 -->
+                                <div class="faq_item" data-faq-id="4">
+                                    <button type="button" class="faq_question" aria-expanded="false">
+                                        <span class="faq_q_bullet"></span>
+                                        <span class="faq_q_text">Is it waterproof?</span>
+                                        <span class="faq_arrow_icon"><i class="fa-solid fa-chevron-down"></i></span>
+                                    </button>
+                                    <div class="faq_answer">
+                                        <div class="faq_answer_inner">
+                                            <p class="faq_answer_text">Yes! Both the PawMedal Tag and Finder are IP67 waterproof and adventure-tested for swimming, heavy rain, snow, and mud.</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- FAQ Item 5 -->
+                                <div class="faq_item" data-faq-id="5">
+                                    <button type="button" class="faq_question" aria-expanded="false">
+                                        <span class="faq_q_bullet"></span>
+                                        <span class="faq_q_text">Can I update my pet's information?</span>
+                                        <span class="faq_arrow_icon"><i class="fa-solid fa-chevron-down"></i></span>
+                                    </button>
+                                    <div class="faq_answer">
+                                        <div class="faq_answer_inner">
+                                            <p class="faq_answer_text">Instantly, anytime! You can update contact numbers, medical alerts, home address, and photos in your profile without changing or replacing the physical medal.</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- FAQ Item 6 -->
+                                <div class="faq_item" data-faq-id="6">
+                                    <button type="button" class="faq_question" aria-expanded="false">
+                                        <span class="faq_q_bullet"></span>
+                                        <span class="faq_q_text">What if someone finds my pet?</span>
+                                        <span class="faq_arrow_icon"><i class="fa-solid fa-chevron-down"></i></span>
+                                    </button>
+                                    <div class="faq_answer">
+                                        <div class="faq_answer_inner">
+                                            <p class="faq_answer_text">When someone finds your pet, they can simply tap the medal with any smartphone or scan the QR code to see your pet profile, emergency contacts, and notify you instantly.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- View All Questions CTA Button -->
+                            <div class="faq_btn_wrap">
+                                <button type="button" class="cmn_btn faq_btn" aria-label="View All Questions">
+                                    <span>View All Questions</span>
+                                    <span class="btn_icn"><img src="./images/btn_icn.png" alt="btn_icn"></span>
+                                    <span class="btn_hvr_icn"><img src="./images/btn_hvr_icn.png" alt="btn_icn"></span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Right Column: Visual Stage (Pale Beige Ring, Wireframe Phone, Result Cards, Medal) -->
+                        <div class="faq_visual_col">
+                            <div class="faq_visual_stage" id="faqVisualStage" title="Hover to inspect in 3D">
+                                <!-- Layer 1: Large Pale Beige Ring behind both -->
+                                <div class="faq_ring_bg" id="faqRingBg" aria-hidden="true">
+                                    <svg viewBox="0 0 460 460" class="faq_ring_svg">
+                                        <circle cx="230" cy="230" r="200" fill="none" stroke="#ece3d3" stroke-width="48" opacity="0.9" />
+                                    </svg>
+                                </div>
+
+                                <!-- Layer 2: Scroll-Drawn Wireframe Phone Mockup (viewBox 0 0 260 520) -->
+                                <div class="faq_phone_stage" id="faqPhoneStage">
+                                    <svg class="faq_phone_svg" id="faqPhoneSvg" viewBox="0 0 260 520" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <defs>
+                                            <!-- Ocean to beach sand gradient -->
+                                            <linearGradient id="faqBeachGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                                <stop offset="0%" stop-color="#2497a7" />
+                                                <stop offset="28%" stop-color="#3baec0" />
+                                                <stop offset="40%" stop-color="#72c6d2" />
+                                                <stop offset="47%" stop-color="#ffffff" stop-opacity="0.9" />
+                                                <stop offset="54%" stop-color="#faeedd" />
+                                                <stop offset="100%" stop-color="#f2dec5" />
+                                            </linearGradient>
+                                            <!-- Circular clip path for the pet avatar -->
+                                            <clipPath id="faqDogAvatarClip">
+                                                <circle cx="130" cy="112" r="28" />
+                                            </clipPath>
+                                        </defs>
+
+                                        <!-- 21 shapes with pathLength="1" -->
+                                        <!-- 1. Body -->
+                                        <rect class="wf_shape wf_body" data-target-fill-opacity="1" x="10" y="8" width="240" height="504" rx="36" stroke="#c8963e" stroke-width="2" fill="#1b1816" pathLength="1" />
+                                        <!-- 2. Screen (Ocean beach gradient) -->
+                                        <rect class="wf_shape wf_screen" data-target-fill-opacity="1" x="18" y="16" width="224" height="488" rx="28" stroke="#c8963e" stroke-width="1.4" fill="url(#faqBeachGrad)" pathLength="1" />
+                                        <!-- 3. Notch -->
+                                        <rect class="wf_shape wf_notch" data-target-fill-opacity="1" x="95" y="24" width="70" height="18" rx="9" stroke="#c8963e" stroke-width="1.2" fill="#111111" pathLength="1" />
+                                        <!-- 4. Header line -->
+                                        <line class="wf_shape wf_header_line" data-target-fill-opacity="0" x1="36" y1="54" x2="224" y2="54" stroke="#c8963e" stroke-width="1" stroke-dasharray="3 3" pathLength="1" />
+                                        <!-- 5. Avatar outer ring -->
+                                        <circle class="wf_shape wf_avatar_outer" data-target-fill-opacity="0.25" cx="130" cy="112" r="46" stroke="#c8963e" stroke-width="1.2" fill="#ffffff" pathLength="1" />
+
+                                        <!-- Avatar Assembly: Dog Photo + Teal Ring + 4 Badges (Matches Figma Design) -->
+                                        <g id="wfAvatarGroup" class="wf_dog_avatar">
+                                            <!-- Dog Photo in circle -->
+                                            <image id="wfDogAvatar" href="images/phone_screen.png" x="73.8" y="34.6" width="146.6" height="305.8" clip-path="url(#faqDogAvatarClip)" preserveAspectRatio="none" />
+                                            <!-- Inner white border around dog -->
+                                            <circle cx="130" cy="112" r="28" stroke="#ffffff" stroke-width="2" fill="none" />
+                                            <!-- Cyan/teal circular ring -->
+                                            <circle cx="130" cy="112" r="38" stroke="#3ba5b3" stroke-width="1.8" fill="none" />
+                                            <!-- Top Badge: Shield -->
+                                            <circle cx="130" cy="74" r="6" fill="#3097a4" stroke="#ffffff" stroke-width="1.2" />
+                                            <path d="M 128 72 L 132 72 L 132 74 Q 132 76.5 130 77.5 Q 128 76.5 128 74 Z" fill="#ffffff" />
+                                            <!-- Left Badge: Heart -->
+                                            <circle cx="92" cy="112" r="6" fill="#3097a4" stroke="#ffffff" stroke-width="1.2" />
+                                            <path d="M 92 114.5 Q 89.5 112.5 89.5 110.5 A 1.8 1.8 0 0 1 92 109.8 A 1.8 1.8 0 0 1 94.5 110.5 Q 94.5 112.5 92 114.5 Z" fill="#ffffff" />
+                                            <!-- Right Badge: Location Pin -->
+                                            <circle cx="168" cy="112" r="6" fill="#3097a4" stroke="#ffffff" stroke-width="1.2" />
+                                            <path d="M 168 115.5 L 166 112 A 2.2 2.2 0 1 1 170 112 Z" fill="#ffffff" />
+                                            <circle cx="168" cy="111" r="0.8" fill="#3097a4" />
+                                            <!-- Bottom Badge: Paw -->
+                                            <circle cx="130" cy="150" r="6" fill="#3097a4" stroke="#ffffff" stroke-width="1.2" />
+                                            <circle cx="128.2" cy="148" r="0.8" fill="#ffffff" />
+                                            <circle cx="130" cy="147.2" r="0.8" fill="#ffffff" />
+                                            <circle cx="131.8" cy="148" r="0.8" fill="#ffffff" />
+                                            <ellipse cx="130" cy="151.2" rx="1.8" ry="1.3" fill="#ffffff" />
+                                        </g>
+
+                                        <!-- 6. Avatar inner ring (Wireframe gold stroke) -->
+                                        <circle class="wf_shape wf_avatar_inner" data-target-fill-opacity="0" cx="130" cy="112" r="28" stroke="#c8963e" stroke-width="1.5" fill="none" pathLength="1" />
+                                        <!-- 7. Name squiggle -->
+                                        <path class="wf_shape wf_squiggle" data-target-fill-opacity="0" d="M 98 158 Q 114 150 130 158 T 162 158" stroke="#c8963e" stroke-width="2.2" stroke-linecap="round" fill="none" pathLength="1" />
+                                        <!-- 8. Button 1 (tab left) -->
+                                        <rect class="wf_shape wf_btn_1" data-target-fill-opacity="1" x="36" y="172" width="88" height="20" rx="10" stroke="#c8963e" stroke-width="1.2" fill="#326c76" pathLength="1" />
+                                        <!-- 9. Button 2 (tab right) -->
+                                        <rect class="wf_shape wf_btn_2" data-target-fill-opacity="0.8" x="136" y="172" width="88" height="20" rx="10" stroke="#c8963e" stroke-width="1.2" fill="#ffffff" pathLength="1" />
+                                        <!-- 10. Status card -->
+                                        <rect class="wf_shape wf_status_card" data-target-fill-opacity="0.9" x="36" y="202" width="188" height="30" rx="9" stroke="#c8963e" stroke-width="1.2" fill="#ffffff" pathLength="1" />
+                                        <!-- 11. Status circle 1 -->
+                                        <circle class="wf_shape wf_status_c1" data-target-fill-opacity="1" cx="68" cy="217" r="6" stroke="#c8963e" stroke-width="1" fill="#8fc0ca" pathLength="1" />
+                                        <!-- 12. Status circle 2 -->
+                                        <circle class="wf_shape wf_status_c2" data-target-fill-opacity="1" cx="130" cy="217" r="6" stroke="#c8963e" stroke-width="1" fill="#8fc0ca" pathLength="1" />
+                                        <!-- 13. Status circle 3 -->
+                                        <circle class="wf_shape wf_status_c3" data-target-fill-opacity="1" cx="192" cy="217" r="6" stroke="#c8963e" stroke-width="1" fill="#8fc0ca" pathLength="1" />
+                                        <!-- 14. Owner card -->
+                                        <rect class="wf_shape wf_owner_card" data-target-fill-opacity="0.95" x="36" y="242" width="188" height="48" rx="10" stroke="#c8963e" stroke-width="1.2" fill="#ffffff" pathLength="1" />
+                                        <!-- 15. Owner avatar -->
+                                        <circle class="wf_shape wf_owner_av" data-target-fill-opacity="1" cx="58" cy="266" r="12" stroke="#c8963e" stroke-width="1" fill="#d4a373" pathLength="1" />
+                                        <!-- 16. Owner line 1 -->
+                                        <line class="wf_shape wf_owner_l1" data-target-fill-opacity="0" x1="80" y1="261" x2="194" y2="261" stroke="#c8963e" stroke-width="2" stroke-linecap="round" pathLength="1" />
+                                        <!-- 17. Owner line 2 -->
+                                        <line class="wf_shape wf_owner_l2" data-target-fill-opacity="0" x1="80" y1="272" x2="145" y2="272" stroke="#c8963e" stroke-width="2" stroke-linecap="round" pathLength="1" />
+                                        <!-- 18. Profile card -->
+                                        <rect class="wf_shape wf_profile_card" data-target-fill-opacity="0.95" x="36" y="300" width="188" height="74" rx="10" stroke="#c8963e" stroke-width="1.2" fill="#ffffff" pathLength="1" />
+                                        <!-- 19. Profile line 1 -->
+                                        <line class="wf_shape wf_profile_l1" data-target-fill-opacity="0" x1="54" y1="318" x2="170" y2="318" stroke="#c8963e" stroke-width="2" stroke-linecap="round" pathLength="1" />
+                                        <!-- 20. Profile line 2 -->
+                                        <line class="wf_shape wf_profile_l2" data-target-fill-opacity="0" x1="54" y1="334" x2="194" y2="334" stroke="#c8963e" stroke-width="2" stroke-linecap="round" pathLength="1" />
+                                        <!-- 21. Profile line 3 -->
+                                        <line class="wf_shape wf_profile_l3" data-target-fill-opacity="0" x1="54" y1="350" x2="125" y2="350" stroke="#c8963e" stroke-width="2" stroke-linecap="round" pathLength="1" />
+                                    </svg>
+
+                                    <!-- Soft light sweep effect -->
+                                    <div class="faq_screen_sweep" id="faqScreenSweep" aria-hidden="true"></div>
+
+                                    <!-- Dynamic Result Card Stage at Bottom of Phone -->
+                                    <div class="faq_result_cards" id="faqResultCards">
+                                        <!-- Card 1: Worldwide -->
+                                        <div class="faq_result_card card_1" data-card-id="1">
+                                            <div class="res_icon_wrap icon_globe">
+                                                <span class="globe_ping"></span>
+                                                <span class="res_emoji">🌍</span>
+                                            </div>
+                                            <div class="res_info">
+                                    <div class="faq_screen_sweep" id="faqScreenSweep" aria-hidden="true"></div>
+
+                                    <!-- Dynamic Result Card Stage at Bottom of Phone -->
+                                    <div class="faq_result_cards" id="faqResultCards">
+                                        <!-- Card 1: Worldwide -->
+                                        <div class="faq_result_card card_1" data-card-id="1">
+                                            <div class="res_icon_wrap icon_globe">
+                                                <span class="globe_ping"></span>
+                                                <span class="res_emoji">🌍</span>
+                                            </div>
+                                            <div class="res_info">
+                                                <div class="res_title">Works everywhere</div>
+                                                <div class="res_sub">Worldwide · Find My™</div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Card 2: Subscription -->
+                                        <div class="faq_result_card card_2" data-card-id="2">
+                                            <div class="res_icon_wrap icon_price">
+                                                <span class="res_strike">$9</span>
+                                                <span class="res_arrow">➔</span>
+                                                <span class="res_free">$0</span>
+                                            </div>
+                                            <div class="res_info">
+                                                <div class="res_title">No subscription</div>
+                                                <div class="res_sub">$0 / per month</div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Card 3: Battery -->
+                                        <div class="faq_result_card card_3" data-card-id="3">
+                                            <div class="res_icon_wrap icon_batt">
+                                                <div class="res_battery_bar"><span class="batt_fill"></span></div>
+                                                <span class="batt_bolt">⚡</span>
+                                            </div>
+                                            <div class="res_info">
+                                                <div class="res_title">1 Year battery life</div>
+                                                <div class="res_sub">Replaceable · 0-power tag</div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Card 4: Waterproof -->
+                                        <div class="faq_result_card card_4" data-card-id="4">
+                                            <div class="res_icon_wrap icon_water">
+                                                <span class="water_paw">🐾</span>
+                                                <span class="drop drop_1">💧</span>
+                                                <span class="drop drop_2">💧</span>
+                                            </div>
+                                            <div class="res_info">
+                                                <div class="res_title">Waterproof</div>
+                                                <div class="res_sub">&amp; durable</div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Card 5: Update Info -->
+                                        <div class="faq_result_card card_5" data-card-id="5">
+                                            <div class="res_info_flex">
+                                                <div class="res_details">
+                                                    <span class="pet_name">Name: <strong>Max</strong></span>
+                                                    <span class="pet_weight">Weight: <strong>21 kg</strong></span>
+                                                </div>
+                                                <div class="res_badge_check">
+                                                    <span class="check_icon">✓</span>
+                                                    <span class="check_text">Saved</span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Card 6: Found Pet -->
+                                        <div class="faq_result_card card_6" data-card-id="6">
+                                            <div class="res_icon_wrap icon_bell">
+                                                <span class="bell_ring">🔔</span>
+                                                <span class="bell_wave wave_1"></span>
+                                                <span class="bell_wave wave_2"></span>
+                                            </div>
+                                            <div class="res_info">
+                                                <div class="res_title">Max was found!</div>
+                                                <div class="res_sub">📍 0.2 km away</div>
+                                            </div>
+                                        </div>
+                                    </div>

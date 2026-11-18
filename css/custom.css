@@ -8359,11 +8359,6 @@ header .navbar-nav {
     margin-bottom: 16px;
 }
 
-.footer_logo_img {
-    height: 42px;
-    width: auto;
-    object-fit: contain;
-}
 
 .footer_brand_desc {
     font-family: "Montserrat", sans-serif;
@@ -8816,9 +8811,13 @@ header .navbar-nav {
 }
 
 .footer_logo_img {
-    height: 42px;
-    width: auto;
+    height: 100%;
+    width: 100%;
     object-fit: contain;
+}
+.footer_logo_link{
+        width: 254px;
+    display: flex;
 }
 
 .footer_brand_desc {
